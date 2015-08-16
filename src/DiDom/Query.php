@@ -75,11 +75,10 @@ class Query
         $segments = preg_split('/\s+/', $path);
 
         foreach ($segments as $key => $segment) {
-            $pathSegment = static::_tokenize($segment);
+            $pathSegment = static::tokenize($segment);
 
             if (0 == $key) {
-                if (0 === strpos($pathSegment, '[contains('))
-                {
+                if (0 === strpos($pathSegment, '[contains(')) {
                     $paths[0] .= '*' . ltrim($pathSegment, '*');
                 } else {
                     $paths[0] .= $pathSegment;
@@ -115,7 +114,7 @@ class Query
      * @param  string $expression
      * @return string
      */
-    protected static function _tokenize($expression)
+    protected static function tokenize($expression)
     {
         // Child selectors
         $expression = str_replace('>', '/', $expression);

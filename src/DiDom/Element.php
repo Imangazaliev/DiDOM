@@ -212,9 +212,11 @@ class Element
     {
         switch ($name) {
             case 'innerText':
-                return $this->text(); break;
+                return $this->text();
+                break;
             case 'tagName':
-                return $this->domElement->tagName; break;
+                return $this->domElement->tagName;
+                break;
             default:
                 return $this->getAttribute($name);
         }
