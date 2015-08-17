@@ -2,6 +2,8 @@
 
 namespace DiDom;
 
+use InvalidArgumentException;
+
 class Query
 {
     /**
@@ -165,5 +167,19 @@ class Query
         $expression = str_replace('**', '*', $expression);
 
         return $expression;
+    }
+
+    public static function getCompiled()
+    {
+        return static::$compiled;
+    }
+    
+    public static function setCompiled($compiled)
+    {
+        if (!is_array($compiled)) {
+            throw new InvalidArgumentException(sprintf('Query::setCompiled() expects parameter 1 to be array, %s given', gettype($compiled)));
+        }
+
+        static::$compiled = $compiled;
     }
 }
