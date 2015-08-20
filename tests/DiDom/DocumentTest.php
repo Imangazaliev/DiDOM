@@ -35,7 +35,7 @@ class DocumentTest extends TestCase
         $element  = $document->createElement('span', 'value');
 
         $this->assertInstanceOf('DiDom\Element', $element);
-        $this->assertEquals('span', $element->tagName);
+        $this->assertEquals('span', $element->tag);
         $this->assertEquals('value', $element->text());
 
         $element = $document->createElement('span');
