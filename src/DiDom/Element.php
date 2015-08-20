@@ -211,9 +211,6 @@ class Element
     public function __get($name)
     {
         switch ($name) {
-            case 'innerText':
-                return $this->text();
-                break;
             case 'tagName':
                 return $this->domElement->tagName;
                 break;
