@@ -58,7 +58,7 @@ class Document
         }
 
         if (!$element instanceof DOMNode) {
-            throw new InvalidArgumentException(sprintf('Argument 1 passed to Document::appendChild() must be an instance of DOMNode, %s given', gettype($html)));
+            throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s, %s given', __METHOD__, 'DOMNode', gettype($html)));
         }
 
         $cloned = $element->cloneNode(true);
@@ -76,7 +76,7 @@ class Document
     public function loadHtml($html)
     {
         if (!is_string($html)) {
-            throw new InvalidArgumentException(sprintf('loadHtml() expects parameter 1 to be string, %s given', gettype($html)));
+            throw new InvalidArgumentException(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, gettype($html)));
         }
 
         libxml_use_internal_errors(true);
@@ -99,7 +99,7 @@ class Document
     public function loadHtmlFile($filepath)
     {
         if (!is_string($filepath)) {
-            throw new InvalidArgumentException(sprintf('loadHtmlFile() expects parameter 1 to be string, %s given', gettype($filepath)));
+            throw new InvalidArgumentException(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, gettype($filepath)));
         }
         
         if (filter_var($filepath, FILTER_VALIDATE_URL) === false) {

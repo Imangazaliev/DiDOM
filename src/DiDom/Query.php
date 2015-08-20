@@ -177,7 +177,7 @@ class Query
     public static function setCompiled($compiled)
     {
         if (!is_array($compiled)) {
-            throw new InvalidArgumentException(sprintf('Query::setCompiled() expects parameter 1 to be array, %s given', gettype($compiled)));
+            throw new InvalidArgumentException(sprintf('%s expects parameter 1 to be array, %s given', __METHOD__, gettype($compiled)));
         }
 
         static::$compiled = $compiled;
