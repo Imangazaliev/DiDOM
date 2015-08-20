@@ -169,11 +169,19 @@ class Query
         return $expression;
     }
 
+    /**
+     * @return array
+     */
     public static function getCompiled()
     {
         return static::$compiled;
     }
     
+    /**
+     * @param  array $compiled
+     * @return void
+     * @throws \InvalidArgumentException
+     */
     public static function setCompiled($compiled)
     {
         if (!is_array($compiled)) {

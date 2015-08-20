@@ -50,6 +50,7 @@ class Document
     /**
      * @param  \DiDom\Element|\DOMNode $element
      * @return $this
+     * @throws \InvalidArgumentException
      */
     public function appendChild($element)
     {
@@ -72,6 +73,7 @@ class Document
     /**
      * @param  string $html
      * @return $this
+     * @throws \InvalidArgumentException
      */
     public function loadHtml($html)
     {
@@ -95,6 +97,8 @@ class Document
     /**
      * @param  string $filepath
      * @return $this
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      */
     public function loadHtmlFile($filepath)
     {
