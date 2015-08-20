@@ -211,7 +211,7 @@ class Element
     public function __get($name)
     {
         switch ($name) {
-            case 'tagName':
+            case 'tag':
                 return $this->domElement->tagName;
                 break;
             default:
