@@ -36,137 +36,107 @@ class Query
             return static::$compiled[$expression];
         }
 
-        $xpath = static::cssToXpath($expression);
+        static::$compiled[$expression] = static::cssToXpath($expression);
 
-        static::$compiled[$expression] = $xpath;
-
-        return $xpath;
+        return static::$compiled[$expression];
     }
 
     /**
-     * Transform CSS expression to XPath.
-     *
-     * @param  string $selector
+     * @param  string $selector CSS selector
+     * @param  bool   $rel specifies whether the element is a direct descendant
      * @return string
      */
-    protected static function cssToXpath($selector)
+    public static function cssToXpath($selector, $rel = false)
     {
-        $path = (string) $selector;
+        $regexp = static::getRegExp();
+        $xpath  = '';
 
-        if (strstr($path, ',')) {
+        if (preg_match($regexp, $selector, $tokens)) {
+            $attributes = array();
 
-            $paths       = explode(',', $path);
-            $expressions = array();
-
-            foreach ($paths as $path) {
-
-                $xpath = static::cssToXpath(trim($path));
-
-                if (is_string($xpath)) {
-                    $expressions[] = $xpath;
-                } elseif (is_array($xpath)) {
-                    $expressions = array_merge($expressions, $xpath);
-                }
+            // if the id attribute specified
+            if (isset($tokens['id']) and $tokens['id'] !== '') {
+                $attributes[] = "@id='".$tokens['id']."'";
             }
 
-            return implode('|', $expressions);
-        }
-
-        $paths    = array('//');
-        $path     = preg_replace('|\s+>\s+|', '>', $path);
-        $segments = preg_split('/\s+/', $path);
-
-        foreach ($segments as $key => $segment) {
-            $pathSegment = static::tokenize($segment);
-
-            if (0 == $key) {
-                if (0 === strpos($pathSegment, '[contains(')) {
-                    $paths[0] .= '*' . ltrim($pathSegment, '*');
+            // if the attributes specified
+            if (isset($tokens['attr']) and $tokens['attr'] !== '') {
+                // if specified only the attribute name
+                if (!(isset($tokens['value']))) {
+                    $attributes[] = "@".$tokens['attr'];
                 } else {
-                    $paths[0] .= $pathSegment;
-                }
-
-                continue;
-            }
-            if (0 === strpos($pathSegment, '[contains(')) {
-                foreach ($paths as $pathKey => $xpath) {
-
-                    $paths[$pathKey] .= '//*' . ltrim($pathSegment, '*');
-                    $paths[]          = $xpath . $pathSegment;
-                }
-            } else {
-                foreach ($paths as $pathKey => $xpath) {
-                    $paths[$pathKey] .= '//' . $pathSegment;
+                    $attrValue = !empty($tokens['value']) ? $tokens['value'] : '';
+                    $attributes[] = "@".$tokens['attr']."='".$attrValue."'";
                 }
             }
-        }
 
-        if (1 == count($paths)) {
-            return $paths[0];
-        }
+            //if the class attribute specified
+            if (isset($tokens['class']) and $tokens['class'] !== '') {
+                $attributes[] = 'contains(concat(" ", normalize-space(@class), " "), " '.$tokens['class'].' ")';
+            }
 
-        $xpath = implode('|', $paths);
+            // if the pseudo class specified
+            if (isset($tokens['pseudo']) and $tokens['pseudo'] !== '') {
+                if ('first-child' === $tokens['pseudo']) {
+                    $attributes[] = '1';
+                } elseif ('last-child' === $tokens['pseudo']) {
+                    $attributes[] = 'last()';
+                } elseif ('nth-child' === $tokens['pseudo']) {
+                    if (isset($tokens['expr']) and '' !== $tokens['expr']) {
+                        $expression = $tokens['expr'];
+
+                        if ('odd' === $expression) {
+                            $attributes[] = '(position() -1) mod 2 = 0 and position() >= 1';
+                        } elseif ('even' === $expression) {
+                            $attributes[] = 'position() mod 2 = 0 and position() >= 0';
+                        } elseif (preg_match("/^[0-9]+$/", $expression)) {
+                            $attributes[] = 'position() = '.$expression;
+                        } elseif (preg_match("/^((?P<mul>[0-9]+)n\+)(?P<pos>[0-9]+)$/is", $expression, $position)) {
+                            if (isset($position['mul'])) {
+                                $attributes[] = '(position() -'.$position['pos'].') mod '.$position['mul'].' = 0 and position() >= '.$position['pos'].'';
+                            } else {
+                                $attributes[] = ''.$expression.'';
+                            }
+                        }
+                    }
+                }
+            }
+
+            $xpath  = $rel ? '/' : '//';
+            $xpath .= ($tokens['tag'] !== '') ? $tokens['tag'] : '*';
+
+            if ($count = count($attributes)) {
+                $xpath .= ($count > 1) ? '[('.implode(') and (', $attributes).')]' : '['.implode(' and ', $attributes).']';
+            }
+
+            $subs = trim(substr($selector, strlen($tokens[0])));
+
+            // if is the direct descendant
+            $direct = isset($tokens['rel']) ? $tokens['rel'] === '>' : false;
+
+            if ($subs !== '') {
+                $xpath .= static::cssToXpath($subs, $direct);
+            }
+        }
 
         return $xpath;
     }
 
     /**
-     * Tokenize CSS expressions to XPath.
-     *
-     * @param  string $expression
      * @return string
      */
-    protected static function tokenize($expression)
+    protected static function getRegExp()
     {
-        // Child selectors
-        $expression = str_replace('>', '/', $expression);
+        $tag = "(?P<tag>[a-z0-9]+)?";
+        $attr = "(\[(?P<attr>\S+)=(?P<value>[^\]]+)\])?";
+        $id = "(#(?P<id>[^\s:>#\.]+))?";
+        $class = "(\.(?P<class>[^\s:>#\.]+))?";
+        $child = "(first|last|nth)-child";
+        $expr = "(\((?P<expr>[^\)]+)\))";
+        $pseudo = "(:(?P<pseudo>".$child.")".$expr."?)?";
+        $rel = "\s*(?P<rel>>)?";
 
-        // IDs
-        $expression = preg_replace('|#([a-z][a-z0-9_-]*)|i', '[@id=\'$1\']', $expression);
-        $expression = preg_replace('|(?<![a-z0-9_-])(\[@id=)|i', '*$1', $expression);
-
-        // arbitrary attribute strict equality
-        $expression = preg_replace_callback(
-            '|\[@?([a-z0-9_-]+)=[\'"]([^\'"]+)[\'"]\]|i',
-            function ($matches) {
-                return '[@' . strtolower($matches[1]) . "='" . $matches[2] . "']";
-            },
-            $expression
-        );
-
-        // arbitrary attribute contains full word
-        $expression = preg_replace_callback(
-            '|\[([a-z0-9_-]+)~=[\'"]([^\'"]+)[\'"]\]|i',
-            function ($matches) {
-                return "[contains(concat(' ', normalize-space(@" . strtolower($matches[1]) . "), ' '), ' "
-                     . $matches[2] . " ')]";
-            },
-            $expression
-        );
-
-        // arbitrary attribute contains specified content
-        $expression = preg_replace_callback(
-            '|\[([a-z0-9_-]+)\*=[\'"]([^\'"]+)[\'"]\]|i',
-            function ($matches) {
-                return "[contains(@" . strtolower($matches[1]) . ", '"
-                     . $matches[2] . "')]";
-            },
-            $expression
-        );
-
-        // Classes
-        if (false === strpos($expression, "[@")) {
-            $expression = preg_replace(
-                '|\.([a-z][a-z0-9_-]*)|i',
-                "[contains(concat(' ', normalize-space(@class), ' '), ' \$1 ')]",
-                $expression
-            );
-        }
-
-        /** ZF-9764 -- remove double asterisk */
-        $expression = str_replace('**', '*', $expression);
-
-        return $expression;
+        return "/".$tag.$attr.$id.$class.$pseudo.$rel."/isS";
     }
 
     /**
