@@ -150,12 +150,8 @@ class Document
         $nodeList = $xpath->query($expression);
         $elements = array();
 
-        if ($nodeList->length > 0) {
-            foreach ($nodeList as $node) {
-                $elements[] = new Element($node);
-            }
-            
-            return $elements;
+        foreach ($nodeList as $node) {
+            $elements[] = new Element($node);
         }
         
         return $elements;
