@@ -167,6 +167,10 @@ class ElementTest extends TestCase
         $element = new Element($domElement);
 
         $this->assertTrue(is_string($element->html()));
+
+        $element = new Element('span', 'hello');
+
+        $this->assertEquals('<span>hello</span>', $element->html());
     }
 
     public function testText()

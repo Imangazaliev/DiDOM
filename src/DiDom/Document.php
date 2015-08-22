@@ -173,7 +173,7 @@ class Document
      */
     public function html()
     {
-        return $this->document->saveHtml();
+        return trim($this->document->saveHtml());
     }
 
     /**
