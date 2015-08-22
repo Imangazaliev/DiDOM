@@ -42,13 +42,22 @@ class Query
     }
 
     /**
-     * @param  string $selector CSS selector
-     * @param  bool   $rel specifies whether the element is a direct descendant
+     * @param  string $selector
+     * @param  bool   $prefix
      * @return string
      */
-    public static function cssToXpath($selector, $rel = false)
+    public static function cssToXpath($selector, $prefix = '//')
     {
-        $regexp = static::getRegExp();
+        $tag = "(?P<tag>[a-z0-9]+)?";
+        $attr = "(\[(?P<attr>\S+)=(?P<value>[^\]]+)\])?";
+        $id = "(#(?P<id>[^\s:>#\.]+))?";
+        $class = "(\.(?P<class>[^\s:>#\.]+))?";
+        $child = "(first|last|nth)-child";
+        $expr = "(\((?P<expr>[^\)]+)\))";
+        $pseudo = "(:(?P<pseudo>".$child.")".$expr."?)?";
+        $rel = "\s*(?P<rel>>)?";
+
+        $regexp = "/".$tag.$attr.$id.$class.$pseudo.$rel."/isS";
         $xpath  = '';
 
         if (preg_match($regexp, $selector, $tokens)) {
@@ -95,48 +104,29 @@ class Query
                             if (isset($position['mul'])) {
                                 $attributes[] = '(position() -'.$position['pos'].') mod '.$position['mul'].' = 0 and position() >= '.$position['pos'].'';
                             } else {
-                                $attributes[] = ''.$expression.'';
+                                $attributes[] = $expression;
                             }
                         }
                     }
                 }
             }
 
-            $xpath  = $rel ? '/' : '//';
-            $xpath .= ($tokens['tag'] !== '') ? $tokens['tag'] : '*';
+            $xpath  = $prefix;
+            $xpath .= ((isset($tokens['tag'])) and ($tokens['tag'] !== '')) ? $tokens['tag'] : '*';
 
             if ($count = count($attributes)) {
                 $xpath .= ($count > 1) ? '[('.implode(') and (', $attributes).')]' : '['.implode(' and ', $attributes).']';
             }
 
-            $subs = trim(substr($selector, strlen($tokens[0])));
-
-            // if is the direct descendant
-            $direct = isset($tokens['rel']) ? $tokens['rel'] === '>' : false;
+            $subs   = trim(substr($selector, strlen($tokens[0])));
+            $prefix = (isset($tokens['rel'])) ? '/' : '//';
 
             if ($subs !== '') {
-                $xpath .= static::cssToXpath($subs, $direct);
+                $xpath .= static::cssToXpath($subs, $prefix);
             }
         }
 
         return $xpath;
-    }
-
-    /**
-     * @return string
-     */
-    protected static function getRegExp()
-    {
-        $tag = "(?P<tag>[a-z0-9]+)?";
-        $attr = "(\[(?P<attr>\S+)=(?P<value>[^\]]+)\])?";
-        $id = "(#(?P<id>[^\s:>#\.]+))?";
-        $class = "(\.(?P<class>[^\s:>#\.]+))?";
-        $child = "(first|last|nth)-child";
-        $expr = "(\((?P<expr>[^\)]+)\))";
-        $pseudo = "(:(?P<pseudo>".$child.")".$expr."?)?";
-        $rel = "\s*(?P<rel>>)?";
-
-        return "/".$tag.$attr.$id.$class.$pseudo.$rel."/isS";
     }
 
     /**
