@@ -46,7 +46,7 @@ class Query
      * @param  bool   $prefix
      * @return string
      */
-    public static function cssToXpath($selector, $prefix = '//')
+    protected static function cssToXpath($selector, $prefix = '//')
     {
         $tag = "(?P<tag>[a-z0-9]+)?";
         $attr = "(\[(?P<attr>\S+)=(?P<value>[^\]]+)\])?";
