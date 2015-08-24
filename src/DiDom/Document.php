@@ -59,7 +59,7 @@ class Document
         }
 
         if (!$element instanceof DOMNode) {
-            throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s, %s given', __METHOD__, 'DOMNode', gettype($html)));
+            throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s, %s given', __METHOD__, 'DOMNode', gettype($element)));
         }
 
         $cloned = $element->cloneNode(true);
