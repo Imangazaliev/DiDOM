@@ -81,7 +81,7 @@ use DiDom\Query;
 $posts = $document->find('.post');
 
 //XPath-путь
-$posts = $document->find('//div[contains(@class, 'post')]', Query::TYPE_XPATH);
+$posts = $document->find("//div[contains(@class, 'post')]", Query::TYPE_XPATH);
 ```
 
 ##### Через магический метод `__invoke()`:
