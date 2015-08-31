@@ -177,6 +177,17 @@ class Document
     }
 
     /**
+     * @param  bool $format
+     * @return $this
+     */
+    public function format($format = true)
+    {
+        $this->document->formatOutput = $format;
+        
+        return $this;
+    }
+
+    /**
      * Get the text content of this node and its descendants.
      * 
      * @return string
