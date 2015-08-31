@@ -205,6 +205,14 @@ class Document
     }
 
     /**
+     * @return \DOMDocument
+     */
+    public function getDocument()
+    {
+        return $this->document;
+    }
+
+    /**
      * @return \DOMElement
      */
     public function getElement()
