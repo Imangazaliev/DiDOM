@@ -3,6 +3,7 @@
 namespace Tests;
 
 use PHPUnit_Framework_TestCase;
+use DOMDocument;
 
 class TestCase extends PHPUnit_Framework_TestCase
 {
@@ -27,5 +28,13 @@ class TestCase extends PHPUnit_Framework_TestCase
         }
 
         return null;
+    }
+
+    public function createDomElement($name)
+    {
+        $doc = new DOMDocument("1.0");
+        $domElement = $doc->createElement($name);
+
+        return $domElement;
     }
 }

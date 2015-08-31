@@ -4,6 +4,7 @@ namespace Tests\DiDom;
 
 use Tests\TestCase;
 use DiDom\Element;
+use DiDom\Document;
 use DOMDocument;
 use DOMElement;
 
@@ -182,11 +183,35 @@ class ElementTest extends TestCase
         $this->assertTrue(is_string($element->text()));
     }
 
-    public function createDomElement($name)
+    public function testIs()
     {
-        $doc = new DOMDocument("1.0");
-        $domElement = $doc->createElement($name);
+        $domElement  = $this->createDomElement('input');
+        $domElement2 = $this->createDomElement('input');
 
-        return $domElement;
+        $element  = new Element($domElement);
+        $element2 = new Element($domElement2);
+
+        $this->assertTrue($element->is($element));
+        $this->assertFalse($element->is($element2));
+    }
+
+    public function testIsException()
+    {
+        $this->setExpectedException('InvalidArgumentException');
+
+        $domElement = $this->createDomElement('input');
+        $element    = new Element($domElement);
+
+        $element->is(null);
+    }
+
+    public function testParent()
+    {
+        $document = new Document('', true);
+        $element  = $document->createElement('span', 'value');
+
+        $parent = $element->parent();
+        
+        $this->assertInstanceOf('DiDom\Document', $parent);
     }
 }

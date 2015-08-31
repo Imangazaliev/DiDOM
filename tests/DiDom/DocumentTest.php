@@ -42,6 +42,14 @@ class DocumentTest extends TestCase
         $this->assertEquals('', $element->text());
     }
 
+    public function testAppendChildException()
+    {
+        $this->setExpectedException('InvalidArgumentException');
+
+        $document = new Document('', true);
+        $document->appendChild(null);
+    }
+
     /**
      * @dataProvider findProvider
      */
@@ -84,6 +92,21 @@ class DocumentTest extends TestCase
         $this->assertTrue(is_string($document->html()));
     }
 
+    public function testFormat()
+    {
+        $html = $this->loadFixture('posts.html');
+
+        $document = new Document($html, false);
+
+        $domDocument = $document->getDocument();
+        $this->assertFalse($domDocument->formatOutput);
+
+        $document->format();
+
+        $domDocument = $document->getDocument();
+        $this->assertTrue($domDocument->formatOutput);
+    }
+
     public function testText()
     {
         $html = $this->loadFixture('posts.html');
@@ -103,6 +126,24 @@ class DocumentTest extends TestCase
 
         $this->assertTrue(is_array($elements));
         $this->assertEquals($count, count($elements));
+    }
+
+    public function testIs()
+    {
+        $html = $this->loadFixture('posts.html');
+        
+        $document = new Document($html, false);
+
+        $this->assertTrue($document->is($document));
+    }
+
+    public function testIsException()
+    {
+        $this->setExpectedException('InvalidArgumentException');
+
+        $document = new Document();
+
+        $document->is(null);
     }
 
     public function testGetElement()
@@ -142,6 +183,7 @@ class DocumentTest extends TestCase
         return array(
             array($html, '.post h2', Query::TYPE_CSS, 3),
             array($html, '.fake h2', Query::TYPE_CSS, 0),
+            array($html, '.post h2, .post p', Query::TYPE_CSS, 6),
             array($html, "//*[contains(concat(' ', normalize-space(@class), ' '), ' post ')]", Query::TYPE_XPATH, 3),
         );
     }
