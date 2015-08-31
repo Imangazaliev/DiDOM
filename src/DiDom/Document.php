@@ -187,6 +187,26 @@ class Document
     }
 
     /**
+     * @param  Document|\DOMDocument $document
+     * @return bool
+     * @throws \InvalidArgumentException
+     */
+    public function is($document)
+    {
+        if ($document instanceof Document) {
+            $element = $document->getElement();
+        } else {
+            if (!$document instanceof DOMDocument) {
+                throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s or %s, %s given', __METHOD__, __CLASS__, 'DOMDocument', gettype($document)));
+            }
+
+            $element = $document->documentElement;
+        }
+
+        return $this->getElement()->isSameNode($element);
+    }
+
+    /**
      * @return string
      */
     public function __toString()
