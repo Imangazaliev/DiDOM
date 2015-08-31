@@ -32,13 +32,20 @@ class Query
             return $expression;
         }
 
-        if (array_key_exists($expression, static::$compiled)) {
-            return static::$compiled[$expression];
+        $expressions = explode(',', $expression);
+        $paths = [];
+
+        foreach ($expressions as $expression) {
+            if (array_key_exists($expression, static::$compiled)) {
+                $paths[] = static::$compiled[$expression];
+            }
+
+            static::$compiled[$expression] = static::cssToXpath($expression);
+
+            $paths[] = static::$compiled[$expression];
         }
 
-        static::$compiled[$expression] = static::cssToXpath($expression);
-
-        return static::$compiled[$expression];
+        return implode('|', $paths);
     }
 
     /**
