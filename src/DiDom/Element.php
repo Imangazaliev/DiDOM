@@ -178,7 +178,7 @@ class Element
         }
 
         if (!$element instanceof \DOMNode) {
-            throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s or %s, %s given', __METHOD__, __CLASS__, 'DOMNode', gettype($element)));
+            throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s or %s, %s given', __METHOD__, __CLASS__, 'DOMNode', (is_object($element) ? get_class($element) : gettype($element))));
         }
 
         return $this->domElement->isSameNode($element);
