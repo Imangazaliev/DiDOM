@@ -207,11 +207,14 @@ class ElementTest extends TestCase
 
     public function testParent()
     {
-        $document = new Document('', true);
+        $html = $this->loadFixture('posts.html');
+
+        $document = new Document($html, false);
         $element  = $document->createElement('span', 'value');
 
         $parent = $element->parent();
         
         $this->assertInstanceOf('DiDom\Document', $parent);
+        $this->assertTrue($document->getElement()->isSameNode($parent->getElement()));
     }
 }

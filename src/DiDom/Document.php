@@ -24,6 +24,11 @@ class Document
      */
     public function __construct($html = null, $isFile = false)
     {
+        if ($html instanceof DOMDocument) {
+            $this->document = $html;
+            return;
+        }
+
         $this->document = new DOMDocument();
 
         if ($html) {
@@ -44,7 +49,7 @@ class Document
     {
         $domElement = $this->document->createElement($name, $value);
 
-        return new Element($domElement, $this);
+        return new Element($domElement);
     }
 
     /**
@@ -78,7 +83,7 @@ class Document
     public function loadHtml($html)
     {
         if (!is_string($html)) {
-            throw new InvalidArgumentException(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, gettype($html)));
+            throw new InvalidArgumentException(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, (is_object($html) ? get_class($html) : gettype($html))));
         }
 
         libxml_use_internal_errors(true);
@@ -151,7 +156,7 @@ class Document
         $elements = array();
 
         foreach ($nodeList as $node) {
-            $elements[] = new Element($node, $this);
+            $elements[] = new Element($node);
         }
         
         return $elements;

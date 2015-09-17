@@ -15,11 +15,6 @@ class Element
     protected $domElement;
 
     /**
-     * @var Document;
-     */
-    protected $parent;
-
-    /**
      * Constructor.
      * 
      * @param  \DOMElement|string $name
@@ -30,7 +25,6 @@ class Element
     {
         if ($name instanceof DOMElement) {
             $this->domElement = $name;
-            $this->parent     = $value instanceof Document ? $value : null;
 
             return;
         }
@@ -189,7 +183,7 @@ class Element
      */
     public function parent()
     {
-        return $this->parent;
+        return new Document($this->getElement()->ownerDocument);
     }
 
     /**
