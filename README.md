@@ -5,28 +5,28 @@
 [![Latest Stable Version](https://poser.pugx.org/imangazaliev/didom/v/stable)](https://packagist.org/packages/imangazaliev/didom)
 [![License](https://poser.pugx.org/imangazaliev/didom/license)](https://packagist.org/packages/imangazaliev/didom)
 
-DiDOM - простая и быстрая библиотека для парсинга HTML.
+DiDOM - simple and fast HTML parser.
 
-## Содержание
+## Contents
 
-- [Установка](#Установка)
-- [Быстрый старт](#Быстрый-старт)
-- [Создание нового документа](#Создание-нового-документа)
-- [Поиск элементов](#Поиск-элементов)
-- [Проверка наличия элемента](#Быстрый-старт)
-- [Вывод содержимого](#Вывод-содержимого)
-- [Создание нового элемента](#Создание-нового-элемента)
-- [Работа с атрибутами элемента](#Работа-с-атрибутами-элемента)
-- [Работа с кэшем](#Работа-с-кэшем)
-- [Сравнение с другими парсерами](#Сравнение-с-другими-парсерами)
+- [Installation](#installation)
+- [Quick start](#quick-start)
+- [Creating new document](#creating-new-document)
+- [Search for elements](#search-for-elements)
+- [Verify if element exists](#verify-if-element-exists)
+- [Output](#output)
+- [Creating a new element](#creating-a-new-element)
+- [Working with element attributes](#working-with-element-attributes)
+- [Working with cache](#working-with-cache)
+- [Comparison with other parsers](#comparison-with-other-parsers)
 
-## Установка
+## Installation
 
-Для установки DiDOM выполните команду:
+To install DiDOM run the command:
 
     composer require imangazaliev/didom
 
-## Быстрый старт
+## Quick start
 
 ```php    
 use DiDom\Document;
@@ -40,26 +40,26 @@ foreach($posts as $post) {
 }
 ```
 
-## Создание нового документа
+## Creating new document
 
-DiDom позволяет загрузить HTML несколькими способами:
+DiDom allows to load HTML in several ways:
 
-##### Через конструктор
+##### With constructor
 
 ```php    
-//в первом параметре передается строка с HTML
+// The first parameter is a string with HTML
 $document = new Document($html);
     
-//путь к файлу
+// File path
 $document = new Document('page.html', true);
 
-//или URL
+// Or URL
 $document = new Document('http://www.example.com/', true);
 ```
 
-Второй параметр указывает на то, что загружается файл. По умолчанию - `false`.
+THe second parameter specifies if you need to load file. Default is `false`.
 
-##### Через отдельные методы
+##### With separate methods
 
 ```php
 $document = new Document();
@@ -71,11 +71,11 @@ $document->loadHtmlFile('page.html');
 $document->loadHtmlFile('http://www.example.com/');
 ```
 
-## Поиск элементов
+## Search for elements
 
-В качестве выражения для поиска можно передать CSS-селектор или XPath-путь. Для этого в первом параметре нужно передать само выражение, а  во втором - его тип (по умолчанию - `Query::TYPE_CSS`):
+DiDOM accepts CSS selector or XPath as an expression for search. You need to path expression as the first parameter, and specify its type in the second one (default type is `Query::TYPE_CSS`):
 
-##### Через метод `find()`:
+##### With method `find()`:
 
 ```php
 use DiDom\Document;
@@ -83,80 +83,80 @@ use DiDom\Query;
     
 ...
 
-//CSS-селектор    
+// CSS selector
 $posts = $document->find('.post');
 
-//XPath-путь
+// XPath
 $posts = $document->find("//div[contains(@class, 'post')]", Query::TYPE_XPATH);
 ```
 
-##### Через магический метод `__invoke()`:
+##### With magic method `__invoke()`:
 
 ```php
 $posts = $document('.post');
 ```
 
-##### Через метод `xpath()`:
+##### With method `xpath()`:
 
 ```php
 $posts = $document->xpath("//*[contains(concat(' ', normalize-space(@class), ' '), ' post ')]");
 ```
 
-Можно осуществлять поиск и внутри элемента:
+You can do search inside an element:
 
 ```php
 echo $document->find('.post')[0]->find('h2')[0]->text();
 ```
 
-Если элементы, соответствующие заданному выражению, найдены, вернется массив с экземплярами `DiDom\Element`, иначе - пустой массив.
+If the elements that match a given expression are found, it returns an array of instances of `DiDom\Element`, otherwise - an empty array.
 
-### Проверка наличия элемента
+### Verify if element exists
 
-Проверить наличие элемента можно с помощью метода `has()`:
+To very if element exist use `has()` method:
 
 ```php
 if ($document->has('.post')) {
-    //код
+    // code
 }
 ```
 
-Если нужно проверить наличие элемента, а затем получить его, то можно сделать так:
+If you need to check if element exist and then get it:
 
 ```php
 if ($document->has('.post')) {
     $elements = $document->find('.post');
-    //код
+    // code
 }
 ```
 
-но быстрее так:
+but it would be faster like this:
 
 ```php
 if (count($elements = $document->find('.post')) != 0) {
-    //код
+    // code
 }
 ```
 
-т.к. в первом случае выполняется два запроса.
+because in the first case it makes to requests.
 
-## Вывод содержимого
+## Output
 
-### Получение HTML
+### Getting HTML
 
-##### Через метод `html()`:
+##### With method `html()`:
 
 ```php    
 $posts = $document->find('.post');
 
 echo $posts[0]->html();
 ```
-##### Приведение к строке:
+##### Casting to string:
 
 ```php
 $html = (string) $posts[0];
 ```
 
-### Получение содержимого
+### Getting content
 
 ```php    
 $posts = $document->find('.post');
@@ -164,93 +164,93 @@ $posts = $document->find('.post');
 echo $posts[0]->text();
 ```
 
-## Создание нового элемента
+## Creating a new element
 
 ```php
 use DiDom\Element;
 
 $element = new Element('span', 'Hello');
     
-// Выведет "<span>Hello</span>"
+// Outputs "<span>Hello</span>"
 echo $element->html();
 ```
 
-Первым параметром передается название элемента, вторым - его значение (необязательно).
+First parameter is a name of an attribute, the second one is its value (optional).
 
-## Работа с атрибутами элемента
+## Working with element attributes
 
-#### Получение названия элемента
+#### Getting attribute name
 ```php
 $name = $element->tag;
 ```
 
-#### Создание/изменение атрибута
+#### Creating/updating an attribute
 
-##### Через метод `setAttribute`:
+##### With method `setAttribute`:
 ```php
 $element->setAttribute('name', 'username');
 ```
 
-##### Через метод `attr`:
+##### With method `attr`:
 ```php
 $element->attr('name', 'username');
 ```
 
-##### Через магический метод `__set`:
+##### With magic method `__set`:
 ```php
 $element->name = 'username';
 ```
 
-#### Получение значения атрибута
+#### Getting value of an attribute
 
-##### Через метод `getAttribute`:
+##### With method `getAttribute`:
 ```php
 $username = $element->getAttribute('value');
 ```
 
-##### Через метод `attr`:
+##### With method `attr`:
 ```php
 $username = $element->attr('value');
 ```
 
-##### Через магический метод `__get`:
+##### With magic method `__get`:
 ```php
 $element->name = 'username';
 ```
 
-Если атрибут не найден, вернет `null`.
+Returns `null` if attribute is not found.
 
-#### Проверка наличия атрибута
+#### Verify if attribute exists
 
-##### Через метод `hasAttribute`:
+##### With method `hasAttribute`:
 ```php
 if ($element->hasAttribute('name')) {
-    //код
+    // code
 }
 ```
 
-##### Через магический метод `__isset`:
+##### With magic method `__isset`:
 ```php
 if (isset($element->name)) {
-    //код
+    // code
 }
 ```
 
-#### Удаление атрибута:
+#### Removing attribute:
 
-##### Через метод `removeAttribute`:
+##### With method `removeAttribute`:
 ```php
 $element->removeAttribute('name');
 ```
 
-##### Через магический метод `__unset`:
+##### With magic method `__unset`:
 ```php
 unset($element->name);
 ```
 
-## Работа с кэшем
-Кэш - массив XPath-выражений, полученных из CSS.
-#### Получение кэша
+## Working with cache
+Cache is an array of XPath expressions, that were converted from CSS.
+#### Getting from cache
 ```php
 use DiDom\Document;
 use DiDom\Query;
@@ -263,11 +263,11 @@ $compiled = Query::getCompiled();
 // array('h2' => '//h2')
 var_dump($compiled);
 ```
-#### Установка кэша
+#### Installing cache
 ```php
 Query::setCompiled(['h2' => '//h2']);
 ```
 
-## Сравнение с другими парсерами
+## Comparison with other parsers
 
-[Сравнение с другими парсерами](https://github.com/Imangazaliev/DiDOM/wiki/Сравнение-с-другими-парсерами)
+[Comparison with other parsers](https://github.com/Imangazaliev/DiDOM/wiki/Сравнение-с-другими-парсерами)
