@@ -47,13 +47,13 @@ DiDom позволяет загрузить HTML несколькими спос
 ##### Через конструктор
 
 ```php    
-//в первом параметре передается строка с HTML
+// в первом параметре передается строка с HTML
 $document = new Document($html);
     
-//путь к файлу
+// путь к файлу
 $document = new Document('page.html', true);
 
-//или URL
+// или URL
 $document = new Document('http://www.example.com/', true);
 ```
 
@@ -73,7 +73,7 @@ $document->loadHtmlFile('http://www.example.com/');
 
 ## Поиск элементов
 
-В качестве выражения для поиска можно передать CSS-селектор или XPath-путь. Для этого в первом параметре нужно передать само выражение, а  во втором - его тип (по умолчанию - `Query::TYPE_CSS`):
+В качестве выражения для поиска можно передать CSS-селектор или XPath-путь. Для этого в первом параметре нужно передать само выражение, а во втором - его тип (по умолчанию - `Query::TYPE_CSS`):
 
 ##### Через метод `find()`:
 
@@ -83,10 +83,10 @@ use DiDom\Query;
     
 ...
 
-//CSS-селектор    
+// CSS-селектор    
 $posts = $document->find('.post');
 
-//XPath-путь
+// XPath-путь
 $posts = $document->find("//div[contains(@class, 'post')]", Query::TYPE_XPATH);
 ```
 
@@ -116,7 +116,7 @@ echo $document->find('.post')[0]->find('h2')[0]->text();
 
 ```php
 if ($document->has('.post')) {
-    //код
+    // код
 }
 ```
 
@@ -125,7 +125,7 @@ if ($document->has('.post')) {
 ```php
 if ($document->has('.post')) {
     $elements = $document->find('.post');
-    //код
+    // код
 }
 ```
 
@@ -133,7 +133,7 @@ if ($document->has('.post')) {
 
 ```php
 if (count($elements = $document->find('.post')) != 0) {
-    //код
+    // код
 }
 ```
 
@@ -171,7 +171,7 @@ use DiDom\Element;
 
 $element = new Element('span', 'Hello');
     
-// Выведет "<span>Hello</span>"
+// выведет "<span>Hello</span>"
 echo $element->html();
 ```
 
@@ -225,14 +225,14 @@ $element->name = 'username';
 ##### Через метод `hasAttribute`:
 ```php
 if ($element->hasAttribute('name')) {
-    //код
+    // код
 }
 ```
 
 ##### Через магический метод `__isset`:
 ```php
 if (isset($element->name)) {
-    //код
+    // код
 }
 ```
 
@@ -252,7 +252,6 @@ unset($element->name);
 Кэш - массив XPath-выражений, полученных из CSS.
 #### Получение кэша
 ```php
-use DiDom\Document;
 use DiDom\Query;
     
 ...
