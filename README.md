@@ -5,6 +5,8 @@
 [![Latest Stable Version](https://poser.pugx.org/imangazaliev/didom/v/stable)](https://packagist.org/packages/imangazaliev/didom)
 [![License](https://poser.pugx.org/imangazaliev/didom/license)](https://packagist.org/packages/imangazaliev/didom)
 
+[Russian version](README-RU.md)
+
 DiDOM - simple and fast HTML parser.
 
 ## Contents
