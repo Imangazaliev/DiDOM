@@ -47,13 +47,13 @@ DiDom allows to load HTML in several ways:
 ##### With constructor
 
 ```php    
-// The first parameter is a string with HTML
+// the first parameter is a string with HTML
 $document = new Document($html);
     
-// File path
+// file path
 $document = new Document('page.html', true);
 
-// Or URL
+// or URL
 $document = new Document('http://www.example.com/', true);
 ```
 
@@ -137,7 +137,7 @@ if (count($elements = $document->find('.post')) != 0) {
 }
 ```
 
-because in the first case it makes to requests.
+because in the first case it makes two requests.
 
 ## Output
 
@@ -252,7 +252,6 @@ unset($element->name);
 Cache is an array of XPath expressions, that were converted from CSS.
 #### Getting from cache
 ```php
-use DiDom\Document;
 use DiDom\Query;
     
 ...
