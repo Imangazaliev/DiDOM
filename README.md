@@ -59,7 +59,7 @@ $document = new Document('page.html', true);
 $document = new Document('http://www.example.com/', true);
 ```
 
-THe second parameter specifies if you need to load file. Default is `false`.
+The second parameter specifies if you need to load file. Default is `false`.
 
 ##### With separate methods
 
