@@ -55,20 +55,26 @@ class Query
      */
     protected static function cssToXpath($selector, $prefix = '//')
     {
-        $tag = "(?P<tag>[a-z0-9]+)?";
-        $attr = "(\[(?P<attr>\S+)=(?P<value>[^\]]+)\])?";
-        $id = "(#(?P<id>[^\s:>#\.]+))?";
-        $class = "(\.(?P<class>[^\s:>#\.]+))?";
-        $child = "(first|last|nth)-child";
-        $expr = "(\((?P<expr>[^\)]+)\))";
-        $pseudo = "(:(?P<pseudo>".$child.")".$expr."?)?";
-        $rel = "\s*(?P<rel>>)?";
+        $selector = trim($selector);
 
-        $regexp = "/".$tag.$attr.$id.$class.$pseudo.$rel."/isS";
+        $tag     = '(?P<tag>[\*|\w|\-]+)?';
+        $id      = '(?:#(?P<id>[\w|\-]+))?';
+        $classes = '(?P<classes>\.[\w|\-|\.]+)*';
+        $attrs   = '(?P<attrs>\[.+\])*';
+        $child   = '(?:first|last|nth)-child)';
+        $expr    = '(?:\((?P<expr>[^\)]+)\))';
+        $pseudo  = '(?::(?P<pseudo>'.$child.$expr.'?)?';
+        $rel     = '\s*(?P<rel>>)?';
+
+        $regexp = '/'.$tag.$id.$classes.$attrs.$pseudo.$rel.'/is';
         $xpath  = '';
 
         if (preg_match($regexp, $selector, $tokens)) {
             $attributes = array();
+
+            if ((!isset($tokens['tag'])) or ($tokens['tag'] == '')) {
+                $tokens['tag'] = '*';
+            }
 
             // if the id attribute specified
             if (isset($tokens['id']) and $tokens['id'] !== '') {
@@ -76,19 +82,30 @@ class Query
             }
 
             // if the attributes specified
-            if (isset($tokens['attr']) and $tokens['attr'] !== '') {
-                // if specified only the attribute name
-                if (!(isset($tokens['value']))) {
-                    $attributes[] = "@".$tokens['attr'];
-                } else {
-                    $attrValue = !empty($tokens['value']) ? $tokens['value'] : '';
-                    $attributes[] = "@".$tokens['attr']."='".$attrValue."'";
+            if (isset($tokens['attrs'])) {
+                $tokens['attrs'] = trim($tokens['attrs'], '[]');
+                $tokens['attrs'] = explode('][', $tokens['attrs']);
+
+                foreach ($tokens['attrs'] as $attribute) {
+                    if ($attribute !== '') {
+                        list($name, $value) = array_pad(explode('=', $attribute), 2, null);
+
+                        // if specified only the attribute name
+                        $attributes[] = "@".$name.($value == null ? '' : '='.$value);
+                    }
                 }
             }
 
             //if the class attribute specified
-            if (isset($tokens['class']) and $tokens['class'] !== '') {
-                $attributes[] = 'contains(concat(" ", normalize-space(@class), " "), " '.$tokens['class'].' ")';
+            if (isset($tokens['classes'])) {
+                $tokens['classes'] = trim($tokens['classes'], '.');
+                $tokens['classes'] = explode('.', $tokens['classes']);
+
+                foreach ($tokens['classes'] as $class) {
+                    if ($class !== '') {
+                        $attributes[] = 'contains(concat(" ", normalize-space(@class), " "), " '.$class.' ")';
+                    }
+                }
             }
 
             // if the pseudo class specified
@@ -105,7 +122,7 @@ class Query
                             $attributes[] = '(position() -1) mod 2 = 0 and position() >= 1';
                         } elseif ('even' === $expression) {
                             $attributes[] = 'position() mod 2 = 0 and position() >= 0';
-                        } elseif (preg_match("/^[0-9]+$/", $expression)) {
+                        } elseif (is_numeric($expression)) {
                             $attributes[] = 'position() = '.$expression;
                         } elseif (preg_match("/^((?P<mul>[0-9]+)n\+)(?P<pos>[0-9]+)$/is", $expression, $position)) {
                             if (isset($position['mul'])) {
@@ -118,8 +135,7 @@ class Query
                 }
             }
 
-            $xpath  = $prefix;
-            $xpath .= ((isset($tokens['tag'])) and ($tokens['tag'] !== '')) ? $tokens['tag'] : '*';
+            $xpath  = $prefix.$tokens['tag'];
 
             if ($count = count($attributes)) {
                 $xpath .= ($count > 1) ? '[('.implode(') and (', $attributes).')]' : '['.implode(' and ', $attributes).']';
