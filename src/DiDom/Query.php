@@ -36,6 +36,8 @@ class Query
         $paths = [];
 
         foreach ($expressions as $expression) {
+            $expression = trim($expression);
+
             if (array_key_exists($expression, static::$compiled)) {
                 $paths[] = static::$compiled[$expression];
             }
@@ -55,8 +57,6 @@ class Query
      */
     protected static function cssToXpath($selector, $prefix = '//')
     {
-        $selector = trim($selector);
-
         $tag     = '(?P<tag>[\*|\w|\-]+)?';
         $id      = '(?:#(?P<id>[\w|\-]+))?';
         $classes = '(?P<classes>\.[\w|\-|\.]+)*';
