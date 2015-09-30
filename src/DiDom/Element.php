@@ -99,7 +99,7 @@ class Element
     public function hasAttribute($name)
     {
         return $this->domElement->hasAttribute($name);
-    } 
+    }
 
     /**
      * Set an attribute on the element.
@@ -167,7 +167,7 @@ class Element
      */
     public function is($element)
     {
-        if ($element instanceof Element) {
+        if ($element instanceof self) {
             $element = $element->getElement();
         }
 

@@ -28,7 +28,7 @@ class Query
      */
     public static function compile($expression, $type = self::TYPE_CSS)
     {
-        if ($type == Query::TYPE_XPATH) {
+        if ($type == self::TYPE_XPATH) {
             return $expression;
         }
 
@@ -67,7 +67,6 @@ class Query
         $rel     = '\s*(?P<rel>>)?';
 
         $regexp = '/'.$tag.$id.$classes.$attrs.$pseudo.$rel.'/is';
-        $xpath  = '';
 
         if (preg_match($regexp, $selector, $tokens)) {
             $attributes = array();
@@ -91,7 +90,7 @@ class Query
                         list($name, $value) = array_pad(explode('=', $attribute), 2, null);
 
                         // if specified only the attribute name
-                        $attributes[] = "@".$name.($value == null ? '' : '='.$value);
+                        $attributes[] = '@'.$name.($value == null ? '' : '='.$value);
                     }
                 }
             }
@@ -135,7 +134,7 @@ class Query
                 }
             }
 
-            $xpath  = $prefix.$tokens['tag'];
+            $xpath = $prefix.$tokens['tag'];
 
             if ($count = count($attributes)) {
                 $xpath .= ($count > 1) ? '[('.implode(') and (', $attributes).')]' : '['.implode(' and ', $attributes).']';
@@ -159,7 +158,7 @@ class Query
     {
         return static::$compiled;
     }
-    
+
     /**
      * @param  array $compiled
      * @return void

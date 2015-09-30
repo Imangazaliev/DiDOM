@@ -131,7 +131,7 @@ class DocumentTest extends TestCase
     public function testIs()
     {
         $html = $this->loadFixture('posts.html');
-        
+
         $document = new Document($html, false);
 
         $this->assertTrue($document->is($document));

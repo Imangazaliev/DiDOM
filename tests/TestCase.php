@@ -32,7 +32,7 @@ class TestCase extends PHPUnit_Framework_TestCase
 
     public function createDomElement($name)
     {
-        $doc = new DOMDocument("1.0");
+        $doc = new DOMDocument('1.0');
         $domElement = $doc->createElement($name);
 
         return $domElement;

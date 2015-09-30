@@ -26,6 +26,7 @@ class Document
     {
         if ($html instanceof DOMDocument) {
             $this->document = $html;
+
             return;
         }
 
@@ -110,7 +111,7 @@ class Document
         if (!is_string($filepath)) {
             throw new InvalidArgumentException(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, gettype($filepath)));
         }
-        
+
         if (filter_var($filepath, FILTER_VALIDATE_URL) === false) {
             if (!file_exists($filepath)) {
                 throw new RuntimeException(sprintf('File %s not found', $filepath));
@@ -158,7 +159,7 @@ class Document
         foreach ($nodeList as $node) {
             $elements[] = new Element($node);
         }
-        
+
         return $elements;
     }
 
@@ -188,7 +189,7 @@ class Document
     public function format($format = true)
     {
         $this->document->formatOutput = $format;
-        
+
         return $this;
     }
 
@@ -209,7 +210,7 @@ class Document
      */
     public function is($document)
     {
-        if ($document instanceof Document) {
+        if ($document instanceof self) {
             $element = $document->getElement();
         } else {
             if (!$document instanceof DOMDocument) {

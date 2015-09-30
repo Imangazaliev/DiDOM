@@ -28,11 +28,10 @@ class QueryTest extends TestCase
         $this->assertEquals($xpath, $compiled['.post h2']);
     }
 
-
     public function testGetCompiled()
     {
         Query::setCompiled([]);
-        
+
         $selector = '.post h2';
         $xpath    = Query::compile($selector);
         $compiled = Query::getCompiled();
