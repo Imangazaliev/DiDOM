@@ -55,7 +55,7 @@ class Query
      * @param  bool   $prefix
      * @return string
      */
-    protected static function cssToXpath($selector, $prefix = '//')
+    public static function cssToXpath($selector, $prefix = '//')
     {
         $tag     = '(?P<tag>[\*|\w|\-]+)?';
         $id      = '(?:#(?P<id>[\w|\-]+))?';
