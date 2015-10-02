@@ -13,7 +13,7 @@ class DocumentTest extends TestCase
         $this->setExpectedException('InvalidArgumentException');
 
         $document = new Document();
-        $document->loadHtml(array('element'));
+        $document->loadHtml(null);
     }
 
     /**

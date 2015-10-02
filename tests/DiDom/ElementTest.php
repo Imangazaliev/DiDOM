@@ -22,12 +22,10 @@ class ElementTest extends TestCase
         $domElement = $this->createDomElement('input');
         $domElement->setAttribute('value', 'test');
 
-        $element = new Element($domElement);
+        $element     = new Element($domElement);
+        $domElement2 = $element->getElement();
 
-        $domElement = $element->getElement();
-
-        $this->assertInstanceOf('DOMElement', $domElement);
-        $this->assertEquals('test', $domElement->getAttribute('value'));
+        $this->assertTrue($domElement->isSameNode($domElement2));
     }
 
     public function testSetAttribute()
@@ -47,6 +45,7 @@ class ElementTest extends TestCase
         $domElement = $this->createDomElement('input');
 
         $element = new Element($domElement);
+        $this->assertEquals(null, $element->getAttribute('value'));
         $this->assertEquals('default', $element->getAttribute('value', 'default'));
 
         $domElement->setAttribute('value', 'test');
@@ -87,9 +86,7 @@ class ElementTest extends TestCase
         $element = new Element($domElement);
         $element->attr('value', 'test');
 
-        $domElement = $element->getElement();
-
-        $this->assertEquals('test', $domElement->getAttribute('value'));
+        $this->assertEquals('test', $element->getElement()->getAttribute('value'));
     }
 
     public function testAttrGet()
@@ -119,9 +116,7 @@ class ElementTest extends TestCase
         $element = new Element($domElement);
         $element->value = 'test';
 
-        $domElement = $element->getElement();
-
-        $this->assertEquals('test', $domElement->getAttribute('value'));
+        $this->assertEquals('test', $element->getElement()->getAttribute('value'));
     }
 
     public function testIssetMagicMethod()
@@ -153,8 +148,7 @@ class ElementTest extends TestCase
     {
         $domElement = $this->createDomElement('input');
 
-        $element = new Element($domElement);
-
+        $element  = new Element($domElement);
         $document = $element->toDocument();
 
         $this->assertInstanceOf('DiDom\Document', $document);
@@ -162,33 +156,28 @@ class ElementTest extends TestCase
 
     public function testHtml()
     {
-        $domElement = $this->createDomElement('input');
-
-        $element = new Element($domElement);
-
-        $this->assertTrue(is_string($element->html()));
-
         $element = new Element('span', 'hello');
+        $html = $element->html();
 
-        $this->assertEquals('<span>hello</span>', $element->html());
+        $this->assertTrue(is_string($html));
+        $this->assertEquals('<span>hello</span>', $html);
     }
 
     public function testText()
     {
-        $domElement = $this->createDomElement('input');
+        $domElement = $this->createDomElement('span', 'hello');
+        $element    = new Element($domElement);
 
-        $element = new Element($domElement);
+        $text = $element->text();
 
-        $this->assertTrue(is_string($element->text()));
+        $this->assertTrue(is_string($text));
+        $this->assertEquals('hello', $text);
     }
 
     public function testIs()
     {
-        $domElement  = $this->createDomElement('input');
-        $domElement2 = $this->createDomElement('input');
-
-        $element  = new Element($domElement);
-        $element2 = new Element($domElement2);
+        $element  = new Element('span', 'hello');
+        $element2 = new Element('span', 'hello');
 
         $this->assertTrue($element->is($element));
         $this->assertFalse($element->is($element2));
@@ -198,9 +187,7 @@ class ElementTest extends TestCase
     {
         $this->setExpectedException('InvalidArgumentException');
 
-        $domElement = $this->createDomElement('input');
-        $element    = new Element($domElement);
-
+        $element = new Element('span', 'hello');
         $element->is(null);
     }
 
@@ -214,6 +201,6 @@ class ElementTest extends TestCase
         $parent = $element->parent();
 
         $this->assertInstanceOf('DiDom\Document', $parent);
-        $this->assertTrue($document->getElement()->isSameNode($parent->getElement()));
+        $this->assertTrue($document->is($parent));
     }
 }

@@ -17,15 +17,11 @@ class QueryTest extends TestCase
     public function testSetCompiled()
     {
         $xpath = "//*[contains(concat(' ', normalize-space(@class), ' '), ' post ')]";
+        $compiled = ['.post h2' => $xpath];
 
-        Query::setCompiled(['.post h2' => $xpath]);
+        Query::setCompiled($compiled);
 
-        $compiled = Query::getCompiled();
-
-        $this->assertTrue(is_array($compiled));
-        $this->assertEquals(1, count($compiled));
-        $this->assertTrue(array_key_exists('.post h2', $compiled));
-        $this->assertEquals($xpath, $compiled['.post h2']);
+        $this->assertEquals($compiled, Query::getCompiled());
     }
 
     public function testGetCompiled()
@@ -33,12 +29,12 @@ class QueryTest extends TestCase
         Query::setCompiled([]);
 
         $selector = '.post h2';
+        $xpath = "//*[contains(concat(' ', normalize-space(@class), ' '), ' post ')]";
+        $compiled = [$selector => $xpath];
+
         $xpath    = Query::compile($selector);
         $compiled = Query::getCompiled();
 
-        $this->assertTrue(is_array($compiled));
-        $this->assertEquals(1, count($compiled));
-        $this->assertTrue(array_key_exists($selector, $compiled));
-        $this->assertEquals($xpath, $compiled[$selector]);
+        $this->assertEquals($compiled, Query::getCompiled());
     }
 }

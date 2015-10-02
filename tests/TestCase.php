@@ -30,10 +30,10 @@ class TestCase extends PHPUnit_Framework_TestCase
         return null;
     }
 
-    public function createDomElement($name)
+    public function createDomElement($name, $value = '')
     {
-        $doc = new DOMDocument('1.0');
-        $domElement = $doc->createElement($name);
+        $document = new DOMDocument('1.0', 'utf-8');
+        $domElement = $document->createElement($name, $value);
 
         return $domElement;
     }
