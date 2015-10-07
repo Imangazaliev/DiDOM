@@ -5,16 +5,34 @@ namespace Tests\DiDom;
 use Tests\TestCase;
 use DiDom\Element;
 use DiDom\Document;
-use DOMElement;
 
 class ElementTest extends TestCase
 {
-    public function testConstructor()
+    public function testInvalidAttributesParameter()
+    {
+        $this->setExpectedException('InvalidArgumentException');
+
+        new Element('span', 'hello', null);
+    }
+
+    public function testCreate()
+    {
+        $attributes = ['name' => 'username', 'value' => 'John'];
+
+        $element = new Element('input', '', $attributes);
+
+        $this->assertEquals('input', $element->getElement()->tagName);
+        $this->assertEquals('username', $element->getElement()->getAttribute('name'));
+        $this->assertEquals('John', $element->getElement()->getAttribute('value'));
+    }
+
+    public function testCreateFromDomElement()
     {
         $domElement = $this->createDomElement('input');
 
         $element = new Element($domElement);
-        $element = new Element('input', 'value');
+
+        $this->assertTrue($element->getElement()->isSameNode($domElement));
     }
 
     public function testGetElement()

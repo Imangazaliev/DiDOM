@@ -2,6 +2,7 @@
 
 namespace DiDom;
 
+use DomDocument;
 use DOMElement;
 use InvalidArgumentException;
 
@@ -19,17 +20,23 @@ class Element
      * 
      * @param  \DOMElement|string $name
      * @param  string $value
+     * @param  array  $attributes
      * @return void
      */
-    public function __construct($name, $value = '')
+    public function __construct($name, $value = '', $attributes = [])
     {
-        if ($name instanceof DOMElement) {
-            $this->domElement = $name;
+        $document   = new DOMDocument('1.0', 'UTF-8');
+        $domElement = ($name instanceof DOMElement) ? $name : $document->createElement($name, $value);
 
-            return;
+        if (!is_array($attributes)) {
+            throw new InvalidArgumentException(sprintf('%s expects parameter 3 to be array, %s given', __METHOD__, gettype($attributes)));
         }
 
-        $this->domElement = new DOMElement($name, $value);
+        foreach ($attributes as $name => $value) {
+            $domElement->setAttribute($name, $value);
+        }
+
+        $this->domElement = $domElement;
     }
 
     /**

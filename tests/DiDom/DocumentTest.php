@@ -40,6 +40,10 @@ class DocumentTest extends TestCase
 
         $element = $document->createElement('span');
         $this->assertEquals('', $element->text());
+
+        $element = $document->createElement('input', '', ['name' => 'username']);
+        $this->assertEquals('input', $element->getElement()->tagName);
+        $this->assertEquals('username', $element->getElement()->getAttribute('name'));
     }
 
     public function testAppendChildException()

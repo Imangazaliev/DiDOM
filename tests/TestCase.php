@@ -15,7 +15,7 @@ class TestCase extends PHPUnit_Framework_TestCase
     public function tearDown()
     {
         if (class_exists('Mockery')) {
-            Mockery::close();
+            \Mockery::close();
         }
     }
 
@@ -30,10 +30,14 @@ class TestCase extends PHPUnit_Framework_TestCase
         return null;
     }
 
-    public function createDomElement($name, $value = '')
+    public function createDomElement($name, $value = '', $attributes = [])
     {
-        $document = new DOMDocument('1.0', 'utf-8');
+        $document   = new DOMDocument('1.0', 'utf-8');
         $domElement = $document->createElement($name, $value);
+
+        foreach ($attributes as $name => $value) {
+            $domElement->setAttribute($name, $value);
+        }
 
         return $domElement;
     }

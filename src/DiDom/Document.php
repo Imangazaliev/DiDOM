@@ -44,13 +44,14 @@ class Document
     /**
      * @param  string $name
      * @param  string $value
+     * @param  array  $attributes
      * @return \DiDom\Element
      */
-    public function createElement($name, $value = '')
+    public function createElement($name, $value = '', $attributes = [])
     {
         $domElement = $this->document->createElement($name, $value);
 
-        return new Element($domElement);
+        return new Element($domElement, null, $attributes);
     }
 
     /**
