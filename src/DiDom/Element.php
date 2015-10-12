@@ -2,7 +2,6 @@
 
 namespace DiDom;
 
-use DomDocument;
 use DOMElement;
 use InvalidArgumentException;
 
@@ -68,7 +67,7 @@ class Element
      * 
      * @param  string $expression XPath expression or CSS selector
      * @param  string $type the type of the expression
-     * @return array instance of Element or null
+     * @return \DiDom\Element[] array of Elements
      */
     public function find($expression, $type = Query::TYPE_CSS)
     {
@@ -113,7 +112,7 @@ class Element
      *
      * @param  string $name
      * @param  string $value
-     * @return void
+     * @return \DiDom\Element
      */
     public function setAttribute($name, $value)
     {
@@ -228,7 +227,7 @@ class Element
      *
      * @param  string $name
      * @param  mixed  $value
-     * @return void
+     * @return \DiDom\Element
      */
     public function __set($name, $value)
     {
@@ -265,7 +264,7 @@ class Element
     /**
      * @param  string $expression
      * @param  string $type
-     * @return mixed
+     * @return \DiDom\Element[]
      */
     public function __invoke($expression, $type = Query::TYPE_CSS)
     {

@@ -147,7 +147,7 @@ class Document
      * 
      * @param  string $expression XPath expression or CSS selector
      * @param  string $type the type of the expression
-     * @return array
+     * @return \DiDom\Element[]
      */
     public function find($expression, $type = Query::TYPE_CSS)
     {
@@ -166,7 +166,7 @@ class Document
 
     /**
      * @param  string $expression XPath expression
-     * @return array
+     * @return \DiDom\Element[]
      */
     public function xpath($expression)
     {
