@@ -2,7 +2,6 @@
 
 namespace DiDom;
 
-use DomDocument;
 use DOMElement;
 use InvalidArgumentException;
 
