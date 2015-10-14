@@ -52,7 +52,7 @@ class Query
 
     /**
      * @param  string $selector
-     * @param  bool   $prefix
+     * @param  string $prefix
      * @return string
      */
     public static function cssToXpath($selector, $prefix = '//')
