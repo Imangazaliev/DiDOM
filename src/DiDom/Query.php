@@ -40,6 +40,7 @@ class Query
 
             if (array_key_exists($expression, static::$compiled)) {
                 $paths[] = static::$compiled[$expression];
+                continue;
             }
 
             static::$compiled[$expression] = static::cssToXpath($expression);
