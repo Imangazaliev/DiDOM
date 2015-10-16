@@ -12,8 +12,8 @@ class Query
      * 
      * @string
      */
-    const TYPE_XPATH = 'TYPE_XPATH';
-    const TYPE_CSS   = 'TYPE_CSS';
+    const TYPE_XPATH = 'XPATH';
+    const TYPE_CSS   = 'CSS';
 
     /**
      * @var array
@@ -29,7 +29,7 @@ class Query
      */
     public static function compile($expression, $type = self::TYPE_CSS)
     {
-        if ($type == self::TYPE_XPATH) {
+        if (strcasecmp($type, self::TYPE_XPATH) == 0) {
             return $expression;
         }
 
