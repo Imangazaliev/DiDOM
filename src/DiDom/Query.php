@@ -3,6 +3,7 @@
 namespace DiDom;
 
 use InvalidArgumentException;
+use RuntimeException;
 
 class Query
 {
@@ -23,7 +24,7 @@ class Query
      * Transform CSS expression to XPath.
      *
      * @param  string $expression XPath expression or CSS selector
-     * @param  string $type the type of the expression
+     * @param  string $type       the type of the expression
      * @return string
      */
     public static function compile($expression, $type = self::TYPE_CSS)
@@ -58,91 +59,45 @@ class Query
      */
     public static function cssToXpath($selector, $prefix = '//')
     {
-        $tag     = '(?P<tag>[\*|\w|\-]+)?';
-        $id      = '(?:#(?P<id>[\w|\-]+))?';
-        $classes = '(?P<classes>\.[\w|\-|\.]+)*';
-        $attrs   = '(?P<attrs>\[.+\])*';
-        $child   = '(?:first|last|nth)-child)';
-        $expr    = '(?:\((?P<expr>[^\)]+)\))';
-        $pseudo  = '(?::(?P<pseudo>'.$child.$expr.'?)?';
-        $rel     = '\s*(?P<rel>>)?';
+        $segments = self::getSegments($selector);
 
-        $regexp = '/'.$tag.$id.$classes.$attrs.$pseudo.$rel.'/is';
-
-        if (preg_match($regexp, $selector, $tokens)) {
+        if (count($segments) > 0) {
             $attributes = array();
 
-            if ((!isset($tokens['tag'])) or ($tokens['tag'] == '')) {
-                $tokens['tag'] = '*';
-            }
-
             // if the id attribute specified
-            if (isset($tokens['id']) and $tokens['id'] !== '') {
-                $attributes[] = "@id='".$tokens['id']."'";
+            if (isset($segments['id'])) {
+                $attributes[] = "@id='".$segments['id']."'";
             }
 
             // if the attributes specified
-            if (isset($tokens['attrs'])) {
-                $tokens['attrs'] = trim($tokens['attrs'], '[]');
-                $tokens['attrs'] = explode('][', $tokens['attrs']);
-
-                foreach ($tokens['attrs'] as $attribute) {
-                    if ($attribute !== '') {
-                        list($name, $value) = array_pad(explode('=', $attribute), 2, null);
-
-                        // if specified only the attribute name
-                        $attributes[] = '@'.$name.($value == null ? '' : '='.$value);
-                    }
+            if (isset($segments['attrs'])) {
+                foreach ($segments['attrs'] as $name => $value) {
+                    // if specified only the attribute name
+                    $attributes[] = '@'.$name.($value == null ? '' : '='.$value);
                 }
             }
 
             //if the class attribute specified
-            if (isset($tokens['classes'])) {
-                $tokens['classes'] = trim($tokens['classes'], '.');
-                $tokens['classes'] = explode('.', $tokens['classes']);
-
-                foreach ($tokens['classes'] as $class) {
-                    if ($class !== '') {
-                        $attributes[] = 'contains(concat(" ", normalize-space(@class), " "), " '.$class.' ")';
-                    }
+            if (isset($segments['classes'])) {
+                foreach ($segments['classes'] as $class) {
+                    $attributes[] = 'contains(concat(" ", normalize-space(@class), " "), " '.$class.' ")';
                 }
             }
 
             // if the pseudo class specified
-            if (isset($tokens['pseudo']) and $tokens['pseudo'] !== '') {
-                if ('first-child' === $tokens['pseudo']) {
-                    $attributes[] = '1';
-                } elseif ('last-child' === $tokens['pseudo']) {
-                    $attributes[] = 'last()';
-                } elseif ('nth-child' === $tokens['pseudo']) {
-                    if (isset($tokens['expr']) and '' !== $tokens['expr']) {
-                        $expression = $tokens['expr'];
-
-                        if ('odd' === $expression) {
-                            $attributes[] = '(position() -1) mod 2 = 0 and position() >= 1';
-                        } elseif ('even' === $expression) {
-                            $attributes[] = 'position() mod 2 = 0 and position() >= 0';
-                        } elseif (is_numeric($expression)) {
-                            $attributes[] = 'position() = '.$expression;
-                        } elseif (preg_match("/^((?P<mul>[0-9]+)n\+)(?P<pos>[0-9]+)$/is", $expression, $position)) {
-                            if (isset($position['mul'])) {
-                                $attributes[] = '(position() -'.$position['pos'].') mod '.$position['mul'].' = 0 and position() >= '.$position['pos'].'';
-                            } else {
-                                $attributes[] = $expression;
-                            }
-                        }
-                    }
-                }
+            if (isset($segments['pseudo'])) {
+                $expression = isset($segments['expr']) ? $segments['expr'] : '';
+                $attributes[] = self::convertPseudo($segments['pseudo'], $expression);
             }
 
-            $xpath = $prefix.$tokens['tag'];
+            $xpath = $prefix.$segments['tag'];
 
             if ($count = count($attributes)) {
                 $xpath .= ($count > 1) ? '[('.implode(') and (', $attributes).')]' : '['.implode(' and ', $attributes).']';
             }
 
-            $subs   = trim(substr($selector, strlen($tokens[0])));
-            $prefix = (isset($tokens['rel'])) ? '/' : '//';
+            $subs = trim(substr($selector, strlen($segments['selector'])));
+            $prefix = (isset($segments['rel'])) ? '/' : '//';
 
             if ($subs !== '') {
                 $xpath .= static::cssToXpath($subs, $prefix);
@@ -150,6 +105,118 @@ class Query
         }
 
         return $xpath;
+    }
+
+    /**
+     * @param  string $pseudo
+     * @param  string $expression
+     * @return string
+     */
+    protected static function convertPseudo($pseudo, $expression)
+    {
+        if ('first-child' === $pseudo) {
+            return '1';
+        } elseif ('last-child' === $pseudo) {
+            return 'last()';
+        } elseif ('nth-child' === $pseudo) {
+            if ('' !== $expression) {
+                if ('odd' === $expression) {
+                    return '(position() -1) mod 2 = 0 and position() >= 1';
+                } elseif ('even' === $expression) {
+                    return 'position() mod 2 = 0 and position() >= 0';
+                } elseif (is_numeric($expression)) {
+                    return 'position() = '.$expression;
+                } elseif (preg_match("/^((?P<mul>[0-9]+)n\+)(?P<pos>[0-9]+)$/is", $expression, $position)) {
+                    if (isset($position['mul'])) {
+                        return '(position() -'.$position['pos'].') mod '.$position['mul'].' = 0 and position() >= '.$position['pos'].'';
+                    } else {
+                        return $expression;
+                    }
+                }
+            }
+        }
+
+        throw new RuntimeException('Unknown pseudo-class');
+    }
+
+    /**
+     * @param  string $selector
+     * @return array
+     */
+    public static function getSegments($selector)
+    {
+        $selector = trim($selector);
+
+        if ($selector === '') {
+            throw new RuntimeException('Invalid selector');
+        }
+
+        $tag = '(?P<tag>[\*|\w|\-]+)?';
+        $id = '(?:#(?P<id>[\w|\-]+))?';
+        $classes = '(?P<classes>\.[\w|\-|\.]+)*';
+        $attrs = '(?P<attrs>\[.+\])*';
+        $child = '(?:first|last|nth)-child)';
+        $expr = '(?:\((?P<expr>[^\)]+)\))';
+        $pseudo = '(?::(?P<pseudo>'.$child.$expr.'?)?';
+        $rel = '\s*(?P<rel>>)?';
+
+        $regexp = '/'.$tag.$id.$classes.$attrs.$pseudo.$rel.'/is';
+
+        if (preg_match($regexp, $selector, $segments)) {
+            $result['selector'] = $segments[0];
+
+            $result['tag'] = (isset($segments['tag']) and $segments['tag'] !== '') ? $segments['tag'] : '*';
+
+            // if the id attribute specified
+            if (isset($segments['id']) and $segments['id'] !== '') {
+                $result['id'] = $segments['id'];
+            }
+
+            // if the attributes specified
+            if (isset($segments['attrs'])) {
+                $attributes = trim($segments['attrs'], '[]');
+                $attributes = explode('][', $attributes);
+
+                foreach ($attributes as $attribute) {
+                    if ($attribute !== '') {
+                        list($name, $value) = array_pad(explode('=', $attribute), 2, null);
+
+                        // if specified only the attribute name
+                        $result['attributes'][$name] = $value;
+                    }
+                }
+            }
+
+            //if the class attribute specified
+            if (isset($segments['classes'])) {
+                $classes = trim($segments['classes'], '.');
+                $classes = explode('.', $classes);
+
+                foreach ($classes as $class) {
+                    if ($class !== '') {
+                        $result['classes'][] = $class;
+                    }
+                }
+            }
+
+            // if the pseudo class specified
+            if (isset($segments['pseudo']) and $segments['pseudo'] !== '') {
+                $result['pseudo'] = $segments['pseudo'];
+
+                if (isset($segments['expr']) and $segments['expr'] !== '') {
+                    $result['expr'] = $segments['expr'];
+                }
+            }
+
+            // if it is a direct descendant
+            if (isset($segments['rel'])) {
+                $result['rel'] = $segments['rel'];
+            }
+
+            return $result;
+        }
+
+        throw new RuntimeException('Invalid selector');
     }
 
     /**
@@ -162,7 +229,6 @@ class Query
 
     /**
      * @param  array $compiled
-     * @return void
      * @throws \InvalidArgumentException
      */
     public static function setCompiled($compiled)
