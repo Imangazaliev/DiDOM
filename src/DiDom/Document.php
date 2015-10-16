@@ -56,7 +56,7 @@ class Document
 
     /**
      * @param  \DiDom\Element|\DOMNode $element
-     * @return $this
+     * @return \DiDom\Element
      * @throws \InvalidArgumentException
      */
     public function appendChild($element)
@@ -79,7 +79,7 @@ class Document
 
     /**
      * @param  string $html
-     * @return $this
+     * @return \DiDom\Element
      * @throws \InvalidArgumentException
      */
     public function loadHtml($html)
@@ -103,7 +103,7 @@ class Document
 
     /**
      * @param  string $filepath
-     * @return $this
+     * @return \DiDom\Element
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      */
@@ -147,9 +147,9 @@ class Document
      * 
      * @param  string $expression XPath expression or CSS selector
      * @param  string $type the type of the expression
-     * @return \DiDom\Element[]
+     * @return \DiDom\Element[]|\DOMElement[]
      */
-    public function find($expression, $type = Query::TYPE_CSS)
+    public function find($expression, $type = Query::TYPE_CSS, $wrapElement = true)
     {
         $expression = Query::compile($expression, $type);
 
@@ -157,8 +157,14 @@ class Document
         $nodeList = $xpath->query($expression);
         $elements = array();
 
-        foreach ($nodeList as $node) {
-            $elements[] = new Element($node);
+        if ($wrapElement) {
+            foreach ($nodeList as $node) {
+                $elements[] = new Element($node);
+            }
+        } else {
+            foreach ($nodeList as $node) {
+                $elements[] = $node;
+            }
         }
 
         return $elements;
@@ -166,11 +172,11 @@ class Document
 
     /**
      * @param  string $expression XPath expression
-     * @return \DiDom\Element[]
+     * @return \DiDom\Element[]|\DOMElement[]
      */
-    public function xpath($expression)
+    public function xpath($expression, $wrapElement = true)
     {
-        return $this->find($expression, Query::TYPE_XPATH);
+        return $this->find($expression, Query::TYPE_XPATH, $wrapElement);
     }
 
     /**
@@ -185,7 +191,7 @@ class Document
 
     /**
      * @param  bool $format
-     * @return $this
+     * @return \DiDom\Element
      */
     public function format($format = true)
     {
@@ -235,11 +241,11 @@ class Document
     /**
      * @param  string $expression
      * @param  string $type
-     * @return mixed
+     * @return \DiDom\Element[]|\DOMElement[]
      */
-    public function __invoke($expression, $type = Query::TYPE_CSS)
+    public function __invoke($expression, $type = Query::TYPE_CSS, $wrapElement = true)
     {
-        return $this->find($expression, $type);
+        return $this->find($expression, $type, $wrapElement);
     }
 
     /**

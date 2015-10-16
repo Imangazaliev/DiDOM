@@ -64,6 +64,26 @@ class DocumentTest extends TestCase
 
         $this->assertTrue(is_array($elements));
         $this->assertEquals($count, count($elements));
+
+        if ($count > 0) {
+            $this->assertInstanceOf('DiDom\Element', $elements[0]);
+        }
+    }
+
+    /**
+     * @dataProvider findProvider
+     */
+    public function testReturnDomElent($html, $selector, $type, $count)
+    {
+        $document = new Document($html, false);
+        $elements = $document->find($selector, $type, false);
+
+        $this->assertTrue(is_array($elements));
+        $this->assertEquals($count, count($elements));
+
+        if ($count > 0) {
+            $this->assertInstanceOf('DOMElement', $elements[0]);
+        }
     }
 
     public function testXpath()

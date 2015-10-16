@@ -68,11 +68,11 @@ class Element
      * 
      * @param  string $expression XPath expression or CSS selector
      * @param  string $type the type of the expression
-     * @return \DiDom\Element[] array of Elements
+     * @return \DiDom\Element[]|\DOMElement[]
      */
-    public function find($expression, $type = Query::TYPE_CSS)
+    public function find($expression, $type = Query::TYPE_CSS, $wrapElement = true)
     {
-        return $this->toDocument()->find($expression, $type);
+        return $this->toDocument()->find($expression, $type, $wrapElement);
     }
 
     /**
@@ -126,8 +126,8 @@ class Element
      * Access to the element's attributes.
      *
      * @param  string $name
-     * @param  mixed  $default
-     * @return mixed
+     * @param  string  $default
+     * @return string
      */
     public function getAttribute($name, $default = null)
     {
@@ -143,7 +143,7 @@ class Element
      *
      * @param  string $name
      * @param  string $value
-     * @return mixed
+     * @return string|\DiDom\Element
      */
     public function attr($name, $value = null)
     {
@@ -158,7 +158,7 @@ class Element
      * Unset an attribute on the element.
      *
      * @param  string $name
-     * @return $this
+     * @return \DiDom\Element
      */
     public function removeAttribute($name)
     {
@@ -186,7 +186,7 @@ class Element
     }
 
     /**
-     * @return Document
+     * @return \DiDom\Document
      */
     public function parent()
     {
@@ -239,7 +239,7 @@ class Element
      * Dynamically access the element's attributes.
      *
      * @param  string $name
-     * @return mixed
+     * @return string
      */
     public function __get($name)
     {
@@ -265,10 +265,10 @@ class Element
     /**
      * @param  string $expression
      * @param  string $type
-     * @return \DiDom\Element[]
+     * @return \DiDom\Element[]|\DOMElement[]
      */
-    public function __invoke($expression, $type = Query::TYPE_CSS)
+    public function __invoke($expression, $type = Query::TYPE_CSS, $wrapElement = true)
     {
-        return $this->find($expression);
+        return $this->find($expression, $type, $wrapElement);
     }
 }
