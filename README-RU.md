@@ -108,7 +108,7 @@ $posts = $document->xpath("//*[contains(concat(' ', normalize-space(@class), ' '
 echo $document->find('.post')[0]->find('h2')[0]->text();
 ```
 
-Если элементы, соответствующие заданному выражению, найдены, вернется массив с экземплярами `DiDom\Element`, иначе - пустой массив.
+Если элементы, соответствующие заданному выражению, найдены, метод вернет массив с экземплярами класса `DiDom\Element`, иначе - пустой массив. При желании можно получить массив объектов `DOMElement`. Для этого необходимо передать в качестве третьего параметра `false`.
 
 ### Проверка наличия элемента
 
@@ -156,6 +156,19 @@ echo $posts[0]->html();
 $html = (string) $posts[0];
 ```
 
+###### Форматирование HTML при выводе
+
+```php
+$html = $document->format()->html();
+```
+
+Метод `format()` отсутствует у элемента, поэтому, если нужно вывести отформатированный HTML-код элемента, необходимо сначала преобразовать его в документ:
+
+
+```php
+$html = $element->toDocument()->format()->html();
+```
+
 ### Получение содержимого
 
 ```php    
@@ -166,6 +179,8 @@ echo $posts[0]->text();
 
 ## Создание нового элемента
 
+### Создание экземпляра класса
+
 ```php
 use DiDom\Element;
 
@@ -175,7 +190,45 @@ $element = new Element('span', 'Hello');
 echo $element->html();
 ```
 
-Первым параметром передается название элемента, вторым - его значение (необязательно).
+Первым параметром передается название элемента, вторым - его значение (необязательно), третьим - атрибуты элемента (необязательно).
+
+Пример создания элемента с атрибутами:
+
+```php
+$attributes = ['name' => 'description', 'placeholder' => 'Enter description of item'];
+
+$element = new Element('textarea', 'Text', $attributes);
+```
+
+Элемент можно создать и из экземпляра класса `DOMElement`:
+
+```php
+use DiDom\Element;
+use DOMElement;
+
+$domElement = new DOMElement('span', 'Hello');
+$element    = new Element($domElement);
+```
+
+### С помощью метода createElement
+
+```php
+$document = new Document($html);
+$element  = $document->createElement('span', 'Hello');
+```
+
+## Получение родителя
+
+```php
+$document = new Document($html);
+$element  = $document->find('input[name=email]')[0];
+
+// получение родителя
+$parent = $element->parent();
+
+// bool(true)
+var_dump($document->is($parent));
+```
 
 ## Работа с атрибутами элемента
 
@@ -246,6 +299,19 @@ $element->removeAttribute('name');
 ##### Через магический метод `__unset`:
 ```php
 unset($element->name);
+```
+
+## Сравнение элементов
+
+```php
+$element  = new Element('span', 'hello');
+$element2 = new Element('span', 'hello');
+
+// bool(true)
+var_dump($element->is($element));
+
+// bool(false)
+var_dump($element->is($element2));
 ```
 
 ## Работа с кэшем
