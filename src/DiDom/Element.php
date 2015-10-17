@@ -22,6 +22,7 @@ class Element
      * @param  string $value
      * @param  array  $attributes
      * @return void
+     * @throws \InvalidArgumentException
      */
     public function __construct($name, $value = '', $attributes = [])
     {
@@ -126,8 +127,8 @@ class Element
      * Access to the element's attributes.
      *
      * @param  string $name
-     * @param  string  $default
-     * @return string
+     * @param  string $default
+     * @return string|null The value of the attribute or null if attribute does not exist
      */
     public function getAttribute($name, $default = null)
     {
@@ -143,7 +144,7 @@ class Element
      *
      * @param  string $name
      * @param  string $value
-     * @return string|\DiDom\Element
+     * @return string|null|\DiDom\Element
      */
     public function attr($name, $value = null)
     {

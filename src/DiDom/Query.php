@@ -111,6 +111,7 @@ class Query
      * @param  string $pseudo
      * @param  string $expression
      * @return string
+     * @throws \RuntimeException if passed an unknown pseudo-class
      */
     protected static function convertPseudo($pseudo, $expression)
     {
@@ -142,6 +143,7 @@ class Query
     /**
      * @param  string $selector
      * @return array
+     * @throws \RuntimeException if an empty string is passed or the selector is not valid
      */
     public static function getSegments($selector)
     {
