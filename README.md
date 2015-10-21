@@ -18,7 +18,9 @@ DiDOM - simple and fast HTML parser.
 - [Verify if element exists](#verify-if-element-exists)
 - [Output](#output)
 - [Creating a new element](#creating-a-new-element)
+- [Getting parent element](#getting-parent-element)
 - [Working with element attributes](#working-with-element-attributes)
+- [Comparing elements](#comparing-elements)
 - [Working with cache](#working-with-cache)
 - [Comparison with other parsers](#comparison-with-other-parsers)
 
@@ -110,7 +112,7 @@ You can do search inside an element:
 echo $document->find('.post')[0]->find('h2')[0]->text();
 ```
 
-If the elements that match a given expression are found, it returns an array of instances of `DiDom\Element`, otherwise - an empty array.
+If the elements that match a given expression are found, then method returns an array of instances of `DiDom\Element`, otherwise - an empty array. You could also get an array of `DOMElement` objects. To get this, pass `false` as the third parameter.
 
 ### Verify if element exists
 
@@ -157,6 +159,18 @@ echo $posts[0]->html();
 ```php
 $html = (string) $posts[0];
 ```
+###### Formatting HTML output
+
+```php
+$html = $document->format()->html();
+```
+
+An element does not have `format()` method, so if you need to output formatted HTML of the element, then first you have to convert it to a document:
+
+
+```php
+$html = $element->toDocument()->format()->html();
+```
 
 ### Getting content
 
@@ -168,6 +182,8 @@ echo $posts[0]->text();
 
 ## Creating a new element
 
+### Creating an instance of the class
+
 ```php
 use DiDom\Element;
 
@@ -177,7 +193,45 @@ $element = new Element('span', 'Hello');
 echo $element->html();
 ```
 
-First parameter is a name of an attribute, the second one is its value (optional).
+First parameter is a name of an attribute, the second one is its value (optional), the third one is element attributes (optional).
+
+An example of creating an element with attributes:
+
+```php
+$attributes = ['name' => 'description', 'placeholder' => 'Enter description of item'];
+
+$element = new Element('textarea', 'Text', $attributes);
+```
+
+An element can be created from an instance of the class `DOMElement`:
+
+```php
+use DiDom\Element;
+use DOMElement;
+
+$domElement = new DOMElement('span', 'Hello');
+$element    = new Element($domElement);
+```
+
+### Using the method `createElement`
+
+```php
+$document = new Document($html);
+$element  = $document->createElement('span', 'Hello');
+```
+
+## Getting parent element
+
+```php
+$document = new Document($html);
+$element  = $document->find('input[name=email]')[0];
+
+// getting parent
+$parent = $element->parent();
+
+// bool(true)
+var_dump($document->is($parent));
+```
 
 ## Working with element attributes
 
@@ -248,6 +302,19 @@ $element->removeAttribute('name');
 ##### With magic method `__unset`:
 ```php
 unset($element->name);
+```
+
+## Comparing elements
+
+```php
+$element  = new Element('span', 'hello');
+$element2 = new Element('span', 'hello');
+
+// bool(true)
+var_dump($element->is($element));
+
+// bool(false)
+var_dump($element->is($element2));
 ```
 
 ## Working with cache
