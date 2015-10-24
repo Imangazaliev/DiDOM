@@ -70,10 +70,10 @@ class Query
             }
 
             // if the attributes specified
-            if (isset($segments['attrs'])) {
-                foreach ($segments['attrs'] as $name => $value) {
+            if (isset($segments['attributes'])) {
+                foreach ($segments['attributes'] as $name => $value) {
                     // if specified only the attribute name
-                    $attributes[] = '@'.$name.($value == null ? '' : '='.$value);
+                    $attributes[] = '@'.$name.($value == null ? '' : '="'.$value.'"');
                 }
             }
 
