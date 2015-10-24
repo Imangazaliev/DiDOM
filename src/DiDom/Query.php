@@ -130,14 +130,12 @@ class Query
                 } elseif (preg_match("/^((?P<mul>[0-9]+)n\+)(?P<pos>[0-9]+)$/is", $expression, $position)) {
                     if (isset($position['mul'])) {
                         return '(position() -'.$position['pos'].') mod '.$position['mul'].' = 0 and position() >= '.$position['pos'].'';
-                    } else {
-                        return $expression;
                     }
                 }
             }
         }
 
-        throw new RuntimeException('Unknown pseudo-class');
+        throw new RuntimeException('Invalid selector: unknown pseudo-class');
     }
 
     /**
@@ -157,9 +155,9 @@ class Query
         $id = '(?:#(?P<id>[\w|\-]+))?';
         $classes = '(?P<classes>\.[\w|\-|\.]+)*';
         $attrs = '(?P<attrs>\[.+\])*';
-        $child = '(?:first|last|nth)-child)';
+        $child = '(?P<pseudo>[\w\-]*)';
         $expr = '(?:\((?P<expr>[^\)]+)\))';
-        $pseudo = '(?::(?P<pseudo>'.$child.$expr.'?)?';
+        $pseudo = '(?::'.$child.$expr.'?)?';
         $rel = '\s*(?P<rel>>)?';
 
         $regexp = '/'.$tag.$id.$classes.$attrs.$pseudo.$rel.'/is';

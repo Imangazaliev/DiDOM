@@ -30,7 +30,7 @@ class QueryTest extends TestCase
     {
         $this->setExpectedException('RuntimeException');
 
-        var_dump(Query::getSegments($selector));
+        Query::cssToXpath($selector);
     }
 
     public function testCompileXpath()
@@ -105,7 +105,7 @@ class QueryTest extends TestCase
     public function invalidSelectorProvider()
     {
         $selectors = [
-            [''],
+            ['li:unknown-pseudo-class'],
         ];
 
         return $selectors;
