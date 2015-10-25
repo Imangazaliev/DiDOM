@@ -186,7 +186,7 @@ class Document
      */
     public function html()
     {
-        return trim($this->document->saveXML());
+        return trim($this->document->saveXML($this->getElement()));
     }
 
     /**
