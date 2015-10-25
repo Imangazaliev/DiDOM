@@ -30,7 +30,7 @@ class Document
             return;
         }
 
-        $this->document = new DOMDocument();
+        $this->document = new DOMDocument('1.0', 'utf-8');
 
         if ($html) {
             if ($isFile) {
@@ -186,7 +186,7 @@ class Document
      */
     public function html()
     {
-        return trim($this->document->saveHtml());
+        return trim($this->document->saveXML());
     }
 
     /**
