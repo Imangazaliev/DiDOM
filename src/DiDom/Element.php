@@ -77,6 +77,15 @@ class Element
     }
 
     /**
+     * @param  string $expression XPath expression
+     * @return \DiDom\Element[]|\DOMElement[]
+     */
+    public function xpath($expression, $wrapElement = true)
+    {
+        return $this->find($expression, Query::TYPE_XPATH, $wrapElement);
+    }
+
+    /**
      * Checks for the item.
      * 
      * @param  string $expression XPath expression or CSS selector
