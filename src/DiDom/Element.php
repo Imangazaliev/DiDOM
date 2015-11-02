@@ -37,7 +37,7 @@ class Element
             $domElement->setAttribute($name, $value);
         }
 
-        $this->domElement = $domElement;
+        $this->setElement($domElement);
     }
 
     /**
@@ -201,6 +201,19 @@ class Element
     public function parent()
     {
         return new Document($this->getElement()->ownerDocument);
+    }
+
+    /**
+     * Sets current \DOMElement instance.
+     *
+     * @param  \DOMElement $domElement
+     * @return \DiDom\Element
+     */
+    protected function setElement(\DOMElement $domElement)
+    {
+        $this->domElement = $domElement;
+
+        return $this;
     }
 
     /**
