@@ -59,49 +59,64 @@ class Query
      */
     public static function cssToXpath($selector, $prefix = '//')
     {
+        $xpath    = '';
         $segments = self::getSegments($selector);
 
-        if (count($segments) > 0) {
-            $attributes = array();
+        while (count($segments) > 0) {
+            $xpath .= self::buildXpath($segments, $prefix);
 
-            // if the id attribute specified
-            if (isset($segments['id'])) {
-                $attributes[] = "@id='".$segments['id']."'";
-            }
-
-            // if the attributes specified
-            if (isset($segments['attributes'])) {
-                foreach ($segments['attributes'] as $name => $value) {
-                    // if specified only the attribute name
-                    $attributes[] = '@'.$name.($value == null ? '' : '="'.$value.'"');
-                }
-            }
-
-            //if the class attribute specified
-            if (isset($segments['classes'])) {
-                foreach ($segments['classes'] as $class) {
-                    $attributes[] = 'contains(concat(" ", normalize-space(@class), " "), " '.$class.' ")';
-                }
-            }
-
-            // if the pseudo class specified
-            if (isset($segments['pseudo'])) {
-                $expression = isset($segments['expr']) ? $segments['expr'] : '';
-                $attributes[] = self::convertPseudo($segments['pseudo'], $expression);
-            }
-
-            $xpath = $prefix.$segments['tag'];
-
-            if ($count = count($attributes)) {
-                $xpath .= ($count > 1) ? '[('.implode(') and (', $attributes).')]' : '['.implode(' and ', $attributes).']';
-            }
-
-            $subs = trim(substr($selector, strlen($segments['selector'])));
+            $selector = trim(substr($selector, strlen($segments['selector'])));
             $prefix = (isset($segments['rel'])) ? '/' : '//';
 
-            if ($subs !== '') {
-                $xpath .= static::cssToXpath($subs, $prefix);
+            if ($selector === '') {
+                break;
             }
+
+            $segments = self::getSegments($selector);
+        }
+
+        return $xpath;
+    }
+
+    /**
+     * @param  string[] $segments
+     * @param  string   $prefix
+     * @return string
+     */
+    public static function buildXpath($segments, $prefix = '//')
+    {
+        $attributes = array();
+
+        // if the id attribute specified
+        if (isset($segments['id'])) {
+            $attributes[] = "@id='".$segments['id']."'";
+        }
+
+        // if the attributes specified
+        if (isset($segments['attributes'])) {
+            foreach ($segments['attributes'] as $name => $value) {
+                // if specified only the attribute name
+                $attributes[] = '@'.$name.($value == null ? '' : '="'.$value.'"');
+            }
+        }
+
+        // if the class attribute specified
+        if (isset($segments['classes'])) {
+            foreach ($segments['classes'] as $class) {
+                $attributes[] = 'contains(concat(" ", normalize-space(@class), " "), " '.$class.' ")';
+            }
+        }
+
+        // if the pseudo class specified
+        if (isset($segments['pseudo'])) {
+            $expression = isset($segments['expr']) ? $segments['expr'] : '';
+            $attributes[] = self::convertPseudo($segments['pseudo'], $expression);
+        }
+
+        $xpath = $prefix.$segments['tag'];
+
+        if ($count = count($attributes)) {
+            $xpath .= ($count > 1) ? '[('.implode(') and (', $attributes).')]' : '['.implode(' and ', $attributes).']';
         }
 
         return $xpath;
