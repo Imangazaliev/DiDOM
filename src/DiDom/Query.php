@@ -33,20 +33,20 @@ class Query
             return $expression;
         }
 
-        $expressions = explode(',', $expression);
+        $selectors = explode(',', $expression);
         $paths = [];
 
-        foreach ($expressions as $expression) {
-            $expression = trim($expression);
+        foreach ($selectors as $selector) {
+            $selector = trim($selector);
 
-            if (array_key_exists($expression, static::$compiled)) {
-                $paths[] = static::$compiled[$expression];
+            if (array_key_exists($selector, static::$compiled)) {
+                $paths[] = static::$compiled[$selector];
                 continue;
             }
 
-            static::$compiled[$expression] = static::cssToXpath($expression);
+            static::$compiled[$selector] = static::cssToXpath($selector);
 
-            $paths[] = static::$compiled[$expression];
+            $paths[] = static::$compiled[$selector];
         }
 
         return implode('|', $paths);
@@ -66,7 +66,7 @@ class Query
             $xpath .= self::buildXpath($segments, $prefix);
 
             $selector = trim(substr($selector, strlen($segments['selector'])));
-            $prefix = (isset($segments['rel'])) ? '/' : '//';
+            $prefix   = (isset($segments['rel'])) ? '/' : '//';
 
             if ($selector === '') {
                 break;
@@ -79,8 +79,8 @@ class Query
     }
 
     /**
-     * @param  string[] $segments
-     * @param  string   $prefix
+     * @param  array  $segments
+     * @param  string $prefix
      * @return string
      */
     public static function buildXpath($segments, $prefix = '//')
@@ -109,7 +109,7 @@ class Query
 
         // if the pseudo class specified
         if (isset($segments['pseudo'])) {
-            $expression = isset($segments['expr']) ? $segments['expr'] : '';
+            $expression   = isset($segments['expr']) ? $segments['expr'] : '';
             $attributes[] = self::convertPseudo($segments['pseudo'], $expression);
         }
 
@@ -179,8 +179,7 @@ class Query
 
         if (preg_match($regexp, $selector, $segments)) {
             $result['selector'] = $segments[0];
-
-            $result['tag'] = (isset($segments['tag']) and $segments['tag'] !== '') ? $segments['tag'] : '*';
+            $result['tag']      = (isset($segments['tag']) and $segments['tag'] !== '') ? $segments['tag'] : '*';
 
             // if the id attribute specified
             if (isset($segments['id']) and $segments['id'] !== '') {
