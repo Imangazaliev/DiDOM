@@ -181,7 +181,7 @@ class ElementTest extends TestCase
         $this->assertEquals('<span>hello</span>', $html);
     }
 
-    public function testText()
+    public function testGetText()
     {
         $domElement = $this->createDomElement('span', 'hello');
         $element    = new Element($domElement);
