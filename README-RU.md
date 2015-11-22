@@ -270,7 +270,7 @@ $username = $element->attr('value');
 
 ##### Через магический метод `__get`:
 ```php
-$element->name = 'username';
+$username = $element->name;
 ```
 
 Если атрибут не найден, вернет `null`.

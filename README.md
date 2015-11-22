@@ -271,7 +271,7 @@ $username = $element->attr('value');
 
 ##### With magic method `__get`:
 ```php
-$element->name = 'username';
+$username = $element->name;
 ```
 
 Returns `null` if attribute is not found.
