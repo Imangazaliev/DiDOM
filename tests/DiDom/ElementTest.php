@@ -177,7 +177,6 @@ class ElementTest extends TestCase
         $element = new Element('span', 'hello');
         $html = $element->html();
 
-        $this->assertTrue(is_string($html));
         $this->assertEquals('<span>hello</span>', $html);
     }
 
@@ -186,10 +185,16 @@ class ElementTest extends TestCase
         $domElement = $this->createDomElement('span', 'hello');
         $element    = new Element($domElement);
 
-        $text = $element->text();
+        $this->assertEquals('hello', $element->text());
+    }
 
-        $this->assertTrue(is_string($text));
-        $this->assertEquals('hello', $text);
+    public function testSetValue()
+    {
+        $element = new Element('span', 'hello');
+
+        $element->setValue('test');
+
+        $this->assertEquals('test', $element->text());
     }
 
     public function testIs()

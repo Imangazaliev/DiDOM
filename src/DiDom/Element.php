@@ -30,7 +30,7 @@ class Element
         $domElement = ($name instanceof DOMElement) ? $name : $document->createElement($name, $value);
 
         if (!is_array($attributes)) {
-            throw new InvalidArgumentException(sprintf('%s expects parameter 3 to be array, %s given', __METHOD__, gettype($attributes)));
+            throw new InvalidArgumentException(sprintf('%s expects parameter 3 to be array, %s given', __METHOD__, (is_object($attributes) ? get_class($attributes) : gettype($attributes))));
         }
 
         foreach ($attributes as $name => $value) {
@@ -48,6 +48,22 @@ class Element
     public function text()
     {
         return $this->domElement->textContent;
+    }
+
+    /**
+     * Set the value of this node.
+     *
+     * @param  string $value
+     * @return \DiDom\Element
+     */
+    public function setValue($value)
+    {
+        if (!is_string($value)) {
+            throw new InvalidArgumentException(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, (is_object($value) ? get_class($value) : gettype($value))));
+        }
+        $this->domElement->nodeValue = $value;
+
+        return $this;
     }
 
     /**
@@ -189,7 +205,7 @@ class Element
         }
 
         if (!$element instanceof \DOMNode) {
-            throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s or %s, %s given', __METHOD__, __CLASS__, 'DOMNode', (is_object($element) ? get_class($element) : gettype($element))));
+            throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s or DOMNode, %s given', __METHOD__, __CLASS__, (is_object($element) ? get_class($element) : gettype($element))));
         }
 
         return $this->domElement->isSameNode($element);
