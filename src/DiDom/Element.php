@@ -84,6 +84,7 @@ class Element
      * Searches for the element in the DOM tree.
      * 
      * @param  string $expression XPath expression or CSS selector
+     * @param  bool   $wrapElement returns \DiDom\Element if true, otherwise \DOMElement
      * @param  string $type the type of the expression
      * @return \DiDom\Element[]|\DOMElement[]
      */
@@ -94,6 +95,7 @@ class Element
 
     /**
      * @param  string $expression XPath expression
+     * @param  bool   $wrapElement returns \DiDom\Element if true, otherwise \DOMElement
      * @return \DiDom\Element[]|\DOMElement[]
      */
     public function xpath($expression, $wrapElement = true)
@@ -304,6 +306,7 @@ class Element
     /**
      * @param  string $expression
      * @param  string $type
+     * @param  bool   $wrapElement returns \DiDom\Element if true, otherwise \DOMElement
      * @return \DiDom\Element[]|\DOMElement[]
      */
     public function __invoke($expression, $type = Query::TYPE_CSS, $wrapElement = true)
