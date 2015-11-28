@@ -7,19 +7,14 @@ use DOMDocument;
 
 class TestCase extends PHPUnit_Framework_TestCase
 {
-    /**
-     * Clean up the testing environment before the next test.
-     *
-     * @return void
-     */
-    public function tearDown()
+    protected function tearDown()
     {
         if (class_exists('Mockery')) {
             \Mockery::close();
         }
     }
 
-    public function loadFixture($filename)
+    protected function loadFixture($filename)
     {
         $path = __DIR__.'/fixtures/'.$filename;
 
@@ -30,7 +25,7 @@ class TestCase extends PHPUnit_Framework_TestCase
         return null;
     }
 
-    public function createDomElement($name, $value = '', $attributes = [])
+    protected function createDomElement($name, $value = '', $attributes = [])
     {
         $document   = new DOMDocument('1.0', 'utf-8');
         $domElement = $document->createElement($name, $value);
