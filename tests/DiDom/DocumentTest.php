@@ -8,12 +8,31 @@ use DiDom\Query;
 
 class DocumentTest extends TestCase
 {
+    /**
+     * @expectedException InvalidArgumentException
+     */
     public function testLoadHtmlException()
     {
-        $this->setExpectedException('InvalidArgumentException');
-
         $document = new Document();
         $document->loadHtml(null);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testAppendChildException()
+    {
+        $document = new Document('', true);
+        $document->appendChild(null);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testIsException()
+    {
+        $document = new Document();
+        $document->is(null);
     }
 
     /**
@@ -35,8 +54,8 @@ class DocumentTest extends TestCase
         $element  = $document->createElement('span', 'value');
 
         $this->assertInstanceOf('DiDom\Element', $element);
-        $this->assertEquals('span', $element->tag);
-        $this->assertEquals('value', $element->text());
+        $this->assertEquals('span', $element->getElement()->tagName);
+        $this->assertEquals('value', $element->getElement()->textContent);
 
         $element = $document->createElement('span');
         $this->assertEquals('', $element->text());
@@ -44,14 +63,6 @@ class DocumentTest extends TestCase
         $element = $document->createElement('input', '', ['name' => 'username']);
         $this->assertEquals('input', $element->getElement()->tagName);
         $this->assertEquals('username', $element->getElement()->getAttribute('name'));
-    }
-
-    public function testAppendChildException()
-    {
-        $this->setExpectedException('InvalidArgumentException');
-
-        $document = new Document('', true);
-        $document->appendChild(null);
     }
 
     /**
@@ -73,7 +84,7 @@ class DocumentTest extends TestCase
     /**
      * @dataProvider findProvider
      */
-    public function testReturnDomElent($html, $selector, $type, $count)
+    public function testReturnDomElement($html, $selector, $type, $count)
     {
         $document = new Document($html, false);
         $elements = $document->find($selector, $type, false);
@@ -159,15 +170,6 @@ class DocumentTest extends TestCase
         $document = new Document($html, false);
 
         $this->assertTrue($document->is($document));
-    }
-
-    public function testIsException()
-    {
-        $this->setExpectedException('InvalidArgumentException');
-
-        $document = new Document();
-
-        $document->is(null);
     }
 
     public function testGetElement()

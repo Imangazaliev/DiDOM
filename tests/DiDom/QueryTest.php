@@ -25,11 +25,10 @@ class QueryTest extends TestCase
 
     /**
      * @dataProvider invalidSelectorProvider
+     * @expectedException RuntimeException
      */
     public function testInvalidSelector($selector)
     {
-        $this->setExpectedException('RuntimeException');
-
         Query::cssToXpath($selector);
     }
 
@@ -38,10 +37,11 @@ class QueryTest extends TestCase
         $this->assertEquals('xpath-expression', Query::compile('xpath-expression', Query::TYPE_XPATH));
     }
 
+    /**
+     * @expectedException InvalidArgumentException
+     */
     public function testSetCompiledInvalidArgument()
     {
-        $this->setExpectedException('InvalidArgumentException');
-
         Query::setCompiled('test');
     }
 
@@ -80,7 +80,8 @@ class QueryTest extends TestCase
         return $compiled;
     }
 
-    public function segmentsProvider() {
+    public function segmentsProvider()
+    {
         $segments = [
             ['selector' => 'h1', 'tag' => 'h1'],
             ['selector' => 'div#content', 'tag' => 'div', 'id' => 'content'],

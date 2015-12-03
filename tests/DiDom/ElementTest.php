@@ -8,20 +8,29 @@ use DiDom\Document;
 
 class ElementTest extends TestCase
 {
-    public function testInvalidAttributesParameter()
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testConstructorWithInvalidAttributes()
     {
-        $this->setExpectedException('InvalidArgumentException');
-
         new Element('span', 'hello', null);
     }
 
-    public function testCreate()
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testIsWithInvalidArgument()
     {
-        $attributes = ['name' => 'username', 'value' => 'John'];
+        $element = new Element('span', 'hello');
+        $element->is(null);
+    }
 
-        $element = new Element('input', '', $attributes);
+    public function testConstructor()
+    {
+        $element = new Element('input', '', ['name' => 'username', 'value' => 'John']);
 
         $this->assertEquals('input', $element->getElement()->tagName);
+        $this->assertEquals('', $element->getElement()->textContent);
         $this->assertEquals('username', $element->getElement()->getAttribute('name'));
         $this->assertEquals('John', $element->getElement()->getAttribute('value'));
     }
@@ -204,14 +213,6 @@ class ElementTest extends TestCase
 
         $this->assertTrue($element->is($element));
         $this->assertFalse($element->is($element2));
-    }
-
-    public function testIsException()
-    {
-        $this->setExpectedException('InvalidArgumentException');
-
-        $element = new Element('span', 'hello');
-        $element->is(null);
     }
 
     public function testParent()
