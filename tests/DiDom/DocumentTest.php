@@ -22,7 +22,7 @@ class DocumentTest extends TestCase
      */
     public function testAppendChildException()
     {
-        $document = new Document('', true);
+        $document = new Document('');
         $document->appendChild(null);
     }
 
@@ -36,14 +36,36 @@ class DocumentTest extends TestCase
     }
 
     /**
-     * @dataProvider loadHtmlFileProvider
+     * @dataProvider loadHtmlFileTests
      */
     public function testLoadHtmlFileException($filename, $type)
     {
         $this->setExpectedException($type);
 
-        $document = new Document('', true);
+        $document = new Document('');
         $document->loadHtmlFile($filename);
+    }
+
+    /**
+     * @dataProvider loadHtmlCharsetTests
+     */
+    public function testLoadHtmlCharset($html, $text)
+    {
+        $document = new Document('');
+        $document->loadHtml($html);
+
+        $this->assertEquals($text, $document->find('div')[0]->text());
+    }
+
+    public function loadHtmlCharsetTests()
+    {
+        return array(
+            array('<html><div class="foo">English language</html>', 'English language'),
+            array('<html><div class="foo">Русский язык</html>', 'Русский язык'),
+            array('<html><div class="foo">اللغة العربية</html>', 'اللغة العربية'),
+            array('<html><div class="foo">漢語</html>', '漢語'),
+            array('<html><div class="foo">Tiếng Việt</html>', 'Tiếng Việt'),
+        );
     }
 
     public function testCreateElement()
@@ -66,7 +88,7 @@ class DocumentTest extends TestCase
     }
 
     /**
-     * @dataProvider findProvider
+     * @dataProvider findTests
      */
     public function testFind($html, $selector, $type, $count)
     {
@@ -82,7 +104,7 @@ class DocumentTest extends TestCase
     }
 
     /**
-     * @dataProvider findProvider
+     * @dataProvider findTests
      */
     public function testReturnDomElement($html, $selector, $type, $count)
     {
@@ -152,7 +174,7 @@ class DocumentTest extends TestCase
     }
 
     /**
-     * @dataProvider findProvider
+     * @dataProvider findTests
      */
     public function testInvoke($html, $selector, $type, $count)
     {
@@ -194,7 +216,7 @@ class DocumentTest extends TestCase
         $this->assertInstanceOf('DiDom\Element', $element);
     }
 
-    public function loadHtmlFileProvider()
+    public function loadHtmlFileTests()
     {
         return array(
             array(array('element'), 'InvalidArgumentException'),
@@ -202,7 +224,7 @@ class DocumentTest extends TestCase
         );
     }
 
-    public function findProvider()
+    public function findTests()
     {
         $html = $this->loadFixture('posts.html');
 

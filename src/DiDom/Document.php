@@ -22,7 +22,7 @@ class Document
      * @param  bool   $isFile indicates that in first parameter was passed to the file path
      * @return void
      */
-    public function __construct($html = null, $isFile = false)
+    public function __construct($html = null, $isFile = false, $charset = 'UTF-8')
     {
         if ($html instanceof DOMDocument) {
             $this->document = $html;
@@ -30,7 +30,7 @@ class Document
             return;
         }
 
-        $this->document = new DOMDocument('1.0', 'utf-8');
+        $this->document = new DOMDocument('1.0', $charset);
 
         if ($html) {
             if ($isFile) {
@@ -87,6 +87,9 @@ class Document
         if (!is_string($html)) {
             throw new InvalidArgumentException(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, (is_object($html) ? get_class($html) : gettype($html))));
         }
+
+        $prolog = sprintf('<?xml encoding="%s">', $this->document->encoding);
+        $html = $prolog.$html;
 
         libxml_use_internal_errors(true);
         libxml_disable_entity_loader(true);
