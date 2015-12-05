@@ -8,7 +8,7 @@ use DiDom\Query;
 class QueryTest extends TestCase
 {
     /**
-     * @dataProvider compiledCssProvider
+     * @dataProvider compileCssTests
      */
     public function testCompileCssSelector($selector, $xpath)
     {
@@ -16,7 +16,7 @@ class QueryTest extends TestCase
     }
 
     /**
-     * @dataProvider segmentsProvider
+     * @dataProvider getSegmentsTests
      */
     public function testGetSegments($selector, $segments)
     {
@@ -24,17 +24,24 @@ class QueryTest extends TestCase
     }
 
     /**
-     * @dataProvider invalidSelectorProvider
+     * @expectedException InvalidArgumentException
+     */
+    public function testGetSegmentsWithEmptySelector()
+    {
+        Query::compile('');
+    }
+
+    /**
      * @expectedException RuntimeException
      */
-    public function testInvalidSelector($selector)
+    public function testUnknownPseudoClass()
     {
-        Query::cssToXpath($selector);
+        Query::compile('li:unknown-pseudo-class');
     }
 
     public function testCompileXpath()
     {
-        $this->assertEquals('xpath-expression', Query::compile('xpath-expression', Query::TYPE_XPATH));
+        $this->assertEquals('//div', Query::compile('//div', Query::TYPE_XPATH));
     }
 
     /**
@@ -42,13 +49,13 @@ class QueryTest extends TestCase
      */
     public function testSetCompiledInvalidArgument()
     {
-        Query::setCompiled('test');
+        Query::setCompiled('foo');
     }
 
     public function testSetCompiled()
     {
-        $xpath = "//*[contains(concat(' ', normalize-space(@class), ' '), ' post ')]";
-        $compiled = ['.post h2' => $xpath];
+        $xpath = "//*[@id='foo']//*[contains(concat(' ', normalize-space(@class), ' '), ' bar ')]//baz";
+        $compiled = ['#foo .bar baz' => $xpath];
 
         Query::setCompiled($compiled);
 
@@ -59,8 +66,8 @@ class QueryTest extends TestCase
     {
         Query::setCompiled([]);
 
-        $selector = '.post h2';
-        $xpath = '//*[contains(concat(" ", normalize-space(@class), " "), " post ")]//h2';
+        $selector = '#foo .bar baz';
+        $xpath = '//*[@id="foo"]//*[contains(concat(" ", normalize-space(@class), " "), " bar ")]//baz';
         $compiled = [$selector => $xpath];
 
         Query::compile($selector);
@@ -68,30 +75,50 @@ class QueryTest extends TestCase
         $this->assertEquals($compiled, Query::getCompiled());
     }
 
-    public function compiledCssProvider()
+    public function compileCssTests()
     {
         $compiled = [
-            ['h2', '//h2'],
-            ['.post h2', '//*[contains(concat(" ", normalize-space(@class), " "), " post ")]//h2'],
-            ['.post, h2', '//*[contains(concat(" ", normalize-space(@class), " "), " post ")]|//h2'],
-            ['div#layout', "//div[@id='layout']"],
+            ['a', '//a'],
+            ['#foo', '//*[@id="foo"]'],
+            ['.bar', '//*[contains(concat(" ", normalize-space(@class), " "), " bar ")]'],
+            ['foo bar baz', '//foo//bar//baz'],
+            ['foo > bar > baz', '//foo/bar/baz'],
+            ['input, textarea, select', '//input|//textarea|//select'],
+            ['li:first-child', '//li[1]'],
+            ['li:last-child', '//li[last()]'],
+            ['ul:empty', '//ul[count(descendant::*) = 0]'],
+            ['ul:not-empty', '//ul[count(descendant::*) > 0]'],
+            ['li:nth-child(odd)', '//li[(position() -1) mod 2 = 0 and position() >= 1]'],
+            ['li:nth-child(even)', '//li[position() mod 2 = 0 and position() >= 0]'],
+            ['li:nth-child(3)', '//li[position() = 3]'],
+            ['li:nth-child(-3)', '//li[position() = -3]'],
+            ['li:nth-child(3n)', '//li[(position() + 0) mod 3 = 0 and position() >= 0]'],
+            ['li:nth-child(3n+1)', '//li[(position() - 1) mod 3 = 0 and position() >= 1]'],
+            ['li:nth-child(3n-1)', '//li[(position() + 1) mod 3 = 0 and position() >= 1]'],
+            ['li:nth-child(n+3)', '//li[(position() - 3) mod 1 = 0 and position() >= 3]'],
+            ['li:nth-child(n-3)', '//li[(position() + 3) mod 1 = 0 and position() >= 3]'],
         ];
 
         return $compiled;
     }
 
-    public function segmentsProvider()
+    public function getSegmentsTests()
     {
         $segments = [
-            ['selector' => 'h1', 'tag' => 'h1'],
-            ['selector' => 'div#content', 'tag' => 'div', 'id' => 'content'],
-            ['selector' => 'button.big.active', 'tag' => 'button', 'classes' => ['big', 'active']],
-            ['selector' => 'input[type=text][name=email]', 'tag' => 'input', 'attributes' => ['type' => 'text','name' => 'email']],
-            ['selector' => 'textarea[name=product-description]', 'tag' => 'textarea', 'attributes' => ['name' => 'product-description']],
-            ['selector' => 'li.item:first-child', 'tag' => 'li', 'classes' => ['item'], 'pseudo' => 'first-child'],
-            ['selector' => 'li.item:nth-child(odd)', 'tag' => 'li', 'classes' => ['item'], 'pseudo' => 'nth-child', 'expr' => 'odd'],
-            ['selector' => 'div#body >', 'tag' => 'div', 'id' => 'body', 'rel' => '>'],
-            ['selector' => '#id.class[name=value]:last-child >', 'tag' => '*', 'id' => 'id', 'classes' => ['class'], 'attributes' => ['name' => 'value'], 'pseudo' => 'last-child', 'rel' => '>'],
+            ['selector' => 'a', 'tag' => 'a'],
+            ['selector' => '#foo', 'tag' => '*', 'id' => 'foo'],
+            ['selector' => 'a#foo', 'tag' => 'a', 'id' => 'foo'],
+            ['selector' => 'a.foo', 'tag' => 'a', 'classes' => ['foo']],
+            ['selector' => 'a.foo.bar', 'tag' => 'a', 'classes' => ['foo', 'bar']],
+            ['selector' => 'a[attr]', 'tag' => 'a', 'attributes' => ['attr' => null]],
+            ['selector' => 'a[attr=value]', 'tag' => 'a', 'attributes' => ['attr' => 'value']],
+            ['selector' => 'a[attr1=value1][attr2=value2]', 'tag' => 'a', 'attributes' => ['attr1' => 'value1', 'attr2' => 'value2']],
+            ['selector' => 'a[attr=value1][attr=value2]', 'tag' => 'a', 'attributes' => ['attr' => 'value2']],
+            ['selector' => 'a[attr="value"]', 'tag' => 'a', 'attributes' => ['attr' => 'value']],
+            ['selector' => 'a[attr=\'value\']', 'tag' => 'a', 'attributes' => ['attr' => 'value']],
+            ['selector' => 'li:first-child', 'tag' => 'li', 'pseudo' => 'first-child'],
+            ['selector' => 'ul >', 'tag' => 'ul', 'rel' => '>'],
+            ['selector' => '#id.foo[name=value]:first-child >', 'tag' => '*', 'id' => 'id', 'classes' => ['foo'], 'attributes' => ['name' => 'value'], 'pseudo' => 'first-child', 'rel' => '>'],
         ];
 
         $parameters = [];
@@ -101,14 +128,5 @@ class QueryTest extends TestCase
         }
 
         return $parameters;
-    }
-
-    public function invalidSelectorProvider()
-    {
-        $selectors = [
-            ['li:unknown-pseudo-class'],
-        ];
-
-        return $selectors;
     }
 }

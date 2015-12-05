@@ -89,21 +89,23 @@ class Query
 
         // if the id attribute specified
         if (isset($segments['id'])) {
-            $attributes[] = "@id='".$segments['id']."'";
+            $attributes[] = sprintf('@id="%s"', $segments['id']);
         }
 
         // if the attributes specified
         if (isset($segments['attributes'])) {
             foreach ($segments['attributes'] as $name => $value) {
                 // if specified only the attribute name
-                $attributes[] = '@'.$name.($value == null ? '' : '="'.$value.'"');
+                $value = $value === null ? '' : sprintf('="%s"', $value);
+
+                $attributes[] = '@'.$name.$value;
             }
         }
 
         // if the class attribute specified
         if (isset($segments['classes'])) {
             foreach ($segments['classes'] as $class) {
-                $attributes[] = 'contains(concat(" ", normalize-space(@class), " "), " '.$class.' ")';
+                $attributes[] = sprintf('contains(concat(" ", normalize-space(@class), " "), " %s ")', $class);
             }
         }
 
@@ -116,7 +118,7 @@ class Query
         $xpath = $prefix.$segments['tag'];
 
         if ($count = count($attributes)) {
-            $xpath .= ($count > 1) ? '[('.implode(') and (', $attributes).')]' : '['.implode(' and ', $attributes).']';
+            $xpath .= ($count > 1) ? sprintf('[(%s)]', implode(') and (', $attributes)) : sprintf('[%s]', $attributes[0]);
         }
 
         return $xpath;
@@ -134,6 +136,10 @@ class Query
             return '1';
         } elseif ('last-child' === $pseudo) {
             return 'last()';
+        } elseif ('empty' === $pseudo) {
+            return 'count(descendant::*) = 0';
+        } elseif ('not-empty' === $pseudo) {
+            return 'count(descendant::*) > 0';
         } elseif ('nth-child' === $pseudo) {
             if ('' !== $expression) {
                 if ('odd' === $expression) {
@@ -141,10 +147,14 @@ class Query
                 } elseif ('even' === $expression) {
                     return 'position() mod 2 = 0 and position() >= 0';
                 } elseif (is_numeric($expression)) {
-                    return 'position() = '.$expression;
-                } elseif (preg_match("/^((?P<mul>[0-9]+)n\+)(?P<pos>[0-9]+)$/is", $expression, $position)) {
-                    if (isset($position['mul'])) {
-                        return '(position() -'.$position['pos'].') mod '.$position['mul'].' = 0 and position() >= '.$position['pos'].'';
+                    return sprintf('position() = %d', $expression);
+                } elseif (preg_match("/^(?P<mul>[0-9]?n)(?:(?P<sign>\+|\-)(?P<pos>[0-9]+))?$/is", $expression, $segments)) {
+                    if (isset($segments['mul'])) {
+                        $segments['mul'] = strtolower($segments['mul'] === 'n') ? 1 : trim(strtolower($segments['mul']), 'n');
+                        $segments['sign'] = (isset($segments['sign']) and $segments['sign'] === '+') ? '-' : '+';
+                        $segments['pos'] = isset($segments['pos']) ? $segments['pos'] : 0;
+
+                        return sprintf('(position() %s %d) mod %d = 0 and position() >= %d', $segments['sign'], $segments['pos'], $segments['mul'], $segments['pos']);
                     }
                 }
             }
@@ -163,7 +173,7 @@ class Query
         $selector = trim($selector);
 
         if ($selector === '') {
-            throw new RuntimeException('Invalid selector');
+            throw new InvalidArgumentException('The selector must not be empty');
         }
 
         $tag = '(?P<tag>[\*|\w|\-]+)?';
@@ -196,7 +206,7 @@ class Query
                         list($name, $value) = array_pad(explode('=', $attribute), 2, null);
 
                         // if specified only the attribute name
-                        $result['attributes'][$name] = $value;
+                        $result['attributes'][$name] = trim($value, '\'"');
                     }
                 }
             }

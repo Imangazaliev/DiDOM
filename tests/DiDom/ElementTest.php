@@ -3,8 +3,9 @@
 namespace Tests\DiDom;
 
 use Tests\TestCase;
-use DiDom\Element;
 use DiDom\Document;
+use DiDom\Element;
+use DiDom\Query;
 
 class ElementTest extends TestCase
 {
@@ -29,170 +30,191 @@ class ElementTest extends TestCase
     {
         $element = new Element('input', '', ['name' => 'username', 'value' => 'John']);
 
-        $this->assertEquals('input', $element->getElement()->tagName);
-        $this->assertEquals('', $element->getElement()->textContent);
-        $this->assertEquals('username', $element->getElement()->getAttribute('name'));
-        $this->assertEquals('John', $element->getElement()->getAttribute('value'));
+        $this->assertEquals('input', $element->getNode()->tagName);
+        $this->assertEquals('', $element->getNode()->textContent);
+        $this->assertEquals('username', $element->getNode()->getAttribute('name'));
+        $this->assertEquals('John', $element->getNode()->getAttribute('value'));
     }
 
     public function testCreateFromDomElement()
     {
-        $domElement = $this->createDomElement('input');
+        $node = $this->createNode('input');
+        $element = new Element($node);
 
-        $element = new Element($domElement);
-
-        $this->assertTrue($element->getElement()->isSameNode($domElement));
+        $this->assertEquals($node, $element->getNode());
     }
 
-    public function testGetElement()
+    public function testHas()
     {
-        $domElement = $this->createDomElement('input');
-        $domElement->setAttribute('value', 'test');
+        $document = new \DOMDocument();
+        $document->loadHTML('<div><span class="foo">bar</span></div>');
 
-        $element     = new Element($domElement);
-        $domElement2 = $element->getElement();
+        $node = $document->getElementsByTagName('div')->item(0);
+        $element = new Element($node);
 
-        $this->assertTrue($domElement->isSameNode($domElement2));
+        $this->assertTrue($element->has('.foo'));
+        $this->assertFalse($element->has('.bar'));
     }
 
-    public function testSetAttribute()
+    /**
+     * @dataProvider findTests
+     */
+    public function testFind($html, $selector, $type, $count)
     {
-        $domElement = $this->createDomElement('input');
+        $document = new \DOMDocument();
+        $document->loadHTML($html);
 
-        $element = new Element($domElement);
-        $element->setAttribute('value', 'test');
+        $node = $document->getElementsByTagName('body')->item(0);
+        $element = new Element($node);
 
-        $domElement = $element->getElement();
+        $elements = $element->find($selector, $type);
 
-        $this->assertEquals('test', $domElement->getAttribute('value'));
+        $this->assertTrue(is_array($elements));
+        $this->assertEquals($count, count($elements));
+
+        foreach ($elements as $element) {
+            $this->assertInstanceOf('DiDom\Element', $element);
+        }
     }
 
-    public function testGetAttribute()
+    /**
+     * @dataProvider findTests
+     */
+    public function testFindAndReturnDomElement($html, $selector, $type, $count)
     {
-        $domElement = $this->createDomElement('input');
+        $document = new \DOMDocument();
+        $document->loadHTML($html);
 
-        $element = new Element($domElement);
-        $this->assertEquals(null, $element->getAttribute('value'));
-        $this->assertEquals('default', $element->getAttribute('value', 'default'));
+        $node = $document->getElementsByTagName('body')->item(0);
+        $element = new Element($node);
 
-        $domElement->setAttribute('value', 'test');
+        $elements = $element->find($selector, $type, false);
 
-        $element = new Element($domElement);
-        $this->assertEquals('test', $element->getAttribute('value'));
+        $this->assertTrue(is_array($elements));
+        $this->assertEquals($count, count($elements));
+
+        foreach ($elements as $element) {
+            $this->assertInstanceOf('DOMElement', $element);
+        }
+    }
+
+    public function findTests()
+    {
+        $html = $this->loadFixture('posts.html');
+
+        return array(
+            array($html, '.post h2', Query::TYPE_CSS, 3),
+            array($html, '.fake h2', Query::TYPE_CSS, 0),
+            array($html, '.post h2, .post p', Query::TYPE_CSS, 6),
+            array($html, "//*[contains(concat(' ', normalize-space(@class), ' '), ' post ')]", Query::TYPE_XPATH, 3),
+        );
+    }
+
+    public function testXpath()
+    {
+        $html = $this->loadFixture('posts.html');
+
+        $document = new \DOMDocument();
+        $document->loadHTML($html);
+
+        $node = $document->getElementsByTagName('body')->item(0);
+        $element = new Element($node);
+
+        $elements = $element->xpath("//*[contains(concat(' ', normalize-space(@class), ' '), ' post ')]");
+
+        $this->assertTrue(is_array($elements));
+        $this->assertEquals(3, count($elements));
+
+        foreach ($elements as $element) {
+            $this->assertInstanceOf('DiDom\Element', $element);
+        }
     }
 
     public function testHasAttribute()
     {
-        $domElement = $this->createDomElement('input');
+        $node = $this->createNode('input');
+        $element = new Element($node);
 
-        $element = new Element($domElement);
         $this->assertFalse($element->hasAttribute('value'));
 
-        $domElement->setAttribute('value', 'test');
+        $node->setAttribute('value', 'test');
+        $element = new Element($node);
 
-        $element = new Element($domElement);
         $this->assertTrue($element->hasAttribute('value'));
+    }
+
+    public function testSetAttribute()
+    {
+        $node = $this->createNode('input');
+
+        $element = new Element($node);
+        $element->setAttribute('value', 'test');
+
+        $node = $element->getNode();
+
+        $this->assertEquals('test', $node->getAttribute('value'));
+    }
+
+    public function testGetAttribute()
+    {
+        $node = $this->createNode('input');
+
+        $element = new Element($node);
+
+        $this->assertEquals(null, $element->getAttribute('value'));
+        $this->assertEquals('default', $element->getAttribute('value', 'default'));
+
+        $node->setAttribute('value', 'test');
+
+        $element = new Element($node);
+
+        $this->assertEquals('test', $element->getAttribute('value'));
     }
 
     public function testRemoveAttribute()
     {
-        $domElement = $this->createDomElement('input');
-        $domElement->setAttribute('value', 'test');
+        $node = $this->createNode('input');
+        $node->setAttribute('value', 'test');
+        $element = new Element($node);
 
-        $element = new Element($domElement);
         $this->assertTrue($element->hasAttribute('value'));
 
         $element->removeAttribute('value');
+
         $this->assertFalse($element->hasAttribute('value'));
     }
 
     public function testAttrSet()
     {
-        $domElement = $this->createDomElement('input');
+        $node = $this->createNode('input');
 
-        $element = new Element($domElement);
+        $element = new Element($node);
         $element->attr('value', 'test');
 
-        $this->assertEquals('test', $element->getElement()->getAttribute('value'));
+        $this->assertEquals('test', $element->getNode()->getAttribute('value'));
     }
 
     public function testAttrGet()
     {
-        $domElement = $this->createDomElement('input');
-        $domElement->setAttribute('value', 'test');
+        $node = $this->createNode('input');
+        $node->setAttribute('value', 'test');
 
-        $element = new Element($domElement);
+        $element = new Element($node);
 
         $this->assertEquals('test', $element->attr('value'));
-    }
-
-    public function testGetMagicMethod()
-    {
-        $domElement = $this->createDomElement('input');
-        $domElement->setAttribute('value', 'test');
-
-        $element = new Element($domElement);
-
-        $this->assertEquals('test', $element->value);
-    }
-
-    public function testSetMagicMethod()
-    {
-        $domElement = $this->createDomElement('input');
-
-        $element = new Element($domElement);
-        $element->value = 'test';
-
-        $this->assertEquals('test', $element->getElement()->getAttribute('value'));
-    }
-
-    public function testIssetMagicMethod()
-    {
-        $domElement = $this->createDomElement('input');
-
-        $element = new Element($domElement);
-        $this->assertFalse(isset($element->value));
-
-        $domElement->setAttribute('value', 'test');
-
-        $element = new Element($domElement);
-        $this->assertTrue(isset($element->value));
-    }
-
-    public function testUnsetMagicMethod()
-    {
-        $domElement = $this->createDomElement('input');
-        $domElement->setAttribute('value', 'test');
-
-        $element = new Element($domElement);
-        $this->assertTrue($element->hasAttribute('value'));
-
-        unset($element->value);
-        $this->assertFalse($element->hasAttribute('value'));
-    }
-
-    public function testToDocument()
-    {
-        $domElement = $this->createDomElement('input');
-
-        $element  = new Element($domElement);
-        $document = $element->toDocument();
-
-        $this->assertInstanceOf('DiDom\Document', $document);
     }
 
     public function testHtml()
     {
         $element = new Element('span', 'hello');
-        $html = $element->html();
 
-        $this->assertEquals('<span>hello</span>', $html);
+        $this->assertEquals('<span>hello</span>', $element->html());
     }
 
     public function testGetText()
     {
-        $domElement = $this->createDomElement('span', 'hello');
-        $element    = new Element($domElement);
+        $node = $this->createNode('span', 'hello');
+        $element = new Element($node);
 
         $this->assertEquals('hello', $element->text());
     }
@@ -200,7 +222,6 @@ class ElementTest extends TestCase
     public function testSetValue()
     {
         $element = new Element('span', 'hello');
-
         $element->setValue('test');
 
         $this->assertEquals('test', $element->text());
@@ -218,13 +239,99 @@ class ElementTest extends TestCase
     public function testParent()
     {
         $html = $this->loadFixture('posts.html');
-
         $document = new Document($html, false);
-        $element  = $document->createElement('span', 'value');
+        $element = $document->createElement('span', 'value');
 
-        $parent = $element->parent();
+        $this->assertEquals($document->getDocument(), $element->parent()->getDocument());
+    }
 
-        $this->assertInstanceOf('DiDom\Document', $parent);
-        $this->assertTrue($document->is($parent));
+    public function testGetNode()
+    {
+        $node = $this->createNode('input');
+        $element = new Element($node);
+
+        $this->assertEquals($node, $element->getNode());
+    }
+
+    public function testToDocument()
+    {
+        $node = $this->createNode('input');
+        $element = new Element($node);
+
+        $this->assertInstanceOf('DiDom\Document', $element->toDocument());
+    }
+
+    public function testSetMagicMethod()
+    {
+        $node = $this->createNode('input');
+
+        $element = new Element($node);
+        $element->value = 'test';
+
+        $this->assertEquals('test', $element->getNode()->getAttribute('value'));
+    }
+
+    public function testGetMagicMethod()
+    {
+        $node = $this->createNode('input');
+        $node->setAttribute('value', 'test');
+
+        $element = new Element($node);
+
+        $this->assertEquals('test', $element->value);
+    }
+
+    public function testIssetMagicMethod()
+    {
+        $node = $this->createNode('input');
+        $element = new Element($node);
+
+        $this->assertFalse(isset($element->value));
+
+        $node->setAttribute('value', 'test');
+        $element = new Element($node);
+
+        $this->assertTrue(isset($element->value));
+    }
+
+    public function testUnsetMagicMethod()
+    {
+        $node = $this->createNode('input');
+        $node->setAttribute('value', 'test');
+
+        $element = new Element($node);
+
+        $this->assertTrue($element->hasAttribute('value'));
+
+        unset($element->value);
+        $this->assertFalse($element->hasAttribute('value'));
+    }
+
+    public function testToString()
+    {
+        $element = new Element('span', 'hello');
+
+        $this->assertEquals($element->html(), $element->__toString());
+    }
+
+    /**
+     * @dataProvider findTests
+     */
+    public function testInvoke($html, $selector, $type, $count)
+    {
+        $document = new \DOMDocument();
+        $document->loadHTML($html);
+
+        $node = $document->getElementsByTagName('body')->item(0);
+        $element = new Element($node);
+
+        $elements = $element($selector, $type);
+
+        $this->assertTrue(is_array($elements));
+        $this->assertEquals($count, count($elements));
+
+        foreach ($elements as $element) {
+            $this->assertInstanceOf('DiDom\Element', $element);
+        }
     }
 }

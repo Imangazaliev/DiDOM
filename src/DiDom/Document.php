@@ -32,7 +32,7 @@ class Document
 
         $this->document = new DOMDocument('1.0', $charset);
 
-        if ($html) {
+        if ($html !== null) {
             if ($isFile) {
                 $this->loadHtmlFile($html);
             } else {
@@ -49,9 +49,9 @@ class Document
      */
     public function createElement($name, $value = '', $attributes = [])
     {
-        $domElement = $this->document->createElement($name, $value);
+        $node = $this->document->createElement($name, $value);
 
-        return new Element($domElement, null, $attributes);
+        return new Element($node, null, $attributes);
     }
 
     /**
@@ -79,7 +79,7 @@ class Document
 
     /**
      * @param  string $html
-     * @return \DiDom\Element
+     * @return \DiDom\Document
      * @throws \InvalidArgumentException
      */
     public function loadHtml($html)
@@ -196,7 +196,7 @@ class Document
 
     /**
      * @param  bool $format
-     * @return \DiDom\Element
+     * @return \DiDom\Document
      */
     public function format($format = true)
     {
@@ -236,25 +236,6 @@ class Document
     }
 
     /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->html();
-    }
-
-    /**
-     * @param  string $expression
-     * @param  string $type
-     * @param  bool   $wrapElement returns \DiDom\Element if true, otherwise \DOMElement
-     * @return \DiDom\Element[]|\DOMElement[]
-     */
-    public function __invoke($expression, $type = Query::TYPE_CSS, $wrapElement = true)
-    {
-        return $this->find($expression, $type, $wrapElement);
-    }
-
-    /**
      * @return \DOMDocument
      */
     public function getDocument()
@@ -276,5 +257,24 @@ class Document
     public function toElement()
     {
         return new Element($this->getElement());
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->html();
+    }
+
+    /**
+     * @param  string $expression
+     * @param  string $type
+     * @param  bool   $wrapElement returns \DiDom\Element if true, otherwise \DOMElement
+     * @return \DiDom\Element[]|\DOMElement[]
+     */
+    public function __invoke($expression, $type = Query::TYPE_CSS, $wrapElement = true)
+    {
+        return $this->find($expression, $type, $wrapElement);
     }
 }

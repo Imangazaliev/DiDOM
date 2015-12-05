@@ -25,15 +25,15 @@ class TestCase extends PHPUnit_Framework_TestCase
         return null;
     }
 
-    protected function createDomElement($name, $value = '', $attributes = [])
+    protected function createNode($name, $value = '', $attributes = [])
     {
         $document   = new DOMDocument('1.0', 'utf-8');
-        $domElement = $document->createElement($name, $value);
+        $node = $document->createElement($name, $value);
 
         foreach ($attributes as $name => $value) {
-            $domElement->setAttribute($name, $value);
+            $node->setAttribute($name, $value);
         }
 
-        return $domElement;
+        return $node;
     }
 }

@@ -11,16 +11,51 @@ class DocumentTest extends TestCase
     /**
      * @expectedException InvalidArgumentException
      */
-    public function testLoadHtmlException()
+    public function testConstructWithInvalidArgument()
+    {
+        $document = new Document();
+        $document->loadHtml(array('foo'));
+    }
+
+    /**
+     * @expectedException RuntimeException
+     */
+    public function testConstructWithNotExistingFile()
+    {
+        $document = new Document('path/to/file', true);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testLoadHtmlWithInvalidArgument()
     {
         $document = new Document();
         $document->loadHtml(null);
     }
 
     /**
+     * @expectedException RuntimeException
+     */
+    public function testLoadHtmlFileWithNotExistingFile()
+    {
+        $document = new Document();
+        $document->loadHtmlFile('path/to/file');
+    }
+
+    /**
      * @expectedException InvalidArgumentException
      */
-    public function testAppendChildException()
+    public function testLoadHtmlFileWithInvalidArgument()
+    {
+        $document = new Document();
+        $document->loadHtmlFile(array('foo'));
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testAppendChildWithInvalidArgument()
     {
         $document = new Document('');
         $document->appendChild(null);
@@ -29,21 +64,10 @@ class DocumentTest extends TestCase
     /**
      * @expectedException InvalidArgumentException
      */
-    public function testIsException()
+    public function testIsWithInvalidArgument()
     {
         $document = new Document();
         $document->is(null);
-    }
-
-    /**
-     * @dataProvider loadHtmlFileTests
-     */
-    public function testLoadHtmlFileException($filename, $type)
-    {
-        $this->setExpectedException($type);
-
-        $document = new Document('');
-        $document->loadHtmlFile($filename);
     }
 
     /**
@@ -51,10 +75,27 @@ class DocumentTest extends TestCase
      */
     public function testLoadHtmlCharset($html, $text)
     {
-        $document = new Document('');
-        $document->loadHtml($html);
+        $document = new Document($html, false, 'UTF-8');
 
         $this->assertEquals($text, $document->find('div')[0]->text());
+    }
+
+    public function testCreateElement()
+    {
+        $html = $this->loadFixture('posts.html');
+
+        $document = new Document($html, false);
+        $element  = $document->createElement('span', 'value');
+
+        $this->assertInstanceOf('DiDom\Element', $element);
+        $this->assertEquals('span', $element->getNode()->tagName);
+        $this->assertEquals('value', $element->getNode()->textContent);
+
+        $element = $document->createElement('span');
+        $this->assertEquals('', $element->text());
+
+        $element = $document->createElement('input', '', ['name' => 'username']);
+        $this->assertEquals('username', $element->getNode()->getAttribute('name'));
     }
 
     public function loadHtmlCharsetTests()
@@ -68,23 +109,13 @@ class DocumentTest extends TestCase
         );
     }
 
-    public function testCreateElement()
+    public function testHas()
     {
         $html = $this->loadFixture('posts.html');
-
         $document = new Document($html, false);
-        $element  = $document->createElement('span', 'value');
 
-        $this->assertInstanceOf('DiDom\Element', $element);
-        $this->assertEquals('span', $element->getElement()->tagName);
-        $this->assertEquals('value', $element->getElement()->textContent);
-
-        $element = $document->createElement('span');
-        $this->assertEquals('', $element->text());
-
-        $element = $document->createElement('input', '', ['name' => 'username']);
-        $this->assertEquals('input', $element->getElement()->tagName);
-        $this->assertEquals('username', $element->getElement()->getAttribute('name'));
+        $this->assertTrue($document->has('.posts'));
+        $this->assertFalse($document->has('.fake'));
     }
 
     /**
@@ -98,15 +129,15 @@ class DocumentTest extends TestCase
         $this->assertTrue(is_array($elements));
         $this->assertEquals($count, count($elements));
 
-        if ($count > 0) {
-            $this->assertInstanceOf('DiDom\Element', $elements[0]);
+        foreach ($elements as $element) {
+            $this->assertInstanceOf('DiDom\Element', $element);
         }
     }
 
     /**
      * @dataProvider findTests
      */
-    public function testReturnDomElement($html, $selector, $type, $count)
+    public function testFindAndReturnDomElement($html, $selector, $type, $count)
     {
         $document = new Document($html, false);
         $elements = $document->find($selector, $type, false);
@@ -114,114 +145,9 @@ class DocumentTest extends TestCase
         $this->assertTrue(is_array($elements));
         $this->assertEquals($count, count($elements));
 
-        if ($count > 0) {
-            $this->assertInstanceOf('DOMElement', $elements[0]);
+        foreach ($elements as $element) {
+            $this->assertInstanceOf('DOMElement', $element);
         }
-    }
-
-    public function testXpath()
-    {
-        $html = $this->loadFixture('posts.html');
-
-        $document = new Document($html, false);
-        $elements = $document->xpath("//*[contains(concat(' ', normalize-space(@class), ' '), ' post ')]");
-
-        $this->assertTrue(is_array($elements));
-        $this->assertEquals(3, count($elements));
-    }
-
-    public function testHas()
-    {
-        $html = $this->loadFixture('posts.html');
-
-        $document = new Document($html, false);
-
-        $this->assertTrue($document->has('.posts'));
-        $this->assertFalse($document->has('.fake'));
-    }
-
-    public function testHtml()
-    {
-        $html = $this->loadFixture('posts.html');
-
-        $document = new Document($html, false);
-
-        $this->assertTrue(is_string($document->html()));
-    }
-
-    public function testFormat()
-    {
-        $html = $this->loadFixture('posts.html');
-
-        $document = new Document($html, false);
-
-        $domDocument = $document->getDocument();
-        $this->assertFalse($domDocument->formatOutput);
-
-        $document->format();
-
-        $domDocument = $document->getDocument();
-        $this->assertTrue($domDocument->formatOutput);
-    }
-
-    public function testText()
-    {
-        $html = $this->loadFixture('posts.html');
-
-        $document = new Document($html, false);
-
-        $this->assertTrue(is_string($document->text()));
-    }
-
-    /**
-     * @dataProvider findTests
-     */
-    public function testInvoke($html, $selector, $type, $count)
-    {
-        $document = new Document($html, false);
-        $elements = $document($selector, $type);
-
-        $this->assertTrue(is_array($elements));
-        $this->assertEquals($count, count($elements));
-    }
-
-    public function testIs()
-    {
-        $html = $this->loadFixture('posts.html');
-
-        $document = new Document($html, false);
-
-        $this->assertTrue($document->is($document));
-    }
-
-    public function testGetElement()
-    {
-        $html = $this->loadFixture('posts.html');
-
-        $document = new Document($html, false);
-
-        $domElement = $document->getElement();
-
-        $this->assertInstanceOf('DOMElement', $domElement);
-    }
-
-    public function testToElement()
-    {
-        $html = $this->loadFixture('posts.html');
-
-        $document = new Document($html, false);
-
-        $element = $document->toElement();
-
-        $this->assertInstanceOf('DiDom\Element', $element);
-    }
-
-    public function loadHtmlFileTests()
-    {
-        return array(
-            array(array('element'), 'InvalidArgumentException'),
-            array('path/to/file', 'RuntimeException'),
-        );
     }
 
     public function findTests()
@@ -234,5 +160,107 @@ class DocumentTest extends TestCase
             array($html, '.post h2, .post p', Query::TYPE_CSS, 6),
             array($html, "//*[contains(concat(' ', normalize-space(@class), ' '), ' post ')]", Query::TYPE_XPATH, 3),
         );
+    }
+
+    public function testXpath()
+    {
+        $html = $this->loadFixture('posts.html');
+
+        $document = new Document($html, false);
+        $elements = $document->xpath("//*[contains(concat(' ', normalize-space(@class), ' '), ' post ')]");
+
+        $this->assertTrue(is_array($elements));
+        $this->assertEquals(3, count($elements));
+
+        foreach ($elements as $element) {
+            $this->assertInstanceOf('DiDom\Element', $element);
+        }
+    }
+
+    public function testHtml()
+    {
+        $html = $this->loadFixture('posts.html');
+        $document = new Document($html, false);
+
+        $this->assertTrue(is_string($document->html()));
+    }
+
+    public function testFormat()
+    {
+        $html = $this->loadFixture('posts.html');
+        $document = new Document($html, false);
+
+        $this->assertFalse($document->getDocument()->formatOutput);
+
+        $document->format();
+
+        $this->assertTrue($document->getDocument()->formatOutput);
+    }
+
+    public function testText()
+    {
+        $html = '<html>foo</html>';
+        $document = new Document($html, false);
+
+        $this->assertEquals('foo', $document->text());
+    }
+
+    public function testIs()
+    {
+        $html = $this->loadFixture('posts.html');
+
+        $document = new Document($html, false);
+        $document2 = new Document($html, false);
+
+        $this->assertTrue($document->is($document));
+        $this->assertFalse($document->is($document2));
+    }
+
+    public function testGetDocument()
+    {
+        $domDocument = new \DOMDocument();
+        $document = new Document($domDocument);
+
+        $this->assertEquals($domDocument, $document->getDocument());
+    }
+
+    public function testGetElement()
+    {
+        $html = $this->loadFixture('posts.html');
+        $document = new Document($html, false);
+
+        $this->assertInstanceOf('DOMElement', $document->getElement());
+    }
+
+    public function testToElement()
+    {
+        $html = $this->loadFixture('posts.html');
+        $document = new Document($html, false);
+
+        $this->assertInstanceOf('DiDom\Element', $document->toElement());
+    }
+
+    public function testToString()
+    {
+        $html = $this->loadFixture('posts.html');
+        $document = new Document($html, false);
+
+        $this->assertEquals($document->html(), $document->__toString());
+    }
+
+    /**
+     * @dataProvider findTests
+     */
+    public function testInvoke($html, $selector, $type, $count)
+    {
+        $document = new Document($html, false);
+        $elements = $document($selector, $type);
+
+        $this->assertTrue(is_array($elements));
+        $this->assertEquals($count, count($elements));
+
+        foreach ($elements as $element) {
+            $this->assertInstanceOf('DiDom\Element', $element);
+        }
     }
 }

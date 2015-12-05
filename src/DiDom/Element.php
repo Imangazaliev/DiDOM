@@ -13,7 +13,7 @@ class Element
      * 
      * @var \DOMElement;
      */
-    protected $domElement;
+    protected $node;
 
     /**
      * Constructor.
@@ -26,58 +26,30 @@ class Element
      */
     public function __construct($name, $value = '', $attributes = [])
     {
-        $document   = new DOMDocument('1.0', 'UTF-8');
-        $domElement = ($name instanceof DOMElement) ? $name : $document->createElement($name, $value);
+        $document = new DOMDocument('1.0', 'UTF-8');
+        $node = is_string($name) ? $document->createElement($name, $value) : $name;
+
+        $this->setNode($node);
 
         if (!is_array($attributes)) {
             throw new InvalidArgumentException(sprintf('%s expects parameter 3 to be array, %s given', __METHOD__, (is_object($attributes) ? get_class($attributes) : gettype($attributes))));
         }
 
         foreach ($attributes as $name => $value) {
-            $domElement->setAttribute($name, $value);
+            $this->setAttribute($name, $value);
         }
-
-        $this->setElement($domElement);
     }
 
     /**
-     * Get the text content of this node and its descendants.
+     * Checks for the item.
      * 
-     * @return string
+     * @param  string $expression XPath expression or CSS selector
+     * @param  string $type the type of the expression
+     * @return bool
      */
-    public function text()
+    public function has($expression, $type = Query::TYPE_CSS)
     {
-        return $this->domElement->textContent;
-    }
-
-    /**
-     * Set the value of this node.
-     *
-     * @param  string $value
-     * @return \DiDom\Element
-     */
-    public function setValue($value)
-    {
-        if (!is_string($value)) {
-            throw new InvalidArgumentException(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, (is_object($value) ? get_class($value) : gettype($value))));
-        }
-        $this->domElement->nodeValue = $value;
-
-        return $this;
-    }
-
-    /**
-     * Get the DOM document with the current element.
-     * 
-     * @return \DiDom\Document
-     */
-    public function toDocument()
-    {
-        $document = new Document();
-
-        $document->appendChild($this->domElement);
-
-        return $document;
+        return $this->toDocument()->has($expression, $type);
     }
 
     /**
@@ -104,28 +76,6 @@ class Element
     }
 
     /**
-     * Checks for the item.
-     * 
-     * @param  string $expression XPath expression or CSS selector
-     * @param  string $type the type of the expression
-     * @return bool
-     */
-    public function has($expression, $type = Query::TYPE_CSS)
-    {
-        return $this->toDocument()->has($expression, $type);
-    }
-
-    /**
-     * Dumps the internal document into a string using HTML formatting.
-     * 
-     * @return string
-     */
-    public function html()
-    {
-        return $this->toDocument()->html();
-    }
-
-    /**
      * Determine if an attribute exists on the element.
      *
      * @param  string $name
@@ -133,7 +83,7 @@ class Element
      */
     public function hasAttribute($name)
     {
-        return $this->domElement->hasAttribute($name);
+        return $this->node->hasAttribute($name);
     }
 
     /**
@@ -145,7 +95,7 @@ class Element
      */
     public function setAttribute($name, $value)
     {
-        $this->domElement->setAttribute($name, $value);
+        $this->node->setAttribute($name, $value);
 
         return $this;
     }
@@ -160,10 +110,23 @@ class Element
     public function getAttribute($name, $default = null)
     {
         if ($this->hasAttribute($name)) {
-            return $this->domElement->getAttribute($name);
+            return $this->node->getAttribute($name);
         }
 
         return $default;
+    }
+
+    /**
+     * Unset an attribute on the element.
+     *
+     * @param  string $name
+     * @return \DiDom\Element
+     */
+    public function removeAttribute($name)
+    {
+        $this->node->removeAttribute($name);
+
+        return $this;
     }
 
     /**
@@ -183,14 +146,38 @@ class Element
     }
 
     /**
-     * Unset an attribute on the element.
+     * Dumps the internal document into a string using HTML formatting.
+     * 
+     * @return string
+     */
+    public function html()
+    {
+        return $this->toDocument()->html();
+    }
+
+    /**
+     * Get the text content of this node and its descendants.
+     * 
+     * @return string
+     */
+    public function text()
+    {
+        return $this->node->textContent;
+    }
+
+    /**
+     * Set the value of this node.
      *
-     * @param  string $name
+     * @param  string $value
      * @return \DiDom\Element
      */
-    public function removeAttribute($name)
+    public function setValue($value)
     {
-        $this->domElement->removeAttribute($name);
+        if (!is_string($value)) {
+            throw new InvalidArgumentException(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, (is_object($value) ? get_class($value) : gettype($value))));
+        }
+
+        $this->node->nodeValue = $value;
 
         return $this;
     }
@@ -203,14 +190,14 @@ class Element
     public function is($element)
     {
         if ($element instanceof self) {
-            $element = $element->getElement();
+            $element = $element->getNode();
         }
 
         if (!$element instanceof \DOMNode) {
             throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s or DOMNode, %s given', __METHOD__, __CLASS__, (is_object($element) ? get_class($element) : gettype($element))));
         }
 
-        return $this->domElement->isSameNode($element);
+        return $this->node->isSameNode($element);
     }
 
     /**
@@ -218,18 +205,18 @@ class Element
      */
     public function parent()
     {
-        return new Document($this->getElement()->ownerDocument);
+        return new Document($this->getNode()->ownerDocument);
     }
 
     /**
      * Sets current \DOMElement instance.
      *
-     * @param  \DOMElement $domElement
+     * @param  \DOMElement $node
      * @return \DiDom\Element
      */
-    protected function setElement(\DOMElement $domElement)
+    protected function setNode(\DOMElement $node)
     {
-        $this->domElement = $domElement;
+        $this->node = $node;
 
         return $this;
     }
@@ -237,9 +224,51 @@ class Element
     /**
      * @return \DOMElement
      */
-    public function getElement()
+    public function getNode()
     {
-        return $this->domElement;
+        return $this->node;
+    }
+
+    /**
+     * Get the DOM document with the current element.
+     * 
+     * @return \DiDom\Document
+     */
+    public function toDocument()
+    {
+        $document = new Document();
+        $document->appendChild($this->node);
+
+        return $document;
+    }
+
+    /**
+     * Dynamically set an attribute on the element.
+     *
+     * @param  string $name
+     * @param  mixed  $value
+     * @return \DiDom\Element
+     */
+    public function __set($name, $value)
+    {
+        return $this->setAttribute($name, $value);
+    }
+
+    /**
+     * Dynamically access the element's attributes.
+     *
+     * @param  string $name
+     * @return string|null
+     */
+    public function __get($name)
+    {
+        switch ($name) {
+            case 'tag':
+                return $this->node->tagName;
+                break;
+            default:
+                return $this->getAttribute($name);
+        }
     }
 
     /**
@@ -262,35 +291,6 @@ class Element
     public function __unset($name)
     {
         $this->removeAttribute($name);
-    }
-
-    /**
-     * Dynamically set an attribute on the element.
-     *
-     * @param  string $name
-     * @param  mixed  $value
-     * @return \DiDom\Element
-     */
-    public function __set($name, $value)
-    {
-        return $this->setAttribute($name, $value);
-    }
-
-    /**
-     * Dynamically access the element's attributes.
-     *
-     * @param  string $name
-     * @return string
-     */
-    public function __get($name)
-    {
-        switch ($name) {
-            case 'tag':
-                return $this->domElement->tagName;
-                break;
-            default:
-                return $this->getAttribute($name);
-        }
     }
 
     /**
