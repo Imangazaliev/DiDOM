@@ -25,6 +25,7 @@ class Query
      *
      * @param  string $expression XPath expression or CSS selector
      * @param  string $type the type of the expression
+     *
      * @return string XPath expression
      */
     public static function compile($expression, $type = self::TYPE_CSS)
@@ -57,6 +58,7 @@ class Query
      * 
      * @param  string $selector a CSS selector
      * @param  string $prefix specifies the nesting of nodes
+     *
      * @return string XPath expression
      */
     public static function cssToXpath($selector, $prefix = '//')
@@ -83,6 +85,7 @@ class Query
     /**
      * @param  array  $segments
      * @param  string $prefix specifies the nesting of nodes
+     *
      * @return string XPath expression
      */
     public static function buildXpath($segments, $prefix = '//')
@@ -131,7 +134,9 @@ class Query
      * 
      * @param  string $pseudo pseudo-class
      * @param  string $expression expression for the nth-child (optional)
+     *
      * @return string
+     *
      * @throws \RuntimeException if passed an unknown pseudo-class
      */
     protected static function convertPseudo($pseudo, $expression = null)
@@ -171,7 +176,9 @@ class Query
      * Splits the CSS selector into parts (tag name, ID, classes, attributes, pseudo-class).
      * 
      * @param  string $selector CSS selector
+     *
      * @return array
+     *
      * @throws \InvalidArgumentException if an empty string is passed
      * @throws \RuntimeException if the selector is not valid
      */
@@ -260,6 +267,7 @@ class Query
 
     /**
      * @param  array $compiled
+     *
      * @throws \InvalidArgumentException if the attributes is not an array
      */
     public static function setCompiled($compiled)

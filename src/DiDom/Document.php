@@ -20,7 +20,6 @@ class Document
      * 
      * @param  string $html HTML code or file path
      * @param  bool   $isFile indicates that in first parameter was passed to the file path
-     * @return void
      */
     public function __construct($html = null, $isFile = false, $charset = 'UTF-8')
     {
@@ -47,6 +46,7 @@ class Document
      * @param  string $name The tag name of the element
      * @param  string $value The value of the element
      * @param  array  $attributes The attributes of the element
+     *
      * @return \DiDom\Element created element
      */
     public function createElement($name, $value = '', $attributes = [])
@@ -60,7 +60,9 @@ class Document
      * Adds new child at the end of the children.
      * 
      * @param  \DiDom\Element|\DOMNode $element The appended child.
+     *
      * @return \DiDom\Document
+     *
      * @throws \InvalidArgumentException if the provided argument is not an instance of \DOMNode or \DiDom\Element
      */
     public function appendChild($element)
@@ -85,7 +87,9 @@ class Document
      * Load HTML from a string.
      * 
      * @param  string $html The HTML string
+     *
      * @return \DiDom\Document
+     *
      * @throws \InvalidArgumentException if the provided argument is not a string
      */
     public function loadHtml($html)
@@ -114,7 +118,9 @@ class Document
      * Load HTML from a file.
      * 
      * @param  string $filepath The path to the HTML file
+     *
      * @return \DiDom\Document
+     *
      * @throws \InvalidArgumentException if the file path is not a string
      * @throws \RuntimeException if the file does not exist
      * @throws \RuntimeException if you are unable to load the file
@@ -147,6 +153,7 @@ class Document
      * 
      * @param  string $expression XPath expression or CSS selector
      * @param  string $type the type of the expression
+     *
      * @return bool
      */
     public function has($expression, $type = Query::TYPE_CSS)
@@ -160,6 +167,7 @@ class Document
      * @param  string $expression XPath expression or a CSS selector
      * @param  string $type the type of the expression
      * @param  bool   $wrapElement returns array of \DiDom\Element if true, otherwise array of \DOMElement
+     *
      * @return \DiDom\Element[]|\DOMElement[]
      */
     public function find($expression, $type = Query::TYPE_CSS, $wrapElement = true)
@@ -188,6 +196,7 @@ class Document
      * 
      * @param  string $expression XPath expression
      * @param  bool   $wrapElement returns array of \DiDom\Element if true, otherwise array of \DOMElement
+     *
      * @return \DiDom\Element[]|\DOMElement[]
      */
     public function xpath($expression, $wrapElement = true)
@@ -209,6 +218,7 @@ class Document
      * Nicely formats output with indentation and extra space.
      * 
      * @param  bool $format formats output if true
+     *
      * @return \DiDom\Document
      */
     public function format($format = true)
@@ -232,7 +242,9 @@ class Document
      * Indicates if two documents are the same document.
      * 
      * @param  Document|\DOMDocument $document The compared document.
+     *
      * @return bool
+     *
      * @throws \InvalidArgumentException if the provided argument is not an instance of \DOMDocument or \DiDom\Document
      */
     public function is($document)
@@ -290,6 +302,7 @@ class Document
      * @param  string $expression XPath expression or a CSS selector
      * @param  string $type the type of the expression
      * @param  bool   $wrapElement returns array of \DiDom\Element if true, otherwise array of \DOMElement
+     *
      * @return \DiDom\Element[]|\DOMElement[]
      */
     public function __invoke($expression, $type = Query::TYPE_CSS, $wrapElement = true)

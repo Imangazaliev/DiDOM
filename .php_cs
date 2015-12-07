@@ -5,6 +5,8 @@ use Symfony\CS\FixerInterface;
 use Symfony\CS\Finder\DefaultFinder;
 
 $fixers = [
+    'array_element_no_space_before_comma',
+    'array_element_white_space_after_comma',
     'blankline_after_open_tag',
     'braces',
     'concat_without_spaces',
@@ -25,20 +27,25 @@ $fixers = [
     'lowercase_constants',
     'lowercase_keywords',
     'method_argument_space',
+    'method_separation',
     'multiline_array_trailing_comma',
     'multiline_spaces_before_semicolon',
     'multiple_use',
     'namespace_no_leading_whitespace',
+    'newline_after_open_tag',
     'no_blank_lines_after_class_opening',
     'no_empty_lines_after_phpdocs',
     'object_operator',
     'operators_spaces',
     'parenthesis',
+    'php_closing_tag',
     'phpdoc_indent',
     'phpdoc_inline_tag',
     'phpdoc_no_access',
+    'phpdoc_no_empty_return',
     'phpdoc_no_package',
     'phpdoc_scalar',
+    'phpdoc_separation',
     'phpdoc_short_description',
     'phpdoc_to_comment',
     'phpdoc_trim',
@@ -70,4 +77,3 @@ return Config::create()
     ->fixers($fixers)
     ->level(FixerInterface::NONE_LEVEL)
     ->setUsingCache(true);
-

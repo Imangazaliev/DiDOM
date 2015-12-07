@@ -3,7 +3,6 @@
 namespace DiDom;
 
 use DOMDocument;
-use DOMElement;
 use InvalidArgumentException;
 
 class Element
@@ -21,7 +20,7 @@ class Element
      * @param  \DOMElement|string $name The tag name of the element
      * @param  string $value The value of the element
      * @param  array  $attributes The attributes of the element
-     * @return void
+     *
      * @throws \InvalidArgumentException if the attributes is not an array
      */
     public function __construct($name, $value = '', $attributes = [])
@@ -45,6 +44,7 @@ class Element
      * 
      * @param  string $expression XPath expression or CSS selector
      * @param  string $type the type of the expression
+     *
      * @return bool
      */
     public function has($expression, $type = Query::TYPE_CSS)
@@ -58,6 +58,7 @@ class Element
      * @param  string $expression XPath expression or a CSS selector
      * @param  string $type the type of the expression
      * @param  bool   $wrapElement returns array of \DiDom\Element if true, otherwise array of \DOMElement
+     *
      * @return \DiDom\Element[]|\DOMElement[]
      */
     public function find($expression, $type = Query::TYPE_CSS, $wrapElement = true)
@@ -70,6 +71,7 @@ class Element
      * 
      * @param  string $expression XPath expression
      * @param  bool   $wrapElement returns array of \DiDom\Element if true, otherwise array of \DOMElement
+     *
      * @return \DiDom\Element[]|\DOMElement[]
      */
     public function xpath($expression, $wrapElement = true)
@@ -81,6 +83,7 @@ class Element
      * Determine if an attribute exists on the element.
      *
      * @param  string $name The attribute name
+     *
      * @return bool
      */
     public function hasAttribute($name)
@@ -93,6 +96,7 @@ class Element
      *
      * @param  string $name The attribute name
      * @param  string $value The attribute value
+     *
      * @return \DiDom\Element
      */
     public function setAttribute($name, $value)
@@ -107,6 +111,7 @@ class Element
      *
      * @param  string $name The attribute name
      * @param  string $default The value returned if the attribute does not exist
+     *
      * @return string|null The value of the attribute or null if attribute does not exist
      */
     public function getAttribute($name, $default = null)
@@ -122,6 +127,7 @@ class Element
      * Unset an attribute on the element.
      *
      * @param  string $name The attribute name
+     *
      * @return \DiDom\Element
      */
     public function removeAttribute($name)
@@ -136,6 +142,7 @@ class Element
      *
      * @param  string $name The attribute name
      * @param  string $value The attribute value or null if the attribute does not exist
+     *
      * @return string|null|\DiDom\Element
      */
     public function attr($name, $value = null)
@@ -171,6 +178,7 @@ class Element
      * Set the value of this node.
      *
      * @param  string $value The new value of the node
+     *
      * @return \DiDom\Element
      */
     public function setValue($value)
@@ -188,7 +196,9 @@ class Element
      * Indicates if two nodes are the same node.
      * 
      * @param  Element|\DOMElement $element
+     *
      * @return bool
+     *
      * @throws \InvalidArgumentException if the provided argument is not an instance of \DOMElement
      */
     public function is($element)
@@ -218,6 +228,7 @@ class Element
      * Sets current \DOMElement instance.
      *
      * @param  \DOMElement $node
+     *
      * @return \DiDom\Element
      */
     protected function setNode(\DOMElement $node)
@@ -253,6 +264,7 @@ class Element
      *
      * @param  string $name The attribute name
      * @param  mixed  $value The attribute value
+     *
      * @return \DiDom\Element
      */
     public function __set($name, $value)
@@ -264,6 +276,7 @@ class Element
      * Dynamically access the element's attributes.
      *
      * @param  string $name The attribute name
+     *
      * @return string|null
      */
     public function __get($name)
@@ -281,6 +294,7 @@ class Element
      * Determine if an attribute exists on the element.
      *
      * @param  string $name The attribute name
+     *
      * @return bool
      */
     public function __isset($name)
@@ -292,7 +306,6 @@ class Element
      * Unset an attribute on the model.
      *
      * @param  string $name The attribute name
-     * @return void
      */
     public function __unset($name)
     {
@@ -315,6 +328,7 @@ class Element
      * @param  string $expression XPath expression or a CSS selector
      * @param  string $type the type of the expression
      * @param  bool   $wrapElement returns array of \DiDom\Element if true, otherwise array of \DOMElement
+     *
      * @return \DiDom\Element[]|\DOMElement[]
      */
     public function __invoke($expression, $type = Query::TYPE_CSS, $wrapElement = true)
