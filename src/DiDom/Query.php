@@ -219,13 +219,13 @@ class Query
                     if ($attribute !== '') {
                         list($name, $value) = array_pad(explode('=', $attribute), 2, null);
 
-                        // if specified only the attribute name
-                        $result['attributes'][$name] = trim($value, '\'"');
+                        // equal null if specified only the attribute name
+                        $result['attributes'][$name] = is_string($value) ? trim($value, '\'"') : null;
                     }
                 }
             }
 
-            //if the class attribute specified
+            // if the class attribute specified
             if (isset($segments['classes'])) {
                 $classes = trim($segments['classes'], '.');
                 $classes = explode('.', $classes);
