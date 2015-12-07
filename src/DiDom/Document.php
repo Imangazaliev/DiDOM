@@ -42,10 +42,12 @@ class Document
     }
 
     /**
-     * @param  string $name
-     * @param  string $value
-     * @param  array  $attributes
-     * @return \DiDom\Element
+     * Create new element node.
+     * 
+     * @param  string $name The tag name of the element
+     * @param  string $value The value of the element
+     * @param  array  $attributes The attributes of the element
+     * @return \DiDom\Element created element
      */
     public function createElement($name, $value = '', $attributes = [])
     {
@@ -55,9 +57,11 @@ class Document
     }
 
     /**
-     * @param  \DiDom\Element|\DOMNode $element
-     * @return \DiDom\Element
-     * @throws \InvalidArgumentException
+     * Adds new child at the end of the children.
+     * 
+     * @param  \DiDom\Element|\DOMNode $element The appended child.
+     * @return \DiDom\Document
+     * @throws \InvalidArgumentException if the provided argument is not an instance of \DOMNode or \DiDom\Element
      */
     public function appendChild($element)
     {
@@ -78,9 +82,11 @@ class Document
     }
 
     /**
-     * @param  string $html
+     * Load HTML from a string.
+     * 
+     * @param  string $html The HTML string
      * @return \DiDom\Document
-     * @throws \InvalidArgumentException
+     * @throws \InvalidArgumentException if the provided argument is not a string
      */
     public function loadHtml($html)
     {
@@ -105,10 +111,13 @@ class Document
     }
 
     /**
-     * @param  string $filepath
-     * @return \DiDom\Element
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
+     * Load HTML from a file.
+     * 
+     * @param  string $filepath The path to the HTML file
+     * @return \DiDom\Document
+     * @throws \InvalidArgumentException if the file path is not a string
+     * @throws \RuntimeException if the file does not exist
+     * @throws \RuntimeException if you are unable to load the file
      */
     public function loadHtmlFile($filepath)
     {
@@ -134,7 +143,7 @@ class Document
     }
 
     /**
-     * Checks for the item.
+     * Checks the existence of the item.
      * 
      * @param  string $expression XPath expression or CSS selector
      * @param  string $type the type of the expression
@@ -146,11 +155,11 @@ class Document
     }
 
     /**
-     * Searches for the element in the DOM tree.
+     * Searches for an item in the DOM tree for a given XPath expression or a CSS selector.
      * 
-     * @param  string $expression XPath expression or CSS selector
+     * @param  string $expression XPath expression or a CSS selector
      * @param  string $type the type of the expression
-     * @param  bool   $wrapElement returns \DiDom\Element if true, otherwise \DOMElement
+     * @param  bool   $wrapElement returns array of \DiDom\Element if true, otherwise array of \DOMElement
      * @return \DiDom\Element[]|\DOMElement[]
      */
     public function find($expression, $type = Query::TYPE_CSS, $wrapElement = true)
@@ -175,8 +184,10 @@ class Document
     }
 
     /**
+     * Searches for an item in the DOM tree for a given XPath expression.
+     * 
      * @param  string $expression XPath expression
-     * @param  bool   $wrapElement returns \DiDom\Element if true, otherwise \DOMElement
+     * @param  bool   $wrapElement returns array of \DiDom\Element if true, otherwise array of \DOMElement
      * @return \DiDom\Element[]|\DOMElement[]
      */
     public function xpath($expression, $wrapElement = true)
@@ -187,7 +198,7 @@ class Document
     /**
      * Dumps the internal document into a string using HTML formatting.
      * 
-     * @return string
+     * @return string The document html
      */
     public function html()
     {
@@ -195,7 +206,9 @@ class Document
     }
 
     /**
-     * @param  bool $format
+     * Nicely formats output with indentation and extra space.
+     * 
+     * @param  bool $format formats output if true
      * @return \DiDom\Document
      */
     public function format($format = true)
@@ -216,9 +229,11 @@ class Document
     }
 
     /**
-     * @param  Document|\DOMDocument $document
+     * Indicates if two documents are the same document.
+     * 
+     * @param  Document|\DOMDocument $document The compared document.
      * @return bool
-     * @throws \InvalidArgumentException
+     * @throws \InvalidArgumentException if the provided argument is not an instance of \DOMDocument or \DiDom\Document
      */
     public function is($document)
     {
@@ -260,6 +275,8 @@ class Document
     }
 
     /**
+     * Convert the document to its string representation.
+     * 
      * @return string
      */
     public function __toString()
@@ -268,9 +285,11 @@ class Document
     }
 
     /**
-     * @param  string $expression
-     * @param  string $type
-     * @param  bool   $wrapElement returns \DiDom\Element if true, otherwise \DOMElement
+     * Searches for an item in the DOM tree for a given XPath expression or a CSS selector.
+     * 
+     * @param  string $expression XPath expression or a CSS selector
+     * @param  string $type the type of the expression
+     * @param  bool   $wrapElement returns array of \DiDom\Element if true, otherwise array of \DOMElement
      * @return \DiDom\Element[]|\DOMElement[]
      */
     public function __invoke($expression, $type = Query::TYPE_CSS, $wrapElement = true)

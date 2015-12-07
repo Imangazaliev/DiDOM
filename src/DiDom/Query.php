@@ -21,11 +21,11 @@ class Query
     protected static $compiled = array();
 
     /**
-     * Transform CSS expression to XPath.
+     * Converts a CSS selector into an XPath expression.
      *
      * @param  string $expression XPath expression or CSS selector
-     * @param  string $type       the type of the expression
-     * @return string
+     * @param  string $type the type of the expression
+     * @return string XPath expression
      */
     public static function compile($expression, $type = self::TYPE_CSS)
     {
@@ -53,9 +53,11 @@ class Query
     }
 
     /**
-     * @param  string $selector
-     * @param  string $prefix
-     * @return string
+     * Converts a CSS selector into an XPath expression.
+     * 
+     * @param  string $selector a CSS selector
+     * @param  string $prefix specifies the nesting of nodes
+     * @return string XPath expression
      */
     public static function cssToXpath($selector, $prefix = '//')
     {
@@ -80,8 +82,8 @@ class Query
 
     /**
      * @param  array  $segments
-     * @param  string $prefix
-     * @return string
+     * @param  string $prefix specifies the nesting of nodes
+     * @return string XPath expression
      */
     public static function buildXpath($segments, $prefix = '//')
     {
@@ -125,12 +127,14 @@ class Query
     }
 
     /**
-     * @param  string $pseudo
-     * @param  string $expression
+     * Converts a CSS pseudo-class into an XPath expression.
+     * 
+     * @param  string $pseudo pseudo-class
+     * @param  string $expression expression for the nth-child (optional)
      * @return string
      * @throws \RuntimeException if passed an unknown pseudo-class
      */
-    protected static function convertPseudo($pseudo, $expression)
+    protected static function convertPseudo($pseudo, $expression = null)
     {
         if ('first-child' === $pseudo) {
             return '1';
@@ -164,9 +168,12 @@ class Query
     }
 
     /**
-     * @param  string $selector
+     * Splits the CSS selector into parts (tag name, ID, classes, attributes, pseudo-class).
+     * 
+     * @param  string $selector CSS selector
      * @return array
-     * @throws \RuntimeException if an empty string is passed or the selector is not valid
+     * @throws \InvalidArgumentException if an empty string is passed
+     * @throws \RuntimeException if the selector is not valid
      */
     public static function getSegments($selector)
     {
@@ -253,7 +260,7 @@ class Query
 
     /**
      * @param  array $compiled
-     * @throws \InvalidArgumentException
+     * @throws \InvalidArgumentException if the attributes is not an array
      */
     public static function setCompiled($compiled)
     {

@@ -18,11 +18,11 @@ class Element
     /**
      * Constructor.
      * 
-     * @param  \DOMElement|string $name
-     * @param  string $value
-     * @param  array  $attributes
+     * @param  \DOMElement|string $name The tag name of the element
+     * @param  string $value The value of the element
+     * @param  array  $attributes The attributes of the element
      * @return void
-     * @throws \InvalidArgumentException
+     * @throws \InvalidArgumentException if the attributes is not an array
      */
     public function __construct($name, $value = '', $attributes = [])
     {
@@ -41,7 +41,7 @@ class Element
     }
 
     /**
-     * Checks for the item.
+     * Checks the existence of the item.
      * 
      * @param  string $expression XPath expression or CSS selector
      * @param  string $type the type of the expression
@@ -53,11 +53,11 @@ class Element
     }
 
     /**
-     * Searches for the element in the DOM tree.
+     * Searches for an item in the DOM tree for a given XPath expression or a CSS selector.
      * 
-     * @param  string $expression XPath expression or CSS selector
-     * @param  bool   $wrapElement returns \DiDom\Element if true, otherwise \DOMElement
+     * @param  string $expression XPath expression or a CSS selector
      * @param  string $type the type of the expression
+     * @param  bool   $wrapElement returns array of \DiDom\Element if true, otherwise array of \DOMElement
      * @return \DiDom\Element[]|\DOMElement[]
      */
     public function find($expression, $type = Query::TYPE_CSS, $wrapElement = true)
@@ -66,8 +66,10 @@ class Element
     }
 
     /**
+     * Searches for an item in the DOM tree for a given XPath expression.
+     * 
      * @param  string $expression XPath expression
-     * @param  bool   $wrapElement returns \DiDom\Element if true, otherwise \DOMElement
+     * @param  bool   $wrapElement returns array of \DiDom\Element if true, otherwise array of \DOMElement
      * @return \DiDom\Element[]|\DOMElement[]
      */
     public function xpath($expression, $wrapElement = true)
@@ -78,7 +80,7 @@ class Element
     /**
      * Determine if an attribute exists on the element.
      *
-     * @param  string $name
+     * @param  string $name The attribute name
      * @return bool
      */
     public function hasAttribute($name)
@@ -89,8 +91,8 @@ class Element
     /**
      * Set an attribute on the element.
      *
-     * @param  string $name
-     * @param  string $value
+     * @param  string $name The attribute name
+     * @param  string $value The attribute value
      * @return \DiDom\Element
      */
     public function setAttribute($name, $value)
@@ -103,8 +105,8 @@ class Element
     /**
      * Access to the element's attributes.
      *
-     * @param  string $name
-     * @param  string $default
+     * @param  string $name The attribute name
+     * @param  string $default The value returned if the attribute does not exist
      * @return string|null The value of the attribute or null if attribute does not exist
      */
     public function getAttribute($name, $default = null)
@@ -119,7 +121,7 @@ class Element
     /**
      * Unset an attribute on the element.
      *
-     * @param  string $name
+     * @param  string $name The attribute name
      * @return \DiDom\Element
      */
     public function removeAttribute($name)
@@ -132,8 +134,8 @@ class Element
     /**
      * Alias for getAttribute and setAttribute methods.
      *
-     * @param  string $name
-     * @param  string $value
+     * @param  string $name The attribute name
+     * @param  string $value The attribute value or null if the attribute does not exist
      * @return string|null|\DiDom\Element
      */
     public function attr($name, $value = null)
@@ -148,7 +150,7 @@ class Element
     /**
      * Dumps the internal document into a string using HTML formatting.
      * 
-     * @return string
+     * @return string The node html
      */
     public function html()
     {
@@ -158,7 +160,7 @@ class Element
     /**
      * Get the text content of this node and its descendants.
      * 
-     * @return string
+     * @return string The node value
      */
     public function text()
     {
@@ -168,7 +170,7 @@ class Element
     /**
      * Set the value of this node.
      *
-     * @param  string $value
+     * @param  string $value The new value of the node
      * @return \DiDom\Element
      */
     public function setValue($value)
@@ -183,9 +185,11 @@ class Element
     }
 
     /**
-     * @param  Element|\DOMNode $element
+     * Indicates if two nodes are the same node.
+     * 
+     * @param  Element|\DOMElement $element
      * @return bool
-     * @throws \InvalidArgumentException
+     * @throws \InvalidArgumentException if the provided argument is not an instance of \DOMElement
      */
     public function is($element)
     {
@@ -193,7 +197,7 @@ class Element
             $element = $element->getNode();
         }
 
-        if (!$element instanceof \DOMNode) {
+        if (!$element instanceof \DOMElement) {
             throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s or DOMNode, %s given', __METHOD__, __CLASS__, (is_object($element) ? get_class($element) : gettype($element))));
         }
 
@@ -201,7 +205,9 @@ class Element
     }
 
     /**
-     * @return \DiDom\Document
+     * Returns the parent of this node.
+     * 
+     * @return \DiDom\Document the parent of this node
      */
     public function parent()
     {
@@ -245,8 +251,8 @@ class Element
     /**
      * Dynamically set an attribute on the element.
      *
-     * @param  string $name
-     * @param  mixed  $value
+     * @param  string $name The attribute name
+     * @param  mixed  $value The attribute value
      * @return \DiDom\Element
      */
     public function __set($name, $value)
@@ -257,7 +263,7 @@ class Element
     /**
      * Dynamically access the element's attributes.
      *
-     * @param  string $name
+     * @param  string $name The attribute name
      * @return string|null
      */
     public function __get($name)
@@ -274,7 +280,7 @@ class Element
     /**
      * Determine if an attribute exists on the element.
      *
-     * @param  string $name
+     * @param  string $name The attribute name
      * @return bool
      */
     public function __isset($name)
@@ -285,7 +291,7 @@ class Element
     /**
      * Unset an attribute on the model.
      *
-     * @param  string $name
+     * @param  string $name The attribute name
      * @return void
      */
     public function __unset($name)
@@ -304,9 +310,11 @@ class Element
     }
 
     /**
-     * @param  string $expression
-     * @param  string $type
-     * @param  bool   $wrapElement returns \DiDom\Element if true, otherwise \DOMElement
+     * Searches for an item in the DOM tree for a given XPath expression or a CSS selector.
+     * 
+     * @param  string $expression XPath expression or a CSS selector
+     * @param  string $type the type of the expression
+     * @param  bool   $wrapElement returns array of \DiDom\Element if true, otherwise array of \DOMElement
      * @return \DiDom\Element[]|\DOMElement[]
      */
     public function __invoke($expression, $type = Query::TYPE_CSS, $wrapElement = true)
