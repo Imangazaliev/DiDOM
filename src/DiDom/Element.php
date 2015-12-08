@@ -251,9 +251,9 @@ class Element
      * 
      * @return \DiDom\Document
      */
-    public function toDocument()
+    public function toDocument($encoding = 'UTF-8')
     {
-        $document = new Document();
+        $document = new Document(null, false, $encoding);
         $document->appendChild($this->node);
 
         return $document;

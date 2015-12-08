@@ -258,7 +258,14 @@ class ElementTest extends TestCase
         $node = $this->createNode('input');
         $element = new Element($node);
 
-        $this->assertInstanceOf('DiDom\Document', $element->toDocument());
+        $document = $element->toDocument();
+
+        $this->assertInstanceOf('DiDom\Document', $document);
+        $this->assertEquals('UTF-8', $document->getDocument()->encoding);
+
+        $document = $element->toDocument('CP1251');
+
+        $this->assertEquals('CP1251', $document->getDocument()->encoding);
     }
 
     public function testSetMagicMethod()
