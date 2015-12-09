@@ -195,23 +195,23 @@ class Element
     /**
      * Indicates if two nodes are the same node.
      * 
-     * @param  Element|\DOMElement $element
+     * @param  Element|\DOMElement $node
      *
      * @return bool
      *
      * @throws \InvalidArgumentException if the provided argument is not an instance of \DOMElement
      */
-    public function is($element)
+    public function is($node)
     {
-        if ($element instanceof self) {
-            $element = $element->getNode();
+        if ($node instanceof self) {
+            $node = $node->getNode();
         }
 
-        if (!$element instanceof \DOMElement) {
-            throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s or DOMNode, %s given', __METHOD__, __CLASS__, (is_object($element) ? get_class($element) : gettype($element))));
+        if (!$node instanceof \DOMElement) {
+            throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s or DOMElement, %s given', __METHOD__, __CLASS__, (is_object($node) ? get_class($node) : gettype($node))));
         }
 
-        return $this->node->isSameNode($element);
+        return $this->node->isSameNode($node);
     }
 
     /**
@@ -221,7 +221,7 @@ class Element
      */
     public function parent()
     {
-        return new Document($this->getNode()->ownerDocument);
+        return new Document($this->node->ownerDocument);
     }
 
     /**
