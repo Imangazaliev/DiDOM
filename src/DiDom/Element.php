@@ -195,7 +195,7 @@ class Element
     /**
      * Indicates if two nodes are the same node.
      * 
-     * @param  Element|\DOMElement $node
+     * @param  \DiDom\Element|\DOMElement $node
      *
      * @return bool
      *
@@ -222,6 +222,45 @@ class Element
     public function parent()
     {
         return new Document($this->node->ownerDocument);
+    }
+
+    /**
+     * Removes child from list of children.
+     * 
+     * @return \DiDom\Element the node that has been removed
+     */
+    public function remove()
+    {
+        $node = $this->node->parentNode->removeChild($this->node);
+
+        return new Element($node);
+    }
+
+    /**
+     * Replaces a child.
+     * 
+     * @param  \DOMElement|\DiDom\Element $newChild the new node
+     * @param  bool $clone clone the node if true, otherwise move it
+     * 
+     * @return \DiDom\Element the node that has been replaced
+     */
+    public function replace($newNode, $clone = true)
+    {
+        if ($newNode instanceof self) {
+            $newNode = $newNode->getNode();
+        }
+
+        if ($clone) {
+            $newNode = $newNode->cloneNode(true);
+        }
+
+        if (!$newNode instanceof \DOMElement) {
+            throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s or DOMElement, %s given', __METHOD__, __CLASS__, (is_object($newNode) ? get_class($newNode) : gettype($newNode))));
+        }
+
+        $node = $this->node->parentNode->replaceChild($newNode, $this->node);
+
+        return new Element($node);
     }
 
     /**

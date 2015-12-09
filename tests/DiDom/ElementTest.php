@@ -245,6 +245,40 @@ class ElementTest extends TestCase
         $this->assertEquals($document->getDocument(), $element->parent()->getDocument());
     }
 
+    public function testRemove()
+    {
+        $html = '<div><span>Foo</span></div>';
+        $document = new Document($html, false);
+
+        $element = $document->find('span')[0];
+
+        $this->assertEquals($element->getNode(), $element->remove()->getNode());
+        $this->assertCount(0, $document->find('span'));
+    }
+
+    public function testReplace()
+    {
+        $html = '<ul><li>One</li><li>Two</li><li>Three</li></ul>';
+
+        $document = new Document($html, false);
+
+        $first = $document->find('li')[0];
+        $third = $document->find('li')[2];
+
+        $this->assertEquals($first->getNode(), $first->replace($third)->getNode());
+        $this->assertEquals($third->getNode(), $document->find('li')[0]->getNode());
+        $this->assertCount(3, $document->find('li'));
+
+        $document = new Document($html, false);
+
+        $first = $document->find('li')[0];
+        $third = $document->find('li')[2];
+
+        $this->assertEquals($first->getNode(), $first->replace($third, false)->getNode());
+        $this->assertEquals($third->getNode(), $document->find('li')[0]->getNode());
+        $this->assertCount(2, $document->find('li'));
+    }
+
     public function testGetNode()
     {
         $node = $this->createNode('input');
