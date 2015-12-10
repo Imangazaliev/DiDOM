@@ -24,6 +24,22 @@ class QueryTest extends TestCase
     }
 
     /**
+     * @dataProvider buildXpathTests
+     */
+    public function testBuildXpath($segments, $xpath)
+    {
+        $this->assertEquals($xpath, Query::buildXpath($segments));
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testBuildXpathWithEmptyArray()
+    {
+        Query::buildXpath([]);
+    }
+
+    /**
      * @expectedException InvalidArgumentException
      */
     public function testGetSegmentsWithEmptySelector()
@@ -81,11 +97,14 @@ class QueryTest extends TestCase
             ['a', '//a'],
             ['#foo', '//*[@id="foo"]'],
             ['.bar', '//*[contains(concat(" ", normalize-space(@class), " "), " bar ")]'],
+            ['*[foo=bar]', '//*[@foo="bar"]'],
+            ['*[foo="bar"]', '//*[@foo="bar"]'],
+            ['*[foo=\'bar\']', '//*[@foo="bar"]'],
             ['foo bar baz', '//foo//bar//baz'],
             ['foo > bar > baz', '//foo/bar/baz'],
             ['input, textarea, select', '//input|//textarea|//select'],
-            ['li:first-child', '//li[1]'],
-            ['li:last-child', '//li[last()]'],
+            ['li:first-child', '//li[position() = 1]'],
+            ['li:last-child', '//li[position() = last()]'],
             ['ul:empty', '//ul[count(descendant::*) = 0]'],
             ['ul:not-empty', '//ul[count(descendant::*) > 0]'],
             ['li:nth-child(odd)', '//li[(position() -1) mod 2 = 0 and position() >= 1]'],
@@ -102,6 +121,43 @@ class QueryTest extends TestCase
         return $compiled;
     }
 
+    public function buildXpathTests()
+    {
+        $xpath = [
+            '//a',
+            '//*[@id="foo"]',
+            '//a[@id="foo"]',
+            '//a[contains(concat(" ", normalize-space(@class), " "), " foo ")]',
+            '//a[(contains(concat(" ", normalize-space(@class), " "), " foo ")) and (contains(concat(" ", normalize-space(@class), " "), " bar "))]',
+            '//a[@href]',
+            '//a[@href="http://example.com/"]',
+            '//a[(@href="http://example.com/") and (@title="Example Domain")]',
+            '//li[position() = 1]',
+            '//*[(@id="id") and (contains(concat(" ", normalize-space(@class), " "), " foo ")) and (@name="value") and (position() = 1)]',
+        ];
+
+        $segments = [
+            ['tag' => 'a'],
+            ['id' => 'foo'],
+            ['tag' => 'a', 'id' => 'foo'],
+            ['tag' => 'a', 'classes' => ['foo']],
+            ['tag' => 'a', 'classes' => ['foo', 'bar']],
+            ['tag' => 'a', 'attributes' => ['href' => null]],
+            ['tag' => 'a', 'attributes' => ['href' => 'http://example.com/']],
+            ['tag' => 'a', 'attributes' => ['href' => 'http://example.com/', 'title' => 'Example Domain']], // 
+            ['tag' => 'li', 'pseudo' => 'first-child'],
+            ['tag' => '*', 'id' => 'id', 'classes' => ['foo'], 'attributes' => ['name' => 'value'], 'pseudo' => 'first-child', 'rel' => '>'],
+        ];
+
+        $parameters = [];
+
+        foreach ($segments as $index => $segment) {
+            $parameters[] = [$segment, $xpath[$index]];
+        }
+
+        return $parameters;
+    }
+
     public function getSegmentsTests()
     {
         $segments = [
@@ -112,10 +168,10 @@ class QueryTest extends TestCase
             ['selector' => 'a.foo.bar', 'tag' => 'a', 'classes' => ['foo', 'bar']],
             ['selector' => 'a[href]', 'tag' => 'a', 'attributes' => ['href' => null]],
             ['selector' => 'a[href=http://example.com/]', 'tag' => 'a', 'attributes' => ['href' => 'http://example.com/']],
-            ['selector' => 'a[href=http://example.com/][title=Example Domain]', 'tag' => 'a', 'attributes' => ['href' => 'http://example.com/', 'title' => 'Example Domain']],
-            ['selector' => 'a[href=http://example.com/][href=http://example.com/404]', 'tag' => 'a', 'attributes' => ['href' => 'http://example.com/404']],
             ['selector' => 'a[href="http://example.com/"]', 'tag' => 'a', 'attributes' => ['href' => 'http://example.com/']],
             ['selector' => 'a[href=\'http://example.com/\']', 'tag' => 'a', 'attributes' => ['href' => 'http://example.com/']],
+            ['selector' => 'a[href=http://example.com/][title=Example Domain]', 'tag' => 'a', 'attributes' => ['href' => 'http://example.com/', 'title' => 'Example Domain']],
+            ['selector' => 'a[href=http://example.com/][href=http://example.com/404]', 'tag' => 'a', 'attributes' => ['href' => 'http://example.com/404']],
             ['selector' => 'li:first-child', 'tag' => 'li', 'pseudo' => 'first-child'],
             ['selector' => 'ul >', 'tag' => 'ul', 'rel' => '>'],
             ['selector' => '#id.foo[name=value]:first-child >', 'tag' => '*', 'id' => 'id', 'classes' => ['foo'], 'attributes' => ['name' => 'value'], 'pseudo' => 'first-child', 'rel' => '>'],

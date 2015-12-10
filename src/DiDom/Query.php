@@ -87,6 +87,8 @@ class Query
      * @param  string $prefix specifies the nesting of nodes
      *
      * @return string XPath expression
+     *
+     * @throws InvalidArgumentException if you neither specify tag name nor attributes
      */
     public static function buildXpath($segments, $prefix = '//')
     {
@@ -95,6 +97,13 @@ class Query
         // if the id attribute specified
         if (isset($segments['id'])) {
             $attributes[] = sprintf('@id="%s"', $segments['id']);
+        }
+
+        // if the class attribute specified
+        if (isset($segments['classes'])) {
+            foreach ($segments['classes'] as $class) {
+                $attributes[] = sprintf('contains(concat(" ", normalize-space(@class), " "), " %s ")', $class);
+            }
         }
 
         // if the attributes specified
@@ -107,20 +116,18 @@ class Query
             }
         }
 
-        // if the class attribute specified
-        if (isset($segments['classes'])) {
-            foreach ($segments['classes'] as $class) {
-                $attributes[] = sprintf('contains(concat(" ", normalize-space(@class), " "), " %s ")', $class);
-            }
-        }
-
         // if the pseudo class specified
         if (isset($segments['pseudo'])) {
             $expression   = isset($segments['expr']) ? $segments['expr'] : '';
             $attributes[] = self::convertPseudo($segments['pseudo'], $expression);
         }
 
-        $xpath = $prefix.$segments['tag'];
+        if (count($attributes) === 0 and !isset($segments['tag'])) {
+            throw new InvalidArgumentException('The array of segments should contain the name of the tag or at least one attribute');
+        }
+
+        $tagName = isset($segments['tag']) ? $segments['tag'] : '*';
+        $xpath = $prefix.$tagName;
 
         if ($count = count($attributes)) {
             $xpath .= ($count > 1) ? sprintf('[(%s)]', implode(') and (', $attributes)) : sprintf('[%s]', $attributes[0]);
@@ -142,9 +149,9 @@ class Query
     protected static function convertPseudo($pseudo, $expression = null)
     {
         if ('first-child' === $pseudo) {
-            return '1';
+            return 'position() = 1';
         } elseif ('last-child' === $pseudo) {
-            return 'last()';
+            return 'position() = last()';
         } elseif ('empty' === $pseudo) {
             return 'count(descendant::*) = 0';
         } elseif ('not-empty' === $pseudo) {
