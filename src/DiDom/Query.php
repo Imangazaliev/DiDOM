@@ -63,14 +63,14 @@ class Query
      */
     public static function cssToXpath($selector, $prefix = '//')
     {
-        $xpath    = '';
         $segments = self::getSegments($selector);
+        $xpath = '';
 
         while (count($segments) > 0) {
             $xpath .= self::buildXpath($segments, $prefix);
 
             $selector = trim(substr($selector, strlen($segments['selector'])));
-            $prefix   = (isset($segments['rel'])) ? '/' : '//';
+            $prefix   = isset($segments['rel']) ? '/' : '//';
 
             if ($selector === '') {
                 break;

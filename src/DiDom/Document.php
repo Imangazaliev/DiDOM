@@ -13,15 +13,16 @@ class Document
     /**
      * @var \DOMDocument
      */
-    protected $document = null;
+    protected $document;
 
     /**
      * Constructor.
      * 
      * @param  string $html HTML code or file path
      * @param  bool   $isFile indicates that in first parameter was passed to the file path
+     * @param  string $encoding The document encoding
      */
-    public function __construct($html = null, $isFile = false, $charset = 'UTF-8')
+    public function __construct($html = null, $isFile = false, $encoding = 'UTF-8')
     {
         if ($html instanceof DOMDocument) {
             $this->document = $html;
@@ -29,7 +30,7 @@ class Document
             return;
         }
 
-        $this->document = new DOMDocument('1.0', $charset);
+        $this->document = new DOMDocument('1.0', $encoding);
 
         if ($html !== null) {
             if ($isFile) {
@@ -76,7 +77,7 @@ class Document
         }
 
         $cloned = $element->cloneNode(true);
-        $temp   = $this->document->importNode($cloned, true);
+        $temp = $this->document->importNode($cloned, true);
 
         $this->document->appendChild($temp);
 

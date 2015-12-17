@@ -287,6 +287,8 @@ class Element
 
     /**
      * Get the DOM document with the current element.
+     *
+     * @param  string $encoding The document encoding
      * 
      * @return \DiDom\Document
      */
