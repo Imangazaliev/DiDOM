@@ -316,6 +316,20 @@ var_dump($element->is($element));
 var_dump($element->is($element2));
 ```
 
+## Замена элемента
+
+```php
+$element = new Element('span', 'hello');
+
+$document->find('.post')[0]->replace($element);
+```
+
+## Удаление элемента
+
+```php
+$document->find('.post')[0]->remove();
+```
+
 ## Работа с кэшем
 Кэш - массив XPath-выражений, полученных из CSS.
 #### Получение кэша
