@@ -21,6 +21,8 @@ DiDOM - simple and fast HTML parser.
 - [Getting parent element](#getting-parent-element)
 - [Working with element attributes](#working-with-element-attributes)
 - [Comparing elements](#comparing-elements)
+- [Replacing element](#replacing-element)
+- [Removing element](#removing-element)
 - [Working with cache](#working-with-cache)
 - [Comparison with other parsers](#comparison-with-other-parsers)
 
@@ -315,6 +317,20 @@ var_dump($element->is($element));
 
 // bool(false)
 var_dump($element->is($element2));
+```
+
+## Replacing element
+
+```php
+$element = new Element('span', 'hello');
+
+$document->find('.post')[0]->replace($element);
+```
+
+## Removing element
+
+```php
+$document->find('.post')[0]->remove();
 ```
 
 ## Working with cache
