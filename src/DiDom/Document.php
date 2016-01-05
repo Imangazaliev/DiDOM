@@ -66,20 +66,20 @@ class Document
      *
      * @throws \InvalidArgumentException if the provided argument is not an instance of \DOMNode or \DiDom\Element
      */
-    public function appendChild($element)
+    public function appendChild($node)
     {
-        if ($element instanceof Element) {
-            $element = $element->getElement();
+        if ($node instanceof Element) {
+            $node = $node->getNode();
         }
 
-        if (!$element instanceof DOMNode) {
-            throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s\Element or %s, %s given', __METHOD__, __NAMESPACE__, 'DOMNode', (is_object($element) ? get_class($element) : gettype($element))));
+        if (!$node instanceof DOMNode) {
+            throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s\Element or %s, %s given', __METHOD__, __NAMESPACE__, 'DOMNode', (is_object($node) ? get_class($node) : gettype($node))));
         }
 
-        $cloned = $element->cloneNode(true);
-        $temp = $this->document->importNode($cloned, true);
+        $cloned = $node->cloneNode(true);
+        $newNode = $this->document->importNode($cloned, true);
 
-        $this->document->appendChild($temp);
+        $this->document->appendChild($newNode);
 
         return $this;
     }
