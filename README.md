@@ -118,7 +118,7 @@ If the elements that match a given expression are found, then method returns an 
 
 ### Verify if element exists
 
-To very if element exist use `has()` method:
+To verify if element exist use `has()` method:
 
 ```php
 if ($document->has('.post')) {
@@ -161,7 +161,7 @@ echo $posts[0]->html();
 ```php
 $html = (string) $posts[0];
 ```
-###### Formatting HTML output
+##### Formatting HTML output
 
 ```php
 $html = $document->format()->html();

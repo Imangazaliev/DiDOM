@@ -160,7 +160,7 @@ echo $posts[0]->html();
 $html = (string) $posts[0];
 ```
 
-###### Форматирование HTML при выводе
+##### Форматирование HTML при выводе
 
 ```php
 $html = $document->format()->html();
