@@ -250,17 +250,33 @@ class Element
             $newNode = $newNode->getNode();
         }
 
+        if (!$newNode instanceof \DOMElement) {
+            throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s or DOMElement, %s given', __METHOD__, __CLASS__, (is_object($newNode) ? get_class($newNode) : gettype($newNode))));
+        }
+
         if ($clone) {
             $newNode = $newNode->cloneNode(true);
         }
 
-        if (!$newNode instanceof \DOMElement) {
-            throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s or DOMElement, %s given', __METHOD__, __CLASS__, (is_object($newNode) ? get_class($newNode) : gettype($newNode))));
+        if (!$this->parent()->is($newNode->ownerDocument)) {
+            $newNode = $this->node->ownerDocument->importNode($newNode, true);
         }
 
         $node = $this->node->parentNode->replaceChild($newNode, $this->node);
 
         return new Element($node);
+    }
+
+    /**
+     * Clones a node.
+     * 
+     * @param  bool $deep Indicates whether to copy all descendant nodes
+     * 
+     * @return \DiDom\Element The cloned node
+     */
+    public function cloneNode($deep = true)
+    {
+        return new Element($this->node->cloneNode($deep));
     }
 
     /**

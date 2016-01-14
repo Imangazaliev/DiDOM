@@ -17,15 +17,6 @@ class ElementTest extends TestCase
         new Element('span', 'hello', null);
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testIsWithInvalidArgument()
-    {
-        $element = new Element('span', 'hello');
-        $element->is(null);
-    }
-
     public function testConstructor()
     {
         $element = new Element('input', '', ['name' => 'username', 'value' => 'John']);
@@ -236,6 +227,15 @@ class ElementTest extends TestCase
         $this->assertFalse($element->is($element2));
     }
 
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testIsWithInvalidArgument()
+    {
+        $element = new Element('span', 'hello');
+        $element->is(null);
+    }
+
     public function testParent()
     {
         $html = $this->loadFixture('posts.html');
@@ -277,6 +277,40 @@ class ElementTest extends TestCase
         $this->assertEquals($first->getNode(), $first->replace($third, false)->getNode());
         $this->assertEquals($third->getNode(), $document->find('li')[0]->getNode());
         $this->assertCount(2, $document->find('li'));
+    }
+
+    public function testReplaceWithDifferentDocuments()
+    {
+        $html = '<ul><li>One</li><li>Two</li><li>Three</li></ul>';
+
+        $document = new Document($html, false);
+        $document2 = new Document($html, false);
+
+        $first = $document->find('li')[0];
+        $third = $document2->find('li')[2];
+
+        $first->replace($third);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testReplaceWithInvalidArgument()
+    {
+        $html = '<ul><li>One</li><li>Two</li><li>Three</li></ul>';
+
+        $document = new Document($html, false);
+
+        $document->find('li')[0]->replace(null);
+    }
+
+    public function testCloneNode()
+    {
+        $element = new Element('input');
+
+        $cloned = $element->cloneNode(true);
+
+        $this->assertFalse($element->is($cloned));
     }
 
     public function testGetNode()
