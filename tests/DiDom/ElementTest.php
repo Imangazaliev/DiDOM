@@ -245,6 +245,13 @@ class ElementTest extends TestCase
         $this->assertEquals($document->getDocument(), $element->parent()->getDocument());
     }
 
+    public function testParentWithoutOwner()
+    {
+        $element = new Element(new \DOMElement('span', 'hello'));
+
+        $this->assertNull($element->parent());
+    }
+
     public function testRemove()
     {
         $html = '<div><span>Foo</span></div>';

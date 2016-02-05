@@ -221,7 +221,9 @@ class Element
      */
     public function parent()
     {
-        return new Document($this->node->ownerDocument);
+        if ($this->node->ownerDocument !== null) {
+            return new Document($this->node->ownerDocument);
+        }
     }
 
     /**
