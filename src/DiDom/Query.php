@@ -164,6 +164,9 @@ class Query
             case 'nth-child':
                 return self::convertNthChildExpression($expression);
                 break;
+            case 'contains':
+                return sprintf('lower-case(.) = lower-case("%s")', trim($expression, '\'"'));
+                break;
         }
 
         throw new RuntimeException('Invalid selector: unknown pseudo-class');

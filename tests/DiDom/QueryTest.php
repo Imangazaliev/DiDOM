@@ -132,6 +132,9 @@ class QueryTest extends TestCase
             ['li:nth-child(3n-1)', '//li[(position() + 1) mod 3 = 0 and position() >= 1]'],
             ['li:nth-child(n+3)', '//li[(position() - 3) mod 1 = 0 and position() >= 3]'],
             ['li:nth-child(n-3)', '//li[(position() + 3) mod 1 = 0 and position() >= 3]'],
+            ['li:contains(foo)', '//li[lower-case(.) = lower-case("foo")]'],
+            ['li:contains("foo")', '//li[lower-case(.) = lower-case("foo")]'],
+            ['li:contains(\'foo\')', '//li[lower-case(.) = lower-case("foo")]'],
         ];
 
         return $compiled;
