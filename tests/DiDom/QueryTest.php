@@ -55,6 +55,22 @@ class QueryTest extends TestCase
         Query::compile('li:unknown-pseudo-class');
     }
 
+    /**
+     * @expectedException RuntimeException
+     */
+    public function testEmptyNthExpression()
+    {
+        Query::compile('li:nth-child()');
+    }
+
+    /**
+     * @expectedException RuntimeException
+     */
+    public function testUnknownNthExpression()
+    {
+        Query::compile('li:nth-child(foo)');
+    }
+
     public function testCompileXpath()
     {
         $this->assertEquals('//div', Query::compile('//div', Query::TYPE_XPATH));
