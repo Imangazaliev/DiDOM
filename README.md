@@ -35,6 +35,8 @@ To install DiDOM run the command:
 ## Quick start
 
 ```php    
+// Assuming you installed from Composer:
+require "vendor/autoload.php";
 use DiDom\Document;
 
 $document = new Document('http://www.news.com/', true);
@@ -84,6 +86,8 @@ DiDOM accepts CSS selector or XPath as an expression for search. You need to pat
 ##### With method `find()`:
 
 ```php
+// Assuming you installed from Composer:
+require "vendor/autoload.php";
 use DiDom\Document;
 use DiDom\Query;
     
@@ -187,6 +191,8 @@ echo $posts[0]->text();
 ### Creating an instance of the class
 
 ```php
+// Assuming you installed from Composer:
+require "vendor/autoload.php";
 use DiDom\Element;
 
 $element = new Element('span', 'Hello');
@@ -208,6 +214,8 @@ $element = new Element('textarea', 'Text', $attributes);
 An element can be created from an instance of the class `DOMElement`:
 
 ```php
+// Assuming you installed from Composer:
+require "vendor/autoload.php";
 use DiDom\Element;
 use DOMElement;
 
@@ -337,6 +345,8 @@ $document->find('.post')[0]->remove();
 Cache is an array of XPath expressions, that were converted from CSS.
 #### Getting from cache
 ```php
+// Assuming you installed from Composer:
+require "vendor/autoload.php";
 use DiDom\Query;
     
 ...
