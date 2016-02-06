@@ -33,6 +33,8 @@ DiDOM - простая и быстрая библиотека для парси�
 ## Быстрый старт
 
 ```php    
+// Assuming you installed from Composer:
+require "vendor/autoload.php";
 use DiDom\Document;
 
 $document = new Document('http://www.news.com/', true);
@@ -82,6 +84,8 @@ $document->loadHtmlFile('http://www.example.com/');
 ##### Через метод `find()`:
 
 ```php
+// Assuming you installed from Composer:
+require "vendor/autoload.php";
 use DiDom\Document;
 use DiDom\Query;
     
@@ -186,6 +190,8 @@ echo $posts[0]->text();
 ### Создание экземпляра класса
 
 ```php
+// Assuming you installed from Composer:
+require "vendor/autoload.php";
 use DiDom\Element;
 
 $element = new Element('span', 'Hello');
@@ -207,6 +213,8 @@ $element = new Element('textarea', 'Text', $attributes);
 Элемент можно создать и из экземпляра класса `DOMElement`:
 
 ```php
+// Assuming you installed from Composer:
+require "vendor/autoload.php";
 use DiDom\Element;
 use DOMElement;
 
@@ -336,6 +344,8 @@ $document->find('.post')[0]->remove();
 Кэш - массив XPath-выражений, полученных из CSS.
 #### Получение кэша
 ```php
+// Assuming you installed from Composer:
+require "vendor/autoload.php";
 use DiDom\Query;
     
 ...
