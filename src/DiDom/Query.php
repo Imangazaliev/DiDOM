@@ -109,10 +109,8 @@ class Query
         // if the attributes specified
         if (isset($segments['attributes'])) {
             foreach ($segments['attributes'] as $name => $value) {
-                // if specified only the attribute name
-                $value = $value === null ? '' : sprintf('="%s"', $value);
 
-                $attributes[] = '@'.$name.$value;
+                $attributes[] = self::convertAttribute($name, $value);
             }
         }
 
@@ -131,6 +129,37 @@ class Query
 
         if ($count = count($attributes)) {
             $xpath .= ($count > 1) ? sprintf('[(%s)]', implode(') and (', $attributes)) : sprintf('[%s]', $attributes[0]);
+        }
+
+        return $xpath;
+    }
+
+    /**
+     * @param string  $name Attribute name.
+     * @param string  $value Attribute value.
+     * 
+     * @return string
+     */
+    protected static function convertAttribute($name, $value)
+    {
+        if (substr($name, 0, 1) === '^') {
+            return sprintf('@*[starts-with(name(), "%s")]', substr($name, 1));
+        }
+
+        switch (substr($name, -1)) {
+            case '^':
+                $xpath = sprintf('starts-with(@%s, "%s")', substr($name, 0, -1), $value);
+                break;
+            case '$':
+                $xpath = sprintf('ends-with(@%s, "%s")', substr($name, 0, -1), $value);
+                break;
+            case '*':
+                $xpath = sprintf('contains(@%s, "%s")', substr($name, 0, -1), $value);
+                break;
+            default:
+                // if specified only the attribute name
+                $xpath = $value === null ? '@'.$name : sprintf('@%s="%s"', $name, $value);
+                break;
         }
 
         return $xpath;
