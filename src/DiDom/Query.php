@@ -281,7 +281,7 @@ class Query
 
                 foreach ($attributes as $attribute) {
                     if ($attribute !== '') {
-                        list($name, $value) = array_pad(explode('=', $attribute), 2, null);
+                        list($name, $value) = array_pad(explode('=', $attribute, 2), 2, null);
 
                         // equal null if specified only the attribute name
                         $result['attributes'][$name] = is_string($value) ? trim($value, '\'"') : null;
