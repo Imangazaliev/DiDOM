@@ -13,8 +13,7 @@ class DocumentTest extends TestCase
      */
     public function testConstructWithInvalidArgument()
     {
-        $document = new Document();
-        $document->loadHtml(array('foo'));
+        $document = new Document(array('foo'));
     }
 
     /**
