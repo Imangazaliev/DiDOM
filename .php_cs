@@ -54,7 +54,6 @@ $fixers = [
     'remove_leading_slash_use',
     'remove_lines_between_uses',
     'return',
-    'self_accessor',
     'short_tag',
     'single_array_no_trailing_comma',
     'single_blank_line_before_namespace',

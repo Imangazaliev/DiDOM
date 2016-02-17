@@ -109,7 +109,6 @@ class Query
         // if the attributes specified
         if (isset($segments['attributes'])) {
             foreach ($segments['attributes'] as $name => $value) {
-
                 $attributes[] = self::convertAttribute($name, $value);
             }
         }

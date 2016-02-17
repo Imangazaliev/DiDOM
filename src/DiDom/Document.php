@@ -126,9 +126,9 @@ class Document
         libxml_clear_errors();
 
         libxml_disable_entity_loader(false);
-        libxml_use_internal_errors(false);   
+        libxml_use_internal_errors(false);
 
-        return $this;   
+        return $this;
     }
 
     /**
