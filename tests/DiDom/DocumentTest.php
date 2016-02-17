@@ -17,11 +17,71 @@ class DocumentTest extends TestCase
     }
 
     /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testConstructWithInvalidEncoding()
+    {
+        $document = new Document(array('foo'));
+    }
+
+    /**
      * @expectedException RuntimeException
      */
     public function testConstructWithNotExistingFile()
     {
         $document = new Document('path/to/file', true);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testConstructorWithInvalidArgumentType()
+    {
+        $document = new Document('foo', false, 'UTF-8', null);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testConstructorWithInvalidDocumentType()
+    {
+        $document = new Document('foo', false, 'UTF-8', 'bar');
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testLoadWithInvalidContentArgument()
+    {
+        $document = new Document();
+        $document->load(null);
+    }
+
+    /**
+     * @expectedException RuntimeException
+     */
+    public function testLoadWithNotExistingFile()
+    {
+        $document = new Document();
+        $document->load('path/to/file', true);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testLoadWithInvalidDocumentTypeArgument()
+    {
+        $document = new Document();
+        $document->load('foo', false, null);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testLoadWithInvalidDocumentType()
+    {
+        $document = new Document();
+        $document->load('foo', false, 'bar');
     }
 
     /**
@@ -54,9 +114,38 @@ class DocumentTest extends TestCase
     /**
      * @expectedException InvalidArgumentException
      */
+    public function testLoadXmlWithInvalidArgument()
+    {
+        $document = new Document();
+        $document->loadXml(null);
+    }
+
+    /**
+     * @expectedException RuntimeException
+     */
+    public function testLoadXmlFileWithNotExistingFile()
+    {
+        $document = new Document();
+        $document->loadXmlFile('path/to/file');
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testLoadXmlFileWithInvalidArgument()
+    {
+        $document = new Document();
+        $document->loadXmlFile(array('foo'));
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
     public function testAppendChildWithInvalidArgument()
     {
-        $document = new Document('');
+        $html = $this->loadFixture('posts.html');
+
+        $document = new Document($html);
         $document->appendChild(null);
     }
 
@@ -184,6 +273,14 @@ class DocumentTest extends TestCase
         $this->assertTrue(is_string($document->html()));
     }
 
+    public function testXml()
+    {
+        $xml = $this->loadFixture('books.xml');
+        $document = new Document($xml, false, 'UTF-8', 'xml');
+
+        $this->assertTrue(is_string($document->xml()));
+    }
+
     public function testFormat()
     {
         $html = $this->loadFixture('posts.html');
@@ -202,6 +299,23 @@ class DocumentTest extends TestCase
         $document = new Document($html, false);
 
         $this->assertEquals('foo', $document->text());
+    }
+
+    public function testGetType()
+    {
+        $document = new Document();
+
+        $this->assertNull($document->getType());
+
+        $html = $this->loadFixture('posts.html');
+        $document = new Document($html);
+
+        $this->assertEquals('html', $document->getType());
+
+        $xml = $this->loadFixture('books.xml');
+        $document = new Document($xml, false, 'UTF-8', 'xml');
+
+        $this->assertEquals('xml', $document->getType());
     }
 
     public function testIs()
@@ -239,12 +353,20 @@ class DocumentTest extends TestCase
         $this->assertInstanceOf('DiDom\Element', $document->toElement());
     }
 
-    public function testToString()
+    public function testToStringHtml()
     {
         $html = $this->loadFixture('posts.html');
         $document = new Document($html, false);
 
         $this->assertEquals($document->html(), $document->__toString());
+    }
+
+    public function testToStringXml()
+    {
+        $xml = $this->loadFixture('books.xml');
+        $document = new Document($xml, false, 'UTF-8', 'xml');
+
+        $this->assertEquals($document->xml(), $document->__toString());
     }
 
     /**

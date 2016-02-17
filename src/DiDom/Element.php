@@ -165,6 +165,16 @@ class Element
     }
 
     /**
+     * Dumps the internal document into a string using XML formatting.
+     * 
+     * @return string The node xml
+     */
+    public function xml()
+    {
+        return $this->toDocument()->xml();
+    }
+
+    /**
      * Get the text content of this node and its descendants.
      * 
      * @return string The node value
