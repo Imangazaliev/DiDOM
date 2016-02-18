@@ -2,7 +2,7 @@
     "name": "imangazaliev/didom",
     "description": "Simple and fast HTML parser",
     "type": "library",
-    "keywords": ["didom", "parser", "html"],
+    "keywords": ["didom", "parser", "html", "xml"],
     "license": "MIT",
     "homepage": "https://github.com/Imangazaliev/DiDOM",
     "authors": [
