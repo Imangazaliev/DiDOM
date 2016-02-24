@@ -2,6 +2,7 @@
 
 namespace Tests\DiDom;
 
+use DiDom\Attribute;
 use Tests\TestCase;
 use DiDom\Document;
 use DiDom\Query;
@@ -383,5 +384,32 @@ class DocumentTest extends TestCase
         foreach ($elements as $element) {
             $this->assertInstanceOf('DiDom\Element', $element);
         }
+    }
+
+    /**
+     * @dataProvider elementsAndAttributes
+     */
+    public function testFindElementsAndAttributes($html, $xpath, $value, $type)
+    {
+        $document = new Document($html, false);
+        $elements = $document->xpath($xpath);
+
+        foreach ($elements as $element) {
+            $this->assertInstanceOf($type, $element);
+
+            if ($element instanceof Attribute)
+                $this->assertEquals($value, $element->text());
+        }
+    }
+
+    public function elementsAndAttributes()
+    {
+        $html = $this->loadFixture('form.html');
+
+        return array(
+            array($html, "//form", null, 'DiDOM\Element'),
+            array($html, "//form/@enctype", 'multipart/form-data', 'DiDOM\Attribute'),
+            array($html, "//*[@id=email]/@type", 'text', 'DiDOM\Attribute')
+        );
     }
 }
