@@ -244,7 +244,9 @@ class Document
 
         if ($wrapElement) {
             foreach ($nodeList as $node) {
-                $elements[] = new Element($node);
+                $elements[] = $node instanceof \DOMElement ?
+                    new Element($node) :
+                    new Attribute($node);
             }
         } else {
             foreach ($nodeList as $node) {

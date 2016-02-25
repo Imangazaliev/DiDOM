@@ -5,7 +5,7 @@ namespace DiDom;
 use DOMDocument;
 use InvalidArgumentException;
 
-class Element
+class Element extends Node
 {
     /**
      * The DOM element instance.
@@ -37,6 +37,8 @@ class Element
         foreach ($attributes as $name => $value) {
             $this->setAttribute($name, $value);
         }
+
+        parent::__construct($node);
     }
 
     /**
@@ -172,16 +174,6 @@ class Element
     public function xml()
     {
         return $this->toDocument()->xml();
-    }
-
-    /**
-     * Get the text content of this node and its descendants.
-     * 
-     * @return string The node value
-     */
-    public function text()
-    {
-        return $this->node->textContent;
     }
 
     /**
