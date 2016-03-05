@@ -3,7 +3,7 @@
 namespace DiDom;
 
 use DOMDocument;
-use DOMNode;
+use DOMElement;
 use DOMXPath;
 use InvalidArgumentException;
 use RuntimeException;
@@ -66,11 +66,11 @@ class Document
     /**
      * Adds new child at the end of the children.
      * 
-     * @param  \DiDom\Element|\DOMNode|array $nodes The appended child.
+     * @param  \DiDom\Element|\DOMElement|array $nodes The appended child.
      *
      * @return \DiDom\Document
      *
-     * @throws \InvalidArgumentException if the provided argument is not an instance of \DOMNode or \DiDom\Element
+     * @throws \InvalidArgumentException if the provided argument is not an instance of \DOMElement or \DiDom\Element
      */
     public function appendChild($nodes)
     {
@@ -81,8 +81,8 @@ class Document
                 $node = $node->getNode();
             }
 
-            if (!$node instanceof DOMNode) {
-                throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s\Element or %s, %s given', __METHOD__, __NAMESPACE__, 'DOMNode', (is_object($node) ? get_class($node) : gettype($node))));
+            if (!$node instanceof DOMElement) {
+                throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s\Element or DOMElement, %s given', __METHOD__, __NAMESPACE__, (is_object($node) ? get_class($node) : gettype($node))));
             }
 
             $cloned = $node->cloneNode(true);
