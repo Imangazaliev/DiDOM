@@ -66,26 +66,30 @@ class Document
     /**
      * Adds new child at the end of the children.
      * 
-     * @param  \DiDom\Element|\DOMNode $element The appended child.
+     * @param  \DiDom\Element|\DOMNode|array $nodes The appended child.
      *
      * @return \DiDom\Document
      *
      * @throws \InvalidArgumentException if the provided argument is not an instance of \DOMNode or \DiDom\Element
      */
-    public function appendChild($node)
+    public function appendChild($nodes)
     {
-        if ($node instanceof Element) {
-            $node = $node->getNode();
+        $nodes = is_array($nodes) ? $nodes : [$nodes];
+
+        foreach ($nodes as $node) {
+            if ($node instanceof Element) {
+                $node = $node->getNode();
+            }
+
+            if (!$node instanceof DOMNode) {
+                throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s\Element or %s, %s given', __METHOD__, __NAMESPACE__, 'DOMNode', (is_object($node) ? get_class($node) : gettype($node))));
+            }
+
+            $cloned = $node->cloneNode(true);
+            $newNode = $this->document->importNode($cloned, true);
+
+            $this->document->appendChild($newNode);
         }
-
-        if (!$node instanceof DOMNode) {
-            throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s\Element or %s, %s given', __METHOD__, __NAMESPACE__, 'DOMNode', (is_object($node) ? get_class($node) : gettype($node))));
-        }
-
-        $cloned = $node->cloneNode(true);
-        $newNode = $this->document->importNode($cloned, true);
-
-        $this->document->appendChild($newNode);
 
         return $this;
     }

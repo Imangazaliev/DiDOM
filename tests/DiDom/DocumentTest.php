@@ -146,7 +146,38 @@ class DocumentTest extends TestCase
         $html = $this->loadFixture('posts.html');
 
         $document = new Document($html);
-        $document->appendChild(null);
+        $document->appendChild('foo');
+    }
+
+    public function testAppendChild()
+    {
+        $html = '<!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <title>Document</title>
+        </head>
+        <body>
+            
+        </body>
+        </html>';
+
+        $document = new Document($html);
+
+        $this->assertCount(0, $document->find('span'));
+
+        $node = $document->createElement('span');
+        $document->appendChild($node);
+
+        $this->assertCount(1, $document->find('span'));
+
+        $nodes = [];
+        $nodes[] = $document->createElement('span');
+        $nodes[] = $document->createElement('span');
+
+        $document->appendChild($nodes);
+
+        $this->assertCount(3, $document->find('span'));
     }
 
     /**
