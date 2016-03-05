@@ -116,7 +116,8 @@ class Document
         }
 
         if (substr($string, 0, 5) !== '<?xml') {
-            $prolog = sprintf('<?xml encoding="%s">', $this->document->encoding);
+            $prolog = sprintf('<?xml version="1.0" encoding="%s"?>', $this->document->encoding);
+
             $string = $prolog.$string;
         }
 
