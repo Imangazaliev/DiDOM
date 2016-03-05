@@ -107,7 +107,7 @@ class Document
             $string = $this->loadFile($string);
         }
 
-        if (!is_string($string) or !in_array(strtolower($type), ['xml', 'html'])) {
+        if (!in_array(strtolower($type), ['xml', 'html'])) {
             throw new InvalidArgumentException(sprintf('Document type must be "xml" or "html", %s given', __METHOD__, (is_object($type) ? get_class($type) : gettype($type))));
         }
 
@@ -191,6 +191,17 @@ class Document
         return $this->load($filepath, true, 'xml');
     }
 
+    /**
+     * Reads entire file into a string.
+     * 
+     * @param  string $filepath The path to the file
+     *
+     * @return strting
+     *
+     * @throws \InvalidArgumentException if the file path is not a string
+     * @throws \RuntimeException if the file does not exist
+     * @throws \RuntimeException if you are unable to load the file
+     */
     protected function loadFile($filepath)
     {
         if (!is_string($filepath)) {
