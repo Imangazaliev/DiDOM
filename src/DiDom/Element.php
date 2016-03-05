@@ -3,6 +3,7 @@
 namespace DiDom;
 
 use DOMDocument;
+use DOMElement;
 use InvalidArgumentException;
 
 class Element
@@ -37,6 +38,37 @@ class Element
         foreach ($attributes as $name => $value) {
             $this->setAttribute($name, $value);
         }
+    }
+
+    /**
+     * Adds new child at the end of the children.
+     * 
+     * @param  \DiDom\Element|\DOMElement|array $nodes The appended child.
+     *
+     * @return \DiDom\Element
+     *
+     * @throws \InvalidArgumentException if the provided argument is not an instance of \DOMElement or \DiDom\Element
+     */
+    public function appendChild($nodes)
+    {
+        $nodes = is_array($nodes) ? $nodes : [$nodes];
+
+        foreach ($nodes as $node) {
+            if ($node instanceof Element) {
+                $node = $node->getNode();
+            }
+
+            if (!$node instanceof DOMElement) {
+                throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s\Element or DOMElement, %s given', __METHOD__, __NAMESPACE__, (is_object($node) ? get_class($node) : gettype($node))));
+            }
+
+            $cloned = $node->cloneNode(true);
+            $newNode = $this->node->ownerDocument->importNode($cloned, true);
+
+            $this->node->appendChild($newNode);
+        }
+
+        return $this;
     }
 
     /**

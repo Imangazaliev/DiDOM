@@ -35,6 +35,36 @@ class ElementTest extends TestCase
         $this->assertEquals($node, $element->getNode());
     }
 
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testAppendChildWithInvalidArgument()
+    {
+        $element = new Element('span', 'hello');
+
+        $element->appendChild('foo');
+    }
+
+    public function testAppendChild()
+    {
+        $list = new Element('ul');
+
+        $this->assertCount(0, $list->find('li'));
+
+        $node = new Element('li', 'foo');
+        $list->appendChild($node);
+
+        $this->assertCount(1, $list->find('li'));
+
+        $items = [];
+        $items[] = new Element('li', 'bar');
+        $items[] = new Element('li', 'baz');
+
+        $list->appendChild($items);
+
+        $this->assertCount(3, $list->find('li'));
+    }
+
     public function testHas()
     {
         $document = new \DOMDocument();
