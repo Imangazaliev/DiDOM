@@ -202,6 +202,43 @@ class ElementTest extends TestCase
         $this->assertEquals('<span>hello</span>', $element->html());
     }
 
+    public function testHtmlWithOptions()
+    {
+        $html = '<html><body><span></span></body></html>';
+        
+        $document = new Document();
+        $document->loadHtml($html);
+
+        $element = $document->find('span')[0];
+
+        $this->assertEquals('<span/>', $element->html());
+        $this->assertEquals('<span></span>', $element->html(LIBXML_NOEMPTYTAG));
+    }
+
+    public function testXml()
+    {
+        $element = new Element('span', 'hello');
+
+        $prolog = '<?xml version="1.0" encoding="UTF-8"?>'."\n";
+
+        $this->assertEquals($prolog.'<span>hello</span>', $element->xml());
+    }
+
+    public function testXmlWithOptions()
+    {
+        $html = '<html><body><span></span></body></html>';
+        
+        $document = new Document();
+        $document->loadHtml($html);
+
+        $element = $document->find('span')[0];
+
+        $prolog = '<?xml version="1.0" encoding="UTF-8"?>'."\n";
+
+        $this->assertEquals($prolog.'<span/>', $element->xml());
+        $this->assertEquals($prolog.'<span></span>', $element->xml(LIBXML_NOEMPTYTAG));
+    }
+
     public function testGetText()
     {
         $node = $this->createNode('span', 'hello');

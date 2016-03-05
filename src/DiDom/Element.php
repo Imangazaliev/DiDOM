@@ -157,21 +157,25 @@ class Element
     /**
      * Dumps the internal document into a string using HTML formatting.
      * 
+     * @param  int $options Additional options
+     * 
      * @return string The node html
      */
-    public function html()
+    public function html($options = 0)
     {
-        return $this->toDocument()->html();
+        return $this->toDocument()->html($options);
     }
 
     /**
      * Dumps the internal document into a string using XML formatting.
      * 
+     * @param  int $options Additional options
+     * 
      * @return string The node xml
      */
-    public function xml()
+    public function xml($options = 0)
     {
-        return $this->toDocument()->xml();
+        return $this->toDocument()->xml($options);
     }
 
     /**

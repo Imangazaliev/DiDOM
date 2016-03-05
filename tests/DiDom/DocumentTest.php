@@ -304,12 +304,36 @@ class DocumentTest extends TestCase
         $this->assertTrue(is_string($document->html()));
     }
 
+    public function testHtmlWithOptions()
+    {
+        $html = '<html><body><span></span></body></html>';
+        
+        $document = new Document();
+        $document->loadHtml($html);
+
+        $this->assertEquals('<html><body><span/></body></html>', $document->html());
+        $this->assertEquals('<html><body><span></span></body></html>', $document->html(LIBXML_NOEMPTYTAG));
+    }
+
     public function testXml()
     {
         $xml = $this->loadFixture('books.xml');
         $document = new Document($xml, false, 'UTF-8', 'xml');
 
         $this->assertTrue(is_string($document->xml()));
+    }
+
+    public function testXmlWithOptions()
+    {
+        $xml = '<foo><bar></bar></foo>';
+        
+        $document = new Document();
+        $document->loadXml($xml);
+
+        $prolog = '<?xml version="1.0" encoding="UTF-8"?>'."\n";
+
+        $this->assertEquals($prolog.'<foo><bar/></foo>', $document->xml());
+        $this->assertEquals($prolog.'<foo><bar></bar></foo>', $document->xml(LIBXML_NOEMPTYTAG));
     }
 
     public function testFormat()

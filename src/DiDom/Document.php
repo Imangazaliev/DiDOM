@@ -287,21 +287,25 @@ class Document
     /**
      * Dumps the internal document into a string using HTML formatting.
      * 
+     * @param  int $options Additional options
+     * 
      * @return string The document html
      */
-    public function html()
+    public function html($options = 0)
     {
-        return trim($this->document->saveXML($this->getElement()));
+        return trim($this->document->saveXML($this->getElement(), $options));
     }
 
     /**
      * Dumps the internal document into a string using XML formatting.
      * 
+     * @param  int $options Additional options
+     * 
      * @return string The document html
      */
-    public function xml()
+    public function xml($options = 0)
     {
-        return trim($this->document->saveXML());
+        return trim($this->document->saveXML($this->document, $options));
     }
 
     /**
