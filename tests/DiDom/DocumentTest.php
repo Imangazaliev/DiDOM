@@ -87,6 +87,15 @@ class DocumentTest extends TestCase
     /**
      * @expectedException InvalidArgumentException
      */
+    public function testLoadWithInvalidOptionsType()
+    {
+        $document = new Document();
+        $document->load('foo', false, 'html', 'bar');
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
     public function testLoadHtmlWithInvalidArgument()
     {
         $document = new Document();
