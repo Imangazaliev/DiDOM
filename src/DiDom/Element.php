@@ -62,10 +62,18 @@ class Element
                 throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s\Element or DOMElement, %s given', __METHOD__, __NAMESPACE__, (is_object($node) ? get_class($node) : gettype($node))));
             }
 
+            libxml_use_internal_errors(true);
+            libxml_disable_entity_loader(true);
+
             $cloned = $node->cloneNode(true);
             $newNode = $this->node->ownerDocument->importNode($cloned, true);
 
             $this->node->appendChild($newNode);
+
+            libxml_clear_errors();
+
+            libxml_disable_entity_loader(false);
+            libxml_use_internal_errors(false);
         }
 
         return $this;
