@@ -195,7 +195,7 @@ class Element
     }
 
     /**
-     * Dumps the internal document into a string using HTML formatting.
+     * Dumps the node into a string using HTML formatting.
      * 
      * @param  int $options Additional options
      * 
@@ -207,7 +207,29 @@ class Element
     }
 
     /**
-     * Dumps the internal document into a string using XML formatting.
+     * Dumps the node descendants into a string using HTML formatting.
+     * 
+     * @param  int $options Additional options
+     * 
+     * @return string
+     */
+    public function innerHtml($options = 0)
+    {
+        $childrenHtml = [];
+        $children = $this->node->childNodes;
+
+        foreach ($children as $child) 
+        {
+            $childrenHtml[] = trim($child->ownerDocument->saveXml($child, $options));
+        }
+
+        $html = implode(PHP_EOL, $childrenHtml);
+
+        return str_replace('&#13;', '', $html);
+    }
+
+    /**
+     * Dumps the node into a string using XML formatting.
      * 
      * @param  int $options Additional options
      * 

@@ -232,6 +232,14 @@ class ElementTest extends TestCase
         $this->assertEquals('<span>hello</span>', $element->html());
     }
 
+    public function testInnerHtml()
+    {
+        $html = $this->loadFixture('posts.html');
+        $document = new Document($html, false);
+
+        $this->assertTrue(is_string($document->find('body')[0]->innerHtml()));
+    }
+
     public function testHtmlWithOptions()
     {
         $html = '<html><body><span></span></body></html>';
