@@ -43,11 +43,11 @@ class Element
     /**
      * Adds new child at the end of the children.
      * 
-     * @param  \DiDom\Element|\DOMElement|array $nodes The appended child.
+     * @param  \DiDom\Element|\DOMNode|array $nodes The appended child.
      *
      * @return \DiDom\Element
      *
-     * @throws \InvalidArgumentException if the provided argument is not an instance of \DOMElement or \DiDom\Element
+     * @throws \InvalidArgumentException if the provided argument is not an instance of \DOMNode or \DiDom\Element
      */
     public function appendChild($nodes)
     {
@@ -58,8 +58,8 @@ class Element
                 $node = $node->getNode();
             }
 
-            if (!$node instanceof DOMElement) {
-                throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s\Element or DOMElement, %s given', __METHOD__, __NAMESPACE__, (is_object($node) ? get_class($node) : gettype($node))));
+            if (!$node instanceof \DOMNode) {
+                throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s\Element or DOMNode, %s given', __METHOD__, __NAMESPACE__, (is_object($node) ? get_class($node) : gettype($node))));
             }
 
             libxml_use_internal_errors(true);
@@ -220,12 +220,12 @@ class Element
 
         foreach ($children as $child) 
         {
-            $childrenHtml[] = trim($child->ownerDocument->saveXml($child, $options));
+            $childrenHtml[] = $child->ownerDocument->saveXml($child, $options);
         }
 
-        $html = implode(PHP_EOL, $childrenHtml);
+        $html = implode('', $childrenHtml);
 
-        return str_replace('&#13;', '', $html);
+        return html_entity_decode($html);
     }
 
     /**
