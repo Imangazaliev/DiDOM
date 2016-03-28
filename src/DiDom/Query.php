@@ -42,6 +42,7 @@ class Query
 
             if (array_key_exists($selector, static::$compiled)) {
                 $paths[] = static::$compiled[$selector];
+
                 continue;
             }
 

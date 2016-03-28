@@ -278,6 +278,34 @@ class DocumentTest extends TestCase
         }
     }
 
+    public function testFindText()
+    {
+        $html = $this->loadFixture('menu.html');
+
+        $document = new Document($html, false);
+        $texts = $document->find('//a/text()', Query::TYPE_XPATH);
+
+        $this->assertTrue(is_array($texts));
+        $this->assertEquals(3, count($texts));
+
+        $this->assertEquals(['Link 1', 'Link 2', 'Link 3'], $texts);
+    }
+
+    public function testFindAttribute()
+    {
+        $html = $this->loadFixture('menu.html');
+
+        $document = new Document($html, false);
+        $links = $document->find('//a/@href', Query::TYPE_XPATH);
+
+        $this->assertTrue(is_array($links));
+        $this->assertEquals(3, count($links));
+
+        foreach ($links as $link) {
+            $this->assertEquals('http://example.com', $link);
+        }
+    }
+
     public function findTests()
     {
         $html = $this->loadFixture('posts.html');

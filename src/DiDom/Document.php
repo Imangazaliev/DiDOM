@@ -277,19 +277,37 @@ class Document
 
         $xpath    = new DOMXPath($this->document);
         $nodeList = $xpath->query($expression);
-        $elements = array();
+        $result   = array();
 
         if ($wrapElement) {
             foreach ($nodeList as $node) {
-                $elements[] = new Element($node);
+                if ($node instanceof \DOMElement) {
+                    $result[] = new Element($node);
+
+                    continue;
+                }
+
+                if ($node instanceof \DOMText) {
+                    $result[] = $node->data;
+
+                    continue;
+                }
+
+                if ($node instanceof \DOMAttr) {
+                    $result[] = $node->value;
+
+                    continue;
+                }
+
+                throw new RuntimeException(sprintf('Unknown node type "%s"', get_class($node)));
             }
         } else {
             foreach ($nodeList as $node) {
-                $elements[] = $node;
+                $result[] = $node;
             }
         }
 
-        return $elements;
+        return $result;
     }
 
     /**
