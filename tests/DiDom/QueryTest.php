@@ -139,6 +139,9 @@ class QueryTest extends TestCase
             ['li:contains(foo)', '//li[lower-case(.) = lower-case("foo")]'],
             ['li:contains("foo")', '//li[lower-case(.) = lower-case("foo")]'],
             ['li:contains(\'foo\')', '//li[lower-case(.) = lower-case("foo")]'],
+            ['ul li a::text', '//ul//li//a/text()'],
+            ['ul li a::attr(href)', '//ul//li//a/@*[name() = "href"]'],
+            ['ul li a::attr(href|title)', '//ul//li//a/@*[name() = "href" or name() = "title"]'],
         ];
 
         return $compiled;

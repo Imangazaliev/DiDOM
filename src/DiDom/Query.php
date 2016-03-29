@@ -67,6 +67,16 @@ class Query
         $segments = self::getSegments($selector);
         $xpath = '';
 
+        $pos = strrpos($selector, '::');
+
+        if ($pos !== false) {
+            $property = substr($selector, $pos+2);
+            $property = self::parseProperty($property);
+            $property = self::convertProperty($property['name'], $property['args']);
+
+            $selector = substr($selector, 0, $pos);
+        }
+
         while (count($segments) > 0) {
             $xpath .= self::buildXpath($segments, $prefix);
 
@@ -80,7 +90,59 @@ class Query
             $segments = self::getSegments($selector);
         }
 
+        if (isset($property)) {
+            $xpath = $xpath.'/'.$property;
+        }
+
         return $xpath;
+    }
+
+    /**
+     * @param  string $property
+     * 
+     * @return array
+     */
+    protected static function parseProperty($property)
+    {
+        $name = '(?P<name>[\w\-]*)';
+        $args = '(?:\((?P<args>[^\)]+)\))';
+        $regexp = '/(?:'.$name.$args.'?)?/is';
+
+        if (preg_match($regexp, $property, $segments)) {
+            $result = [];
+
+            $result['name'] = $segments['name'];
+            $result['args'] = isset($segments['args']) ? explode('|', $segments['args']) : [];
+
+            return $result;
+        }
+
+        throw new RuntimeException('Invalid selector');
+    }
+
+    /**
+     * @param  string $name
+     * @param  array  $args
+     * 
+     * @return string
+     */
+    protected static function convertProperty($name, $args = [])
+    {
+        if ($name === 'text') {
+            return 'text()';
+        }
+
+        if ($name === 'attr') {
+            $attributes = [];
+
+            foreach ($args as $attribute) {
+                $attributes[] = sprintf('name() = "%s"', $attribute);
+            }
+
+            return sprintf('@*[%s]', implode(' or ', $attributes));
+        }
+
+        throw new RuntimeException('Invalid selector: unknown property type');
     }
 
     /**
@@ -258,9 +320,9 @@ class Query
         $id = '(?:#(?P<id>[\w|\-]+))?';
         $classes = '(?P<classes>\.[\w|\-|\.]+)*';
         $attrs = '(?P<attrs>\[.+\])*';
-        $child = '(?P<pseudo>[\w\-]*)';
+        $name = '(?P<pseudo>[\w\-]*)';
         $expr = '(?:\((?P<expr>[^\)]+)\))';
-        $pseudo = '(?::'.$child.$expr.'?)?';
+        $pseudo = '(?::'.$name.$expr.'?)?';
         $rel = '\s*(?P<rel>>)?';
 
         $regexp = '/'.$tag.$id.$classes.$attrs.$pseudo.$rel.'/is';
