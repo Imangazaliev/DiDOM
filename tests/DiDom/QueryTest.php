@@ -117,6 +117,7 @@ class QueryTest extends TestCase
             ['*[foo="bar"]', '//*[@foo="bar"]'],
             ['*[foo=\'bar\']', '//*[@foo="bar"]'],
             ['*[^data-]', '//*[@*[starts-with(name(), "data-")]]'],
+            ['*[^data-=foo]', '//*[@*[starts-with(name(), "data-")]="foo"]'],
             ['a[href^=https]', '//a[starts-with(@href, "https")]'],
             ['img[src$=png]', '//img[ends-with(@src, "png")]'],
             ['a[href*=exapmle.com]', '//a[contains(@href, "exapmle.com")]'],

@@ -197,15 +197,17 @@ class Query
     }
 
     /**
-     * @param string  $name Attribute name.
-     * @param string  $value Attribute value.
+     * @param string  $name  The attribute name.
+     * @param string  $value The attribute value.
      * 
      * @return string
      */
     protected static function convertAttribute($name, $value)
     {
         if (substr($name, 0, 1) === '^') {
-            return sprintf('@*[starts-with(name(), "%s")]', substr($name, 1));
+            $xpath = sprintf('@*[starts-with(name(), "%s")]', substr($name, 1));
+
+            return $value === null ? $xpath : sprintf('%s="%s"', $xpath, $value);
         }
 
         switch (substr($name, -1)) {
