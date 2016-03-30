@@ -18,9 +18,9 @@ class Element
     /**
      * Constructor.
      * 
-     * @param  \DOMElement|string $name The tag name of the element
-     * @param  string $value The value of the element
-     * @param  array  $attributes The attributes of the element
+     * @param \DOMElement|string $name The tag name of the element
+     * @param string $value The value of the element
+     * @param array  $attributes The attributes of the element
      *
      * @throws \InvalidArgumentException if the attributes is not an array
      */
@@ -43,7 +43,7 @@ class Element
     /**
      * Adds new child at the end of the children.
      * 
-     * @param  \DiDom\Element|\DOMNode|array $nodes The appended child.
+     * @param \DiDom\Element|\DOMNode|array $nodes The appended child
      *
      * @return \DiDom\Element
      *
@@ -82,8 +82,8 @@ class Element
     /**
      * Checks the existence of the item.
      * 
-     * @param  string $expression XPath expression or CSS selector
-     * @param  string $type the type of the expression
+     * @param string $expression XPath expression or CSS selector
+     * @param string $type The type of the expression
      *
      * @return bool
      */
@@ -95,9 +95,9 @@ class Element
     /**
      * Searches for an item in the DOM tree for a given XPath expression or a CSS selector.
      * 
-     * @param  string $expression XPath expression or a CSS selector
-     * @param  string $type the type of the expression
-     * @param  bool   $wrapElement returns array of \DiDom\Element if true, otherwise array of \DOMElement
+     * @param string $expression XPath expression or a CSS selector
+     * @param string $type The type of the expression
+     * @param bool   $wrapElement Returns array of \DiDom\Element if true, otherwise array of \DOMElement
      *
      * @return \DiDom\Element[]|\DOMElement[]
      */
@@ -109,8 +109,8 @@ class Element
     /**
      * Searches for an item in the DOM tree for a given XPath expression.
      * 
-     * @param  string $expression XPath expression
-     * @param  bool   $wrapElement returns array of \DiDom\Element if true, otherwise array of \DOMElement
+     * @param string $expression XPath expression
+     * @param bool   $wrapElement Returns array of \DiDom\Element if true, otherwise array of \DOMElement
      *
      * @return \DiDom\Element[]|\DOMElement[]
      */
@@ -122,7 +122,7 @@ class Element
     /**
      * Determine if an attribute exists on the element.
      *
-     * @param  string $name The attribute name
+     * @param string $name The attribute name
      *
      * @return bool
      */
@@ -134,8 +134,8 @@ class Element
     /**
      * Set an attribute on the element.
      *
-     * @param  string $name The attribute name
-     * @param  string $value The attribute value
+     * @param string $name The attribute name
+     * @param string $value The attribute value
      *
      * @return \DiDom\Element
      */
@@ -149,8 +149,8 @@ class Element
     /**
      * Access to the element's attributes.
      *
-     * @param  string $name The attribute name
-     * @param  string $default The value returned if the attribute does not exist
+     * @param string $name The attribute name
+     * @param string $default The value returned if the attribute does not exist
      *
      * @return string|null The value of the attribute or null if attribute does not exist
      */
@@ -166,7 +166,7 @@ class Element
     /**
      * Unset an attribute on the element.
      *
-     * @param  string $name The attribute name
+     * @param string $name The attribute name
      *
      * @return \DiDom\Element
      */
@@ -180,8 +180,8 @@ class Element
     /**
      * Alias for getAttribute and setAttribute methods.
      *
-     * @param  string $name The attribute name
-     * @param  string $value The attribute value or null if the attribute does not exist
+     * @param string $name The attribute name
+     * @param string $value The attribute value or null if the attribute does not exist
      *
      * @return string|null|\DiDom\Element
      */
@@ -197,9 +197,9 @@ class Element
     /**
      * Dumps the node into a string using HTML formatting.
      * 
-     * @param  int $options Additional options
+     * @param int $options Additional options
      * 
-     * @return string The node html
+     * @return string The node HTML
      */
     public function html($options = 0)
     {
@@ -209,7 +209,7 @@ class Element
     /**
      * Dumps the node descendants into a string using HTML formatting.
      * 
-     * @param  int $options Additional options
+     * @param int $options Additional options
      * 
      * @return string
      */
@@ -231,9 +231,9 @@ class Element
     /**
      * Dumps the node into a string using XML formatting.
      * 
-     * @param  int $options Additional options
+     * @param int $options Additional options
      * 
-     * @return string The node xml
+     * @return string The node XML
      */
     public function xml($options = 0)
     {
@@ -253,7 +253,7 @@ class Element
     /**
      * Set the value of this node.
      *
-     * @param  string $value The new value of the node
+     * @param string $value The new value of the node
      *
      * @return \DiDom\Element
      */
@@ -271,7 +271,7 @@ class Element
     /**
      * Indicates if two nodes are the same node.
      * 
-     * @param  \DiDom\Element|\DOMElement $node
+     * @param \DiDom\Element|\DOMElement $node
      *
      * @return bool
      *
@@ -317,10 +317,10 @@ class Element
     /**
      * Replaces a child.
      * 
-     * @param  \DOMElement|\DiDom\Element $newChild the new node
-     * @param  bool $clone clone the node if true, otherwise move it
+     * @param \DOMElement|\DiDom\Element $newChild The new node
+     * @param bool $clone Clone the node if true, otherwise move it
      * 
-     * @return \DiDom\Element the node that has been replaced
+     * @return \DiDom\Element The node that has been replaced
      */
     public function replace($newNode, $clone = true)
     {
@@ -348,7 +348,7 @@ class Element
     /**
      * Clones a node.
      * 
-     * @param  bool $deep Indicates whether to copy all descendant nodes
+     * @param bool $deep Indicates whether to copy all descendant nodes
      * 
      * @return \DiDom\Element The cloned node
      */
@@ -360,7 +360,7 @@ class Element
     /**
      * Sets current \DOMElement instance.
      *
-     * @param  \DOMElement $node
+     * @param \DOMElement $node
      *
      * @return \DiDom\Element
      */
@@ -382,7 +382,7 @@ class Element
     /**
      * Get the DOM document with the current element.
      *
-     * @param  string $encoding The document encoding
+     * @param string $encoding The document encoding
      * 
      * @return \DiDom\Document
      */
@@ -397,8 +397,8 @@ class Element
     /**
      * Dynamically set an attribute on the element.
      *
-     * @param  string $name The attribute name
-     * @param  mixed  $value The attribute value
+     * @param string $name The attribute name
+     * @param mixed  $value The attribute value
      *
      * @return \DiDom\Element
      */
@@ -410,7 +410,7 @@ class Element
     /**
      * Dynamically access the element's attributes.
      *
-     * @param  string $name The attribute name
+     * @param string $name The attribute name
      *
      * @return string|null
      */
@@ -428,7 +428,7 @@ class Element
     /**
      * Determine if an attribute exists on the element.
      *
-     * @param  string $name The attribute name
+     * @param string $name The attribute name
      *
      * @return bool
      */
@@ -440,7 +440,7 @@ class Element
     /**
      * Unset an attribute on the model.
      *
-     * @param  string $name The attribute name
+     * @param string $name The attribute name
      */
     public function __unset($name)
     {
@@ -460,9 +460,9 @@ class Element
     /**
      * Searches for an item in the DOM tree for a given XPath expression or a CSS selector.
      * 
-     * @param  string $expression XPath expression or a CSS selector
-     * @param  string $type the type of the expression
-     * @param  bool   $wrapElement returns array of \DiDom\Element if true, otherwise array of \DOMElement
+     * @param string $expression XPath expression or a CSS selector
+     * @param string $type The type of the expression
+     * @param bool   $wrapElement Returns array of \DiDom\Element if true, otherwise array of \DOMElement
      *
      * @return \DiDom\Element[]|\DOMElement[]
      */

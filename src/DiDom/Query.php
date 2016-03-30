@@ -10,7 +10,7 @@ class Query
     /**
      * Types of expressions.
      * 
-     * @string
+     * @const string
      */
     const TYPE_XPATH = 'XPATH';
     const TYPE_CSS   = 'CSS';
@@ -23,8 +23,8 @@ class Query
     /**
      * Converts a CSS selector into an XPath expression.
      *
-     * @param  string $expression XPath expression or CSS selector
-     * @param  string $type the type of the expression
+     * @param string $expression XPath expression or CSS selector
+     * @param string $type The type of the expression
      *
      * @return string XPath expression
      */
@@ -57,8 +57,8 @@ class Query
     /**
      * Converts a CSS selector into an XPath expression.
      * 
-     * @param  string $selector a CSS selector
-     * @param  string $prefix specifies the nesting of nodes
+     * @param string $selector A CSS selector
+     * @param string $prefix Specifies the nesting of nodes
      *
      * @return string XPath expression
      */
@@ -98,7 +98,7 @@ class Query
     }
 
     /**
-     * @param  string $property
+     * @param string $property
      * 
      * @return array
      */
@@ -121,8 +121,8 @@ class Query
     }
 
     /**
-     * @param  string $name
-     * @param  array  $args
+     * @param string $name
+     * @param array  $args
      * 
      * @return string
      */
@@ -146,8 +146,8 @@ class Query
     }
 
     /**
-     * @param  array  $segments
-     * @param  string $prefix specifies the nesting of nodes
+     * @param array  $segments
+     * @param string $prefix Specifies the nesting of nodes
      *
      * @return string XPath expression
      *
@@ -197,8 +197,8 @@ class Query
     }
 
     /**
-     * @param string  $name  The attribute name.
-     * @param string  $value The attribute value.
+     * @param string $name  The attribute name
+     * @param string $value The attribute value
      * 
      * @return string
      */
@@ -232,8 +232,8 @@ class Query
     /**
      * Converts a CSS pseudo-class into an XPath expression.
      * 
-     * @param  string $pseudo pseudo-class
-     * @param  string $expression expression for the nth-child (optional)
+     * @param string $pseudo Pseudo-class
+     * @param string $expression Expression for the nth-child (optional)
      *
      * @return string
      *
@@ -268,7 +268,7 @@ class Query
     /**
      * Converts nth-child expression into an XPath expression.
      * 
-     * @param  string $expression nth-expression
+     * @param string $expression nth-expression
      * 
      * @return string
      * 
@@ -303,7 +303,7 @@ class Query
     /**
      * Splits the CSS selector into parts (tag name, ID, classes, attributes, pseudo-class).
      * 
-     * @param  string $selector CSS selector
+     * @param string $selector CSS selector
      *
      * @return array
      *
@@ -394,7 +394,7 @@ class Query
     }
 
     /**
-     * @param  array $compiled
+     * @param array $compiled
      *
      * @throws \InvalidArgumentException if the attributes is not an array
      */

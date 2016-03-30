@@ -22,10 +22,10 @@ class Document
     /**
      * Constructor.
      * 
-     * @param  string $string HTML or XML string or file path
-     * @param  bool   $isFile indicates that in first parameter was passed to the file path
-     * @param  string $encoding The document encoding
-     * @param  string $type The document type
+     * @param string $string HTML or XML string or file path
+     * @param bool   $isFile Indicates that in first parameter was passed to the file path
+     * @param string $encoding The document encoding
+     * @param string $type The document type
      */
     public function __construct($string = null, $isFile = false, $encoding = 'UTF-8', $type = 'html')
     {
@@ -49,9 +49,9 @@ class Document
     /**
      * Create new element node.
      * 
-     * @param  string $name The tag name of the element
-     * @param  string $value The value of the element
-     * @param  array  $attributes The attributes of the element
+     * @param string $name The tag name of the element
+     * @param string $value The value of the element
+     * @param array  $attributes The attributes of the element
      *
      * @return \DiDom\Element created element
      */
@@ -65,7 +65,7 @@ class Document
     /**
      * Adds new child at the end of the children.
      * 
-     * @param  \DiDom\Element|\DOMNode|array $nodes The appended child.
+     * @param \DiDom\Element|\DOMNode|array $nodes The appended child
      *
      * @return \DiDom\Document
      *
@@ -100,10 +100,10 @@ class Document
     /**
      * Load HTML or XML.
      * 
-     * @param  string $string HTML or XML string or file path
-     * @param  bool   $isFile indicates that in first parameter was passed to the file path
-     * @param  string $type Type of document
-     * @param  int    $options Additional parameters
+     * @param string $string HTML or XML string or file path
+     * @param bool   $isFile Indicates that in first parameter was passed to the file path
+     * @param string $type Type of document
+     * @param int    $options Additional parameters
      */
     public function load($string, $isFile = false, $type = 'html', $options = 0)
     {
@@ -156,8 +156,8 @@ class Document
     /**
      * Load HTML from a string.
      * 
-     * @param  string $html The HTML string
-     * @param  int    $options Additional parameters
+     * @param string $html The HTML string
+     * @param int    $options Additional parameters
      *
      * @return \DiDom\Document
      *
@@ -171,8 +171,8 @@ class Document
     /**
      * Load HTML from a file.
      * 
-     * @param  string $filepath The path to the HTML file
-     * @param  int    $options Additional parameters
+     * @param string $filepath The path to the HTML file
+     * @param int    $options Additional parameters
      *
      * @return \DiDom\Document
      *
@@ -188,8 +188,8 @@ class Document
     /**
      * Load XML from a string.
      * 
-     * @param  string $xml The XML string
-     * @param  int    $options Additional parameters
+     * @param string $xml The XML string
+     * @param int    $options Additional parameters
      *
      * @return \DiDom\Document
      *
@@ -203,8 +203,8 @@ class Document
     /**
      * Load XML from a file.
      * 
-     * @param  string $filepath The path to the XML file
-     * @param  int    $options Additional parameters
+     * @param string $filepath The path to the XML file
+     * @param int    $options Additional parameters
      *
      * @return \DiDom\Document
      *
@@ -220,7 +220,7 @@ class Document
     /**
      * Reads entire file into a string.
      * 
-     * @param  string $filepath The path to the file
+     * @param string $filepath The path to the file
      *
      * @return strting
      *
@@ -252,8 +252,8 @@ class Document
     /**
      * Checks the existence of the item.
      * 
-     * @param  string $expression XPath expression or CSS selector
-     * @param  string $type the type of the expression
+     * @param string $expression XPath expression or CSS selector
+     * @param string $type The type of the expression
      *
      * @return bool
      */
@@ -265,9 +265,9 @@ class Document
     /**
      * Searches for an item in the DOM tree for a given XPath expression or a CSS selector.
      * 
-     * @param  string $expression XPath expression or a CSS selector
-     * @param  string $type the type of the expression
-     * @param  bool   $wrapElement returns array of \DiDom\Element if true, otherwise array of \DOMElement
+     * @param string $expression XPath expression or a CSS selector
+     * @param string $type The type of the expression
+     * @param bool   $wrapElement Returns array of \DiDom\Element if true, otherwise array of \DOMElement
      *
      * @return \DiDom\Element[]|\DOMElement[]
      */
@@ -313,8 +313,8 @@ class Document
     /**
      * Searches for an item in the DOM tree for a given XPath expression.
      * 
-     * @param  string $expression XPath expression
-     * @param  bool   $wrapElement returns array of \DiDom\Element if true, otherwise array of \DOMElement
+     * @param string $expression XPath expression
+     * @param bool   $wrapElement Returns array of \DiDom\Element if true, otherwise array of \DOMElement
      *
      * @return \DiDom\Element[]|\DOMElement[]
      */
@@ -326,7 +326,7 @@ class Document
     /**
      * Dumps the internal document into a string using HTML formatting.
      * 
-     * @param  int $options Additional options
+     * @param int $options Additional options
      * 
      * @return string The document html
      */
@@ -338,7 +338,7 @@ class Document
     /**
      * Dumps the internal document into a string using XML formatting.
      * 
-     * @param  int $options Additional options
+     * @param int $options Additional options
      * 
      * @return string The document html
      */
@@ -350,7 +350,7 @@ class Document
     /**
      * Nicely formats output with indentation and extra space.
      * 
-     * @param  bool $format formats output if true
+     * @param bool $format Formats output if true
      *
      * @return \DiDom\Document
      */
@@ -374,7 +374,7 @@ class Document
     /**
      * Indicates if two documents are the same document.
      * 
-     * @param  Document|\DOMDocument $document The compared document.
+     * @param Document|\DOMDocument $document The compared document
      *
      * @return bool
      *
@@ -442,9 +442,9 @@ class Document
     /**
      * Searches for an item in the DOM tree for a given XPath expression or a CSS selector.
      * 
-     * @param  string $expression XPath expression or a CSS selector
-     * @param  string $type the type of the expression
-     * @param  bool   $wrapElement returns array of \DiDom\Element if true, otherwise array of \DOMElement
+     * @param string $expression XPath expression or a CSS selector
+     * @param string $type The type of the expression
+     * @param bool   $wrapElement Returns array of \DiDom\Element if true, otherwise array of \DOMElement
      *
      * @return \DiDom\Element[]|\DOMElement[]
      */
