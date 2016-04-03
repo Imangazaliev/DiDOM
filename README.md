@@ -16,6 +16,7 @@ DiDOM - simple and fast HTML parser.
 - [Creating new document](#creating-new-document)
 - [Search for elements](#search-for-elements)
 - [Verify if element exists](#verify-if-element-exists)
+- [Поддерживамые селекторы](#Поддерживамые-селекторы)
 - [Output](#output)
 - [Creating a new element](#creating-a-new-element)
 - [Getting parent element](#getting-parent-element)
@@ -55,7 +56,7 @@ DiDom allows to load HTML in several ways:
 ```php    
 // the first parameter is a string with HTML
 $document = new Document($html);
-    
+
 // file path
 $document = new Document('page.html', true);
 
@@ -69,12 +70,20 @@ The second parameter specifies if you need to load file. Default is `false`.
 
 ```php
 $document = new Document();
-    
+
 $document->loadHtml($html);
-    
+
 $document->loadHtmlFile('page.html');
 
 $document->loadHtmlFile('http://www.example.com/');
+```
+
+Для загрузки XML есть соответствующие методы `loadXml` и `loadXmlFile`.
+
+При загрузке через эти методы документу можно передать дополнительные параметры:
+
+```php
+$document->loadHtml($html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
 ```
 
 ## Search for elements
@@ -145,6 +154,54 @@ if (count($elements = $document->find('.post')) != 0) {
 
 because in the first case it makes two requests.
 
+## Поддерживамые селекторы
+
+DiDom поддерживает поиск по:
+
+- тэгу
+- классу, идентификатору, имени и значению атрибута
+- псевдоклассам:
+    - first-, last-, nth-child
+    - empty и not-empty
+    - contains
+
+```php
+// все ссылки
+$document->find('a');
+
+// любой элемент с id = "foo" и классом "bar"
+$document->find('#foo.bar');
+
+// любой элемент, у которого есть атрибут "name"
+$document->find('[name]');
+// эквивалентно
+$document->find('*[name]');
+
+// поле ввода с именем "foo"
+$document->find('input[name=foo]');
+$document->find('input[name=\'bar\']');
+$document->find('input[name="baz"]');
+
+// любой элемент, у которого есть атрибут,
+// начинающийся с "data-" и равный "foo"
+$document->find('*[^data-=foo]');
+
+// все ссылки, у которых адрес начинается с https
+$document->find('a[href^=https]');
+
+// все изображения с расширением png
+$document->find('img[src$=png]');
+
+// все ссылки, содержащие в своем адресе строку "exapmle.com"
+$document->find('a[href*=exapmle.com]');
+
+// текст всех ссылок с классом "foo"
+$document->find('a.foo::text');
+
+// адрес и текст подсказки всех полей с классом "bar"
+$document->find('a.bar::attr(href|title)');
+```
+
 ## Output
 
 ### Getting HTML
@@ -161,6 +218,7 @@ echo $posts[0]->html();
 ```php
 $html = (string) $posts[0];
 ```
+
 ##### Formatting HTML output
 
 ```php
@@ -172,6 +230,24 @@ An element does not have `format()` method, so if you need to output formatted H
 
 ```php
 $html = $element->toDocument()->format()->html();
+```
+
+#### Внутренний HTML
+
+```php
+$innerHtml = $element->innerHtml();
+```
+
+Метод `innerHtml()` отсутствует у документа, поэтому, если нужно получить внутренний HTML-код документа, необходимо сначала преобразовать его в элемент:
+
+```php
+$innerHtml = $document->toElement()->innerHtml();
+```
+
+#### Дополнительные параметры
+
+```php
+$html = $document->format()->html(LIBXML_NOEMPTYTAG);
 ```
 
 ### Getting content
@@ -319,6 +395,21 @@ var_dump($element->is($element));
 var_dump($element->is($element2));
 ```
 
+## Добавление дочерних элементов
+
+```php
+$list = new Element('ul');
+
+$item = new Element('li', 'Item 1');
+$items = [
+    new Element('li', 'Item 2'),
+    new Element('li', 'Item 3'),
+];
+
+$list->appendChild($item);
+$list->appendChild($items);
+```
+
 ## Replacing element
 
 ```php
@@ -354,4 +445,4 @@ Query::setCompiled(['h2' => '//h2']);
 
 ## Comparison with other parsers
 
-[Comparison with other parsers](https://github.com/Imangazaliev/DiDOM/wiki/Comparison-with-other-parsers)
+[Comparison with other parsers](https://github.com/Imangazaliev/DiDOM/wiki/Comparison-with-other-parsers-(1.6.3))
