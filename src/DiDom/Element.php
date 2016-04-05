@@ -372,6 +372,8 @@ class Element
     }
 
     /**
+     * Get current \DOMElement instance.
+     * 
      * @return \DOMElement
      */
     public function getNode()
