@@ -192,8 +192,8 @@ $document->find('a[href^=https]');
 // все изображения с расширением png
 $document->find('img[src$=png]');
 
-// все ссылки, содержащие в своем адресе строку "exapmle.com"
-$document->find('a[href*=exapmle.com]');
+// все ссылки, содержащие в своем адресе строку "example.com"
+$document->find('a[href*=example.com]');
 
 // текст всех ссылок с классом "foo"
 $document->find('a.foo::text');

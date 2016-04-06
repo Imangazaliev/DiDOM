@@ -16,7 +16,7 @@ DiDOM - simple and fast HTML parser.
 - [Creating new document](#creating-new-document)
 - [Search for elements](#search-for-elements)
 - [Verify if element exists](#verify-if-element-exists)
-- [Поддерживамые селекторы](#Поддерживамые-селекторы)
+- [Supported selectors](#supported-selectors)
 - [Output](#output)
 - [Creating a new element](#creating-a-new-element)
 - [Getting parent element](#getting-parent-element)
@@ -78,9 +78,9 @@ $document->loadHtmlFile('page.html');
 $document->loadHtmlFile('http://www.example.com/');
 ```
 
-Для загрузки XML есть соответствующие методы `loadXml` и `loadXmlFile`.
+There are two methods available for loading XML: `loadXml` and `loadXmlFile`.
 
-При загрузке через эти методы документу можно передать дополнительные параметры:
+These methods accept additional options:
 
 ```php
 $document->loadHtml($html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
@@ -154,51 +154,50 @@ if (count($elements = $document->find('.post')) != 0) {
 
 because in the first case it makes two requests.
 
-## Поддерживамые селекторы
+## Supported selectors
 
-DiDom поддерживает поиск по:
+DiDom supports search by:
 
-- тэгу
-- классу, идентификатору, имени и значению атрибута
-- псевдоклассам:
+- tag
+- class, ID, name and value of an attribute
+- pseudo-classes:
     - first-, last-, nth-child
-    - empty и not-empty
+    - empty and not-empty
     - contains
 
 ```php
-// все ссылки
+// all links
 $document->find('a');
 
-// любой элемент с id = "foo" и классом "bar"
+// any element with id = "foo" and "bar" class
 $document->find('#foo.bar');
 
-// любой элемент, у которого есть атрибут "name"
+// any element with attribute "name"
 $document->find('[name]');
-// эквивалентно
+// the same as
 $document->find('*[name]');
 
-// поле ввода с именем "foo"
+// input field with the name "foo"
 $document->find('input[name=foo]');
 $document->find('input[name=\'bar\']');
 $document->find('input[name="baz"]');
 
-// любой элемент, у которого есть атрибут,
-// начинающийся с "data-" и равный "foo"
+// any element that has an attribute starting with "data-" and the value "foo"
 $document->find('*[^data-=foo]');
 
-// все ссылки, у которых адрес начинается с https
+// all links starting with https
 $document->find('a[href^=https]');
 
-// все изображения с расширением png
+// all images with the extension png
 $document->find('img[src$=png]');
 
-// все ссылки, содержащие в своем адресе строку "exapmle.com"
-$document->find('a[href*=exapmle.com]');
+// all links containing the string "example.com"
+$document->find('a[href*=example.com]');
 
-// текст всех ссылок с классом "foo"
+// text of the links with "foo" class
 $document->find('a.foo::text');
 
-// адрес и текст подсказки всех полей с классом "bar"
+// address and title af all the fields with "bar" class
 $document->find('a.bar::attr(href|title)');
 ```
 
@@ -232,19 +231,19 @@ An element does not have `format()` method, so if you need to output formatted H
 $html = $element->toDocument()->format()->html();
 ```
 
-#### Внутренний HTML
+#### Inner HTML
 
 ```php
 $innerHtml = $element->innerHtml();
 ```
 
-Метод `innerHtml()` отсутствует у документа, поэтому, если нужно получить внутренний HTML-код документа, необходимо сначала преобразовать его в элемент:
+Document does not have the method `innerHtml()`, therefore, if you need to get inner HTML of a document, convert it into an element first:
 
 ```php
 $innerHtml = $document->toElement()->innerHtml();
 ```
 
-#### Дополнительные параметры
+#### Additional parameters
 
 ```php
 $html = $document->format()->html(LIBXML_NOEMPTYTAG);
@@ -395,7 +394,7 @@ var_dump($element->is($element));
 var_dump($element->is($element2));
 ```
 
-## Добавление дочерних элементов
+## Appending child elements
 
 ```php
 $list = new Element('ul');
