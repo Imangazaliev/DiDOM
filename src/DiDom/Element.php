@@ -225,7 +225,7 @@ class Element
 
         $html = implode('', $childrenHtml);
 
-        return html_entity_decode($html);
+        return $html;
     }
 
     /**
