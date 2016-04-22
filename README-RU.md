@@ -101,7 +101,7 @@ use DiDom\Query;
 // CSS-селектор    
 $posts = $document->find('.post');
 
-// XPath-путь
+// XPath-выражение
 $posts = $document->find("//div[contains(@class, 'post')]", Query::TYPE_XPATH);
 ```
 

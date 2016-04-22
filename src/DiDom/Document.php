@@ -275,7 +275,11 @@ class Document
     {
         $expression = Query::compile($expression, $type);
 
-        $xpath    = new DOMXPath($this->document);
+        $xpath = new DOMXPath($this->document);
+
+        $xpath->registerNamespace("php", "http://php.net/xpath");
+        $xpath->registerPhpFunctions();
+
         $nodeList = $xpath->query($expression);
         $result   = array();
 

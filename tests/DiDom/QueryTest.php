@@ -137,13 +137,24 @@ class QueryTest extends TestCase
             ['li:nth-child(3n-1)', '//li[(position() + 1) mod 3 = 0 and position() >= 1]'],
             ['li:nth-child(n+3)', '//li[(position() - 3) mod 1 = 0 and position() >= 3]'],
             ['li:nth-child(n-3)', '//li[(position() + 3) mod 1 = 0 and position() >= 3]'],
-            ['li:contains(foo)', '//li[lower-case(.) = lower-case("foo")]'],
-            ['li:contains("foo")', '//li[lower-case(.) = lower-case("foo")]'],
-            ['li:contains(\'foo\')', '//li[lower-case(.) = lower-case("foo")]'],
             ['ul li a::text', '//ul//li//a/text()'],
             ['ul li a::attr(href)', '//ul//li//a/@*[name() = "href"]'],
             ['ul li a::attr(href|title)', '//ul//li//a/@*[name() = "href" or name() = "title"]'],
         ];
+
+        if (function_exists('mb_strtolower')) {
+            $containsXpath = [
+                ['li:contains(foo)', '//li[php:functionString("mb_strtolower", .) = php:functionString("mb_strtolower", "foo")]'],
+                ['li:contains("foo")', '//li[php:functionString("mb_strtolower", .) = php:functionString("mb_strtolower", "foo")]'],
+                ['li:contains(\'foo\')', '//li[php:functionString("mb_strtolower", .) = php:functionString("mb_strtolower", "foo")]'],
+            ];
+        } else {
+            $containsXpath = [
+                ['li:contains(foo)', '//li[php:functionString("strtolower", .) = php:functionString("mb_strtolower", "foo")]'],
+                ['li:contains("foo")', '//li[php:functionString("strtolower", .) = php:functionString("mb_strtolower", "foo")]'],
+                ['li:contains(\'foo\')', '//li[php:functionString("strtolower", .) = php:functionString("mb_strtolower", "foo")]'],
+            ];
+        }
 
         return $compiled;
     }
@@ -202,6 +213,7 @@ class QueryTest extends TestCase
             ['selector' => 'li:first-child', 'tag' => 'li', 'pseudo' => 'first-child'],
             ['selector' => 'ul >', 'tag' => 'ul', 'rel' => '>'],
             ['selector' => '#id.foo[name=value]:first-child >', 'tag' => '*', 'id' => 'id', 'classes' => ['foo'], 'attributes' => ['name' => 'value'], 'pseudo' => 'first-child', 'rel' => '>'],
+            ['selector' => 'li.bar:nth-child(2n)', 'tag' => 'li', 'classes' => ['bar'], 'pseudo' => 'nth-child', 'expr' => '2n'],
         ];
 
         $parameters = [];

@@ -178,8 +178,8 @@ class Query
 
         // if the pseudo class specified
         if (isset($segments['pseudo'])) {
-            $expression   = isset($segments['expr']) ? $segments['expr'] : '';
-            $attributes[] = self::convertPseudo($segments['pseudo'], $expression);
+            $expression   = isset($segments['expr']) ? trim($segments['expr']) : '';
+            $attributes[] = self::convertPseudo($segments['pseudo'], explode(',', $expression));
         }
 
         if (count($attributes) === 0 and !isset($segments['tag'])) {
@@ -233,13 +233,13 @@ class Query
      * Converts a CSS pseudo-class into an XPath expression.
      * 
      * @param string $pseudo Pseudo-class
-     * @param string $expression Expression for the nth-child (optional)
+     * @param string $parameters
      *
      * @return string
      *
      * @throws \RuntimeException if passed an unknown pseudo-class
      */
-    protected static function convertPseudo($pseudo, $expression = null)
+    protected static function convertPseudo($pseudo, $parameters = [])
     {
         switch ($pseudo) {
             case 'first-child':
@@ -255,10 +255,13 @@ class Query
                 return 'count(descendant::*) > 0';
                 break;
             case 'nth-child':
-                return self::convertNthChildExpression($expression);
+                return self::convertNthChildExpression($parameters[0]);
                 break;
             case 'contains':
-                return sprintf('lower-case(.) = lower-case("%s")', trim($expression, '\'"'));
+                $string = trim($parameters[0], ' \'"');
+                $caseSensetive = isset($parameters[1]) and (trim($parameters[1]) === 'true');
+
+                return self::convertContains($string, $caseSensetive);
                 break;
         }
 
@@ -298,6 +301,25 @@ class Query
         }
 
         throw new RuntimeException('Invalid selector: invalid nth-child expression');
+    }
+
+    /**
+     * @param string $string
+     * @param bool   $caseSensetive
+     * 
+     * @return string
+     */
+    protected static function convertContains($string, $caseSensetive = false)
+    {
+        if ($caseSensetive) {
+            return sprintf('text() = "%s"', $string);
+        }
+
+        if (function_exists('mb_strtolower')) {
+            return sprintf('php:functionString("mb_strtolower", .) = php:functionString("mb_strtolower", "%s")', $string);
+        } else {
+            return sprintf('php:functionString("strtolower", .) = php:functionString("strtolower", "%s")', $string);
+        }
     }
 
     /**
