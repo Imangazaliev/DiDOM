@@ -444,4 +444,4 @@ Query::setCompiled(['h2' => '//h2']);
 
 ## Comparison with other parsers
 
-[Comparison with other parsers](https://github.com/Imangazaliev/DiDOM/wiki/Comparison-with-other-parsers-(1.6.3))
+[Comparison with other parsers](https://github.com/Imangazaliev/DiDOM/wiki/Comparison-with-other-parsers-(1.0))
