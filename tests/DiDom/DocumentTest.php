@@ -421,6 +421,16 @@ class DocumentTest extends TestCase
         $this->assertFalse($document->is($document2));
     }
 
+    public function testIsWithEmptyDocument()
+    {
+        $html = $this->loadFixture('posts.html');
+
+        $document = new Document($html, false);
+        $document2 = new Document();
+
+        $this->assertFalse($document->is($document2));        
+    }
+
     public function testGetDocument()
     {
         $domDocument = new \DOMDocument();

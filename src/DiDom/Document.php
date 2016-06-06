@@ -396,6 +396,10 @@ class Document
             $element = $document->documentElement;
         }
 
+        if ($element === null) {
+            return false;
+        }
+
         return $this->getElement()->isSameNode($element);
     }
 
