@@ -361,6 +361,21 @@ class ElementTest extends TestCase
         $this->assertCount(2, $document->find('li'));
     }
 
+    public function testReplaceToNewElement()
+    {
+        $html = '<ul><li>One</li><li>Two</li><li>Three</li></ul>';
+
+        $document = new Document($html, false);
+
+        $first = $document->find('li')[0];
+
+        $newElement = new Element('li', 'Foo');
+
+        $this->assertEquals($first->getNode(), $first->replace($newElement)->getNode());
+        $this->assertEquals('Foo', $document->find('li')[0]->text());
+        $this->assertCount(3, $document->find('li'));
+    }
+
     public function testReplaceWithDifferentDocuments()
     {
         $html = '<ul><li>One</li><li>Two</li><li>Three</li></ul>';
