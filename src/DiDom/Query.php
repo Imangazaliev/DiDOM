@@ -352,6 +352,10 @@ class Query
         $regexp = '/'.$tag.$id.$classes.$attrs.$pseudo.$rel.'/is';
 
         if (preg_match($regexp, $selector, $segments)) {
+            if ($segments[0] === '') {
+                throw new RuntimeException('Invalid selector');
+            }
+
             $result['selector'] = $segments[0];
             $result['tag']      = (isset($segments['tag']) and $segments['tag'] !== '') ? $segments['tag'] : '*';
 

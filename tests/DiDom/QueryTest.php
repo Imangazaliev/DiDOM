@@ -71,6 +71,22 @@ class QueryTest extends TestCase
         Query::compile('li:nth-child(foo)');
     }
 
+    /**
+     * @expectedException RuntimeException
+     */
+    public function testGetSegmentsWithEmptyClass()
+    {
+        Query::getSegments('.');
+    }
+
+    /**
+     * @expectedException RuntimeException
+     */
+    public function testCompilehWithEmptyClass()
+    {
+        Query::compile('span.');
+    }
+
     public function testCompileXpath()
     {
         $this->assertEquals('//div', Query::compile('//div', Query::TYPE_XPATH));
