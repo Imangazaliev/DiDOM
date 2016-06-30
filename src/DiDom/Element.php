@@ -107,6 +107,20 @@ class Element
     }
 
     /**
+     * Searches for an item in the DOM tree and returns first element or null.
+     * 
+     * @param string $expression XPath expression or a CSS selector
+     * @param string $type The type of the expression
+     * @param bool   $wrapElement Returns \DiDom\Element if true, otherwise \DOMElement
+     *
+     * @return \DiDom\Element|\DOMElement|null
+     */
+    public function first($expression, $type = Query::TYPE_CSS, $wrapElement = true)
+    {
+        return $this->toDocument()->first($expression, $type, $wrapElement);
+    }
+
+    /**
      * Searches for an item in the DOM tree for a given XPath expression.
      * 
      * @param string $expression XPath expression
@@ -215,17 +229,15 @@ class Element
      */
     public function innerHtml($options = 0)
     {
-        $childrenHtml = [];
-        $children = $this->node->childNodes;
+        $innerHtml = [];
+        $childNodes = $this->node->childNodes;
 
-        foreach ($children as $child) 
+        foreach ($childNodes as $node) 
         {
-            $childrenHtml[] = $child->ownerDocument->saveXml($child, $options);
+            $innerHtml[] = $node->ownerDocument->saveXml($node, $options);
         }
 
-        $html = implode('', $childrenHtml);
-
-        return $html;
+        return implode('', $innerHtml);
     }
 
     /**
@@ -291,15 +303,88 @@ class Element
     }
 
     /**
-     * Returns the parent of this node.
-     * 
-     * @return \DiDom\Document the parent of this node
+     * @return \DiDom\Element|null
      */
     public function parent()
     {
-        if ($this->node->ownerDocument !== null) {
-            return new Document($this->node->ownerDocument);
+        if ($this->node->parentNode === null) {
+            return null;
         }
+
+        return new Element($this->node->parentNode);
+    }
+
+    /**
+     * @return \DiDom\Element|null
+     */
+    public function previousSibling()
+    {
+        if ($this->node->previousSibling === null) {
+            return null;
+        }
+
+        return new Element($this->node->previousSibling);
+    }
+
+    /**
+     * @return \DiDom\Element|null
+     */
+    public function nextSibling()
+    {
+        if ($this->node->nextSibling === null) {
+            return null;
+        }
+
+        return new Element($this->node->nextSibling);
+    }
+
+    /**
+     * @return \DiDom\Element|null
+     */
+    public function child($index)
+    {
+        $child = $this->node->childNodes->item($index);
+
+        return $child === null ? null : new Element($child);
+    }
+
+    /**
+     * @return \DiDom\Element|null
+     */
+    public function firstChild()
+    {
+        if ($this->node->firstChild === null) {
+            return null;
+        }
+
+        return new Element($this->node->firstChild);
+    }
+
+    /**
+     * @return \DiDom\Element|null
+     */
+    public function lastChild()
+    {
+        if ($this->node->lastChild === null) {
+            return null;
+        }
+
+        return new Element($this->node->lastChild);
+    }
+
+    /**
+     * @return \DiDom\Element[]
+     */
+    public function children()
+    {
+        $children = [];
+
+        foreach ($this->node->childNodes as $node) 
+        {
+            $children[] = new Element($node);
+        }
+
+        return $children;
     }
 
     /**
@@ -379,6 +464,20 @@ class Element
     public function getNode()
     {
         return $this->node;
+    }
+
+    /**
+     * Returns the document associated with this node.
+     * 
+     * @return \DiDom\Document|null
+     */
+    public function getDocument()
+    {
+        if ($this->node->ownerDocument === null) {
+            return null;
+        }
+
+        return new Document($this->node->ownerDocument);
     }
 
     /**

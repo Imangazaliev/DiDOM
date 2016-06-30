@@ -98,6 +98,23 @@ class ElementTest extends TestCase
         }
     }
 
+    public function testFirst()
+    {
+        $html = '<ul><li>One</li><li>Two</li><li>Three</li></ul>';
+
+        $document = new Document($html, false);
+
+        $list = $document->first('ul');
+
+        $item = $list->getNode()->childNodes->item(0);
+
+        $this->assertEquals($item, $list->first('li')->getNode());
+
+        $list = new Element('ul');
+
+        $this->assertNull($list->first('li'));
+    }
+
     /**
      * @dataProvider findTests
      */
@@ -320,6 +337,106 @@ class ElementTest extends TestCase
         $this->assertEquals($document->getDocument(), $element->parent()->getDocument());
     }
 
+    public function testPreviousSibling()
+    {
+        $html = '<ul><li>One</li><li>Two</li><li>Three</li></ul>';
+
+        $document = new Document($html, false);
+
+        $list = $document->first('ul');
+
+        $item = $list->getNode()->childNodes->item(1);
+        $item = new Element($item);
+
+        $previousSibling = $list->getNode()->childNodes->item(0);
+
+        $this->assertEquals($previousSibling, $item->previousSibling()->getNode());
+
+        $item = $list->getNode()->childNodes->item(0);
+        $item = new Element($item);
+
+        $this->assertNull($item->previousSibling());
+    }
+
+    public function testNextSibling()
+    {
+        $html = '<ul><li>One</li><li>Two</li><li>Three</li></ul>';
+
+        $document = new Document($html, false);
+
+        $list = $document->first('ul');
+
+        $item = $list->getNode()->childNodes->item(0);
+        $item = new Element($item);
+
+        $nextSibling = $list->getNode()->childNodes->item(1);
+
+        $this->assertEquals($nextSibling, $item->nextSibling()->getNode());
+
+        $item = $list->getNode()->childNodes->item(2);
+        $item = new Element($item);
+
+        $this->assertNull($item->nextSibling());
+    }
+
+    public function testChild()
+    {
+        $html = '<ul><li>One</li><li>Two</li><li>Three</li></ul>';
+
+        $document = new Document($html, false);
+
+        $list = $document->first('ul');
+
+        $this->assertEquals($list->getNode()->childNodes->item(0), $list->child(0)->getNode());
+        $this->assertEquals($list->getNode()->childNodes->item(2), $list->child(2)->getNode());
+        $this->assertNull($list->child(3));
+    }
+
+    public function testFirstChild()
+    {
+        $html = '<ul><li>One</li><li>Two</li><li>Three</li></ul>';
+
+        $document = new Document($html, false);
+
+        $list = $document->first('ul');
+
+        $this->assertEquals($list->getNode()->firstChild, $list->firstChild()->getNode());
+
+        $list = new Element('ul');
+
+        $this->assertNull($list->firstChild());
+    }
+
+    public function testLastChild()
+    {
+        $html = '<ul><li>One</li><li>Two</li><li>Three</li></ul>';
+
+        $document = new Document($html, false);
+
+        $list = $document->first('ul');
+
+        $this->assertEquals($list->getNode()->lastChild, $list->lastChild()->getNode());
+
+        $list = new Element('ul');
+
+        $this->assertNull($list->lastChild());
+    }
+
+    public function testChildren()
+    {
+        $html = '<ul><li>One</li><li>Two</li><li>Three</li></ul>';
+
+        $document = new Document($html, false);
+
+        $list = $document->first('ul');
+
+        $children = $list->children();
+
+        foreach ($list->getNode()->childNodes as $index => $node) {
+            $this->assertEquals($node, $children[$index]->getNode());
+        }
+    }
+
     public function testParentWithoutOwner()
     {
         $element = new Element(new \DOMElement('span', 'hello'));
@@ -416,6 +533,15 @@ class ElementTest extends TestCase
         $element = new Element($node);
 
         $this->assertEquals($node, $element->getNode());
+    }
+
+    public function testGetDocument()
+    {
+        $html = $this->loadFixture('posts.html');
+        $document = new Document($html, false);
+        $element = $document->createElement('span', 'value');
+
+        $this->assertEquals($document->getDocument(), $element->getDocument()->getDocument());
     }
 
     public function testToDocument()

@@ -318,6 +318,21 @@ class DocumentTest extends TestCase
         );
     }
 
+    public function testFirst()
+    {
+        $html = '<ul><li>One</li><li>Two</li><li>Three</li></ul>';
+
+        $document = new Document($html, false);
+
+        $items = $document->find('ul > li');
+
+        $this->assertEquals($items[0]->getNode(), $document->first('ul > li')->getNode());
+
+        $document = new Document();
+
+        $this->assertNull($document->first('ul > li'));
+    }
+
     public function testXpath()
     {
         $html = $this->loadFixture('posts.html');

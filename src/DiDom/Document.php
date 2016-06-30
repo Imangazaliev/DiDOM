@@ -315,6 +315,26 @@ class Document
     }
 
     /**
+     * Searches for an item in the DOM tree and returns first element or null.
+     * 
+     * @param string $expression XPath expression or a CSS selector
+     * @param string $type The type of the expression
+     * @param bool   $wrapElement Returns \DiDom\Element if true, otherwise \DOMElement
+     *
+     * @return \DiDom\Element|\DOMElement|null
+     */
+    public function first($expression, $type = Query::TYPE_CSS, $wrapElement = true)
+    {
+        $nodes = $this->find($expression, $type, false);
+
+        if (count($nodes) === 0) {
+            return null;
+        }
+
+        return $wrapElement ? new Element($nodes[0]) : $nodes[0];
+    }
+
+    /**
      * Searches for an item in the DOM tree for a given XPath expression.
      * 
      * @param string $expression XPath expression
