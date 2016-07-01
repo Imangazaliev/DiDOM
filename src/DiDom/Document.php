@@ -259,7 +259,14 @@ class Document
      */
     public function has($expression, $type = Query::TYPE_CSS)
     {
-        return count($this->find($expression, $type)) > 0;
+        $xpath = new DOMXPath($this->document);
+
+        $expression = Query::compile($expression, $type);
+        $expression = sprintf('count(%s)', $expression);
+
+        $count = (int) $xpath->evaluate($expression);
+
+        return $count > 0;
     }
 
     /**
