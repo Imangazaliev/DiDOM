@@ -334,7 +334,7 @@ class ElementTest extends TestCase
         $document = new Document($html, false);
         $element = $document->createElement('span', 'value');
 
-        $this->assertEquals($document->getDocument(), $element->parent()->getDocument());
+        $this->assertEquals($document->getDocument(), $element->getDocument()->getDocument());
     }
 
     public function testPreviousSibling()

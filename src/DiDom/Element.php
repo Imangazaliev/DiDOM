@@ -421,7 +421,7 @@ class Element
             $newNode = $newNode->cloneNode(true);
         }
 
-        if (!$this->parent()->is($newNode->ownerDocument)) {
+        if (!$this->getDocument()->is($newNode->ownerDocument)) {
             $newNode = $this->node->ownerDocument->importNode($newNode, true);
         }
 
