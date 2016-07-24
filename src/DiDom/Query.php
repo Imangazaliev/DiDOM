@@ -210,6 +210,12 @@ class Query
             return $value === null ? $xpath : sprintf('%s="%s"', $xpath, $value);
         }
 
+        if (substr($name, 0, 1) === '!') {
+            $xpath = sprintf('not(@%s)', substr($name, 1));
+
+            return $xpath;
+        }
+
         switch (substr($name, -1)) {
             case '^':
                 $xpath = sprintf('starts-with(@%s, "%s")', substr($name, 0, -1), $value);
@@ -219,6 +225,9 @@ class Query
                 break;
             case '*':
                 $xpath = sprintf('contains(@%s, "%s")', substr($name, 0, -1), $value);
+                break;
+            case '!':
+                $xpath = sprintf('not(@%s="%s")', substr($name, 0, -1), $value);
                 break;
             default:
                 // if specified only the attribute name
@@ -262,6 +271,9 @@ class Query
                 $caseSensetive = isset($parameters[1]) and (trim($parameters[1]) === 'true');
 
                 return self::convertContains($string, $caseSensetive);
+                break;
+            case 'has':
+                return self::cssToXpath($parameters[0], './/');
                 break;
         }
 
