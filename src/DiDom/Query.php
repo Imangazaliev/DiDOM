@@ -155,6 +155,8 @@ class Query
      */
     public static function buildXpath($segments, $prefix = '//')
     {
+        $tagName = isset($segments['tag']) ? $segments['tag'] : '*';
+
         $attributes = array();
 
         // if the id attribute specified
@@ -179,14 +181,13 @@ class Query
         // if the pseudo class specified
         if (isset($segments['pseudo'])) {
             $expression   = isset($segments['expr']) ? trim($segments['expr']) : '';
-            $attributes[] = self::convertPseudo($segments['pseudo'], explode(',', $expression));
+            $attributes[] = self::convertPseudo($segments['pseudo'], explode(',', $expression), $tagName);
         }
 
         if (count($attributes) === 0 and !isset($segments['tag'])) {
             throw new InvalidArgumentException('The array of segments should contain the name of the tag or at least one attribute');
         }
 
-        $tagName = isset($segments['tag']) ? $segments['tag'] : '*';
         $xpath = $prefix.$tagName;
 
         if ($count = count($attributes)) {
@@ -243,12 +244,13 @@ class Query
      * 
      * @param string $pseudo Pseudo-class
      * @param string $parameters
+     * @param string $tagName
      *
      * @return string
      *
      * @throws \RuntimeException if passed an unknown pseudo-class
      */
-    protected static function convertPseudo($pseudo, $parameters = [])
+    protected static function convertPseudo($pseudo, $parameters = [], &$tagName)
     {
         switch ($pseudo) {
             case 'first-child':
@@ -264,7 +266,10 @@ class Query
                 return 'count(descendant::*) > 0';
                 break;
             case 'nth-child':
-                return self::convertNthChildExpression($parameters[0]);
+                $xpath = sprintf('name()="%s"][%s', $tagName, self::convertNthExpression($parameters[0]));
+                $tagName = '*';
+
+                return $xpath;
                 break;
             case 'contains':
                 $string = trim($parameters[0], ' \'"');
@@ -275,13 +280,16 @@ class Query
             case 'has':
                 return self::cssToXpath($parameters[0], './/');
                 break;
+            case 'nth-of-type':
+                return self::convertNthExpression($parameters[0]);
+                break;
         }
 
         throw new RuntimeException('Invalid selector: unknown pseudo-class');
     }
 
     /**
-     * Converts nth-child expression into an XPath expression.
+     * Converts nth-expression into an XPath expression.
      * 
      * @param string $expression nth-expression
      * 
@@ -290,7 +298,7 @@ class Query
      * @throws \RuntimeException if passed nth-child is empty
      * @throws \RuntimeException if passed an unknown nth-child expression
      */
-    protected static function convertNthChildExpression($expression)
+    protected static function convertNthExpression($expression)
     {
         if ($expression === '') {
             throw new RuntimeException('Invalid selector: nth-child expression must not be empty');
