@@ -181,7 +181,10 @@ class Query
         // if the pseudo class specified
         if (isset($segments['pseudo'])) {
             $expression   = isset($segments['expr']) ? trim($segments['expr']) : '';
-            $attributes[] = self::convertPseudo($segments['pseudo'], explode(',', $expression), $tagName);
+
+            $parameters = explode(',', $expression);
+
+            $attributes[] = self::convertPseudo($segments['pseudo'], $parameters, $tagName);
         }
 
         if (count($attributes) === 0 and !isset($segments['tag'])) {
@@ -205,12 +208,16 @@ class Query
      */
     protected static function convertAttribute($name, $value)
     {
+        // if the attribute name starts with ^
+        // example: *[^data-]
         if (substr($name, 0, 1) === '^') {
             $xpath = sprintf('@*[starts-with(name(), "%s")]', substr($name, 1));
 
             return $value === null ? $xpath : sprintf('%s="%s"', $xpath, $value);
         }
 
+        // if the attribute name starts with !
+        // example: input[!disabled]
         if (substr($name, 0, 1) === '!') {
             $xpath = sprintf('not(@%s)', substr($name, 1));
 
@@ -266,7 +273,7 @@ class Query
                 return 'count(descendant::*) > 0';
                 break;
             case 'nth-child':
-                $xpath = sprintf('name()="%s"][%s', $tagName, self::convertNthExpression($parameters[0]));
+                $xpath = sprintf('(name()="%s") and (%s)', $tagName, self::convertNthExpression($parameters[0]));
                 $tagName = '*';
 
                 return $xpath;
@@ -305,12 +312,18 @@ class Query
         }
 
         if ($expression === 'odd') {
-            return '(position() -1) mod 2 = 0 and position() >= 1';
-        } elseif ($expression === 'even') {
+            return '(position() - 1) mod 2 = 0 and position() >= 1';
+        }
+
+        if ($expression === 'even') {
             return 'position() mod 2 = 0 and position() >= 0';
-        } elseif (is_numeric($expression)) {
+        }
+
+        if (is_numeric($expression)) {
             return sprintf('position() = %d', $expression);
-        } elseif (preg_match("/^(?P<mul>[0-9]?n)(?:(?P<sign>\+|\-)(?P<pos>[0-9]+))?$/is", $expression, $segments)) {
+        }
+
+        if (preg_match("/^(?P<mul>[0-9]?n)(?:(?P<sign>\+|\-)(?P<pos>[0-9]+))?$/is", $expression, $segments)) {
             if (isset($segments['mul'])) {
                 $segments['mul'] = strtolower($segments['mul'] === 'n') ? 1 : trim(strtolower($segments['mul']), 'n');
                 $segments['sign'] = (isset($segments['sign']) and $segments['sign'] === '+') ? '-' : '+';
