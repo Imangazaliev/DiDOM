@@ -356,6 +356,18 @@ class ElementTest extends TestCase
         $item = new Element($item);
 
         $this->assertNull($item->previousSibling());
+
+        // with text nodes
+        $html = '<p>Foo <span>Bar</span> Baz</p>';
+
+        $document = new Document($html, false);
+
+        $paragraph = $document->first('p');
+        $span = $paragraph->first('span');
+
+        $previousSibling = $paragraph->getNode()->childNodes->item(0);
+
+        $this->assertEquals($previousSibling->textContent, $span->previousSibling()->getNode()->textContent);
     }
 
     public function testNextSibling()
@@ -377,6 +389,18 @@ class ElementTest extends TestCase
         $item = new Element($item);
 
         $this->assertNull($item->nextSibling());
+
+        // with text nodes
+        $html = '<p>Foo <span>Bar</span> Baz</p>';
+
+        $document = new Document($html, false);
+
+        $paragraph = $document->first('p');
+        $span = $paragraph->first('span');
+
+        $nextSibling = $paragraph->getNode()->childNodes->item(2);
+
+        $this->assertEquals($nextSibling->textContent, $span->nextSibling()->getNode()->textContent);
     }
 
     public function testChild()
@@ -390,6 +414,17 @@ class ElementTest extends TestCase
         $this->assertEquals($list->getNode()->childNodes->item(0), $list->child(0)->getNode());
         $this->assertEquals($list->getNode()->childNodes->item(2), $list->child(2)->getNode());
         $this->assertNull($list->child(3));
+
+        // with text nodes
+        $html = '<p>Foo <span>Bar</span> Baz</p>';
+
+        $document = new Document($html, false);
+
+        $paragraph = $document->first('p');
+
+        $child = $paragraph->getNode()->childNodes->item(0);
+
+        $this->assertEquals($child->textContent, $paragraph->child(0)->getNode()->textContent);
     }
 
     public function testFirstChild()
@@ -405,6 +440,17 @@ class ElementTest extends TestCase
         $list = new Element('ul');
 
         $this->assertNull($list->firstChild());
+
+        // with text nodes
+        $html = '<p>Foo <span>Bar</span> Baz</p>';
+
+        $document = new Document($html, false);
+
+        $paragraph = $document->first('p');
+
+        $firstChild = $paragraph->getNode()->firstChild;
+
+        $this->assertEquals($firstChild->textContent, $paragraph->firstChild()->getNode()->textContent);
     }
 
     public function testLastChild()
@@ -420,6 +466,17 @@ class ElementTest extends TestCase
         $list = new Element('ul');
 
         $this->assertNull($list->lastChild());
+
+        // with text nodes
+        $html = '<p>Foo <span>Bar</span> Baz</p>';
+
+        $document = new Document($html, false);
+
+        $paragraph = $document->first('p');
+
+        $lastChild = $paragraph->getNode()->lastChild;
+
+        $this->assertEquals($lastChild->textContent, $paragraph->lastChild()->getNode()->textContent);
     }
 
     public function testChildren()
@@ -433,6 +490,19 @@ class ElementTest extends TestCase
         $children = $list->children();
 
         foreach ($list->getNode()->childNodes as $index => $node) {
+            $this->assertEquals($node, $children[$index]->getNode());
+        }
+
+        // with text nodes
+        $html = '<p>Foo <span>Bar</span> Baz</p>';
+
+        $document = new Document($html, false);
+
+        $paragraph = $document->first('p');
+
+        $children = $paragraph->children();
+
+        foreach ($paragraph->getNode()->childNodes as $index => $node) {
             $this->assertEquals($node, $children[$index]->getNode());
         }
     }

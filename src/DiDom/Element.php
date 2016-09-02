@@ -3,7 +3,7 @@
 namespace DiDom;
 
 use DOMDocument;
-use DOMElement;
+use DOMNode;
 use InvalidArgumentException;
 
 class Element
@@ -11,14 +11,14 @@ class Element
     /**
      * The DOM element instance.
      * 
-     * @var \DOMElement;
+     * @var \DOMNode;
      */
     protected $node;
 
     /**
      * Constructor.
      * 
-     * @param \DOMElement|string $name The tag name of the element
+     * @param \DOMNode|string $name The tag name of the element
      * @param string $value The value of the element
      * @param array  $attributes The attributes of the element
      *
@@ -283,11 +283,11 @@ class Element
     /**
      * Indicates if two nodes are the same node.
      * 
-     * @param \DiDom\Element|\DOMElement $node
+     * @param \DiDom\Element|\DOMNode $node
      *
      * @return bool
      *
-     * @throws \InvalidArgumentException if the provided argument is not an instance of \DOMElement
+     * @throws \InvalidArgumentException if the provided argument is not an instance of \DOMNode
      */
     public function is($node)
     {
@@ -295,8 +295,8 @@ class Element
             $node = $node->getNode();
         }
 
-        if (!$node instanceof \DOMElement) {
-            throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s or DOMElement, %s given', __METHOD__, __CLASS__, (is_object($node) ? get_class($node) : gettype($node))));
+        if (!$node instanceof \DOMNode) {
+            throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s or DOMNode, %s given', __METHOD__, __CLASS__, (is_object($node) ? get_class($node) : gettype($node))));
         }
 
         return $this->node->isSameNode($node);
@@ -402,7 +402,7 @@ class Element
     /**
      * Replaces a child.
      * 
-     * @param \DOMElement|\DiDom\Element $newChild The new node
+     * @param \DOMNode|\DiDom\Element $newChild The new node
      * @param bool $clone Clone the node if true, otherwise move it
      * 
      * @return \DiDom\Element The node that has been replaced
@@ -413,8 +413,8 @@ class Element
             $newNode = $newNode->getNode();
         }
 
-        if (!$newNode instanceof \DOMElement) {
-            throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s or DOMElement, %s given', __METHOD__, __CLASS__, (is_object($newNode) ? get_class($newNode) : gettype($newNode))));
+        if (!$newNode instanceof \DOMNode) {
+            throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s or DOMNode, %s given', __METHOD__, __CLASS__, (is_object($newNode) ? get_class($newNode) : gettype($newNode))));
         }
 
         if ($clone) {
@@ -443,13 +443,13 @@ class Element
     }
 
     /**
-     * Sets current \DOMElement instance.
+     * Sets current \DOMNode instance.
      *
-     * @param \DOMElement $node
+     * @param \DOMNode $node
      *
      * @return \DiDom\Element
      */
-    protected function setNode(\DOMElement $node)
+    protected function setNode(\DOMNode $node)
     {
         $this->node = $node;
 
@@ -457,9 +457,9 @@ class Element
     }
 
     /**
-     * Get current \DOMElement instance.
+     * Get current \DOMNode instance.
      * 
-     * @return \DOMElement
+     * @return \DOMNode
      */
     public function getNode()
     {
