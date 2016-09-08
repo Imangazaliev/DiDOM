@@ -363,8 +363,8 @@ class DocumentTest extends TestCase
         $document = new Document();
         $document->loadHtml($html);
 
-        $this->assertEquals('<html><body><span/></body></html>', $document->html());
-        $this->assertEquals('<html><body><span></span></body></html>', $document->html(LIBXML_NOEMPTYTAG));
+        $this->assertEquals('<html><body><span></span></body></html>', $document->html());
+        $this->assertEquals('<html><body><span/></body></html>', $document->html(0));
     }
 
     public function testXml()

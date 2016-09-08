@@ -41,6 +41,8 @@ class Document
 
         $this->document = new DOMDocument('1.0', $encoding);
 
+        $this->preserveWhiteSpace(false);
+
         if ($string !== null) {
             $this->load($string, $isFile, $type);
         }
@@ -93,6 +95,24 @@ class Document
 
             $this->displayErrors(true);
         }
+
+        return $this;
+    }
+
+    /**
+     * Set preserveWhiteSpace property.
+     * 
+     * @param bool $value
+     * 
+     * @return \DiDom\Document
+     */
+    public function preserveWhiteSpace($value = true)
+    {
+        if (!is_bool($value)) {
+            throw new InvalidArgumentException(sprintf('%s expects parameter 1 to be boolean, %s given', __METHOD__, gettype($value)));
+        }
+
+        $this->document->preserveWhiteSpace = $value;
 
         return $this;
     }
