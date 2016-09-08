@@ -64,18 +64,24 @@ class Query
      */
     public static function cssToXpath($selector, $prefix = '//')
     {
-        $segments = self::getSegments($selector);
-        $xpath = '';
-
         $pos = strrpos($selector, '::');
 
         if ($pos !== false) {
-            $property = substr($selector, $pos+2);
+            $property = substr($selector, $pos + 2);
             $property = self::parseProperty($property);
             $property = self::convertProperty($property['name'], $property['args']);
 
             $selector = substr($selector, 0, $pos);
         }
+
+        if (substr($selector, 0, 1) === '>') {
+            $prefix = '/';
+
+            $selector = ltrim($selector, '> ');
+        }
+
+        $segments = self::getSegments($selector);
+        $xpath = '';
 
         while (count($segments) > 0) {
             $xpath .= self::buildXpath($segments, $prefix);

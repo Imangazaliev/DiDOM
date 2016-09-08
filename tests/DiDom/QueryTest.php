@@ -170,6 +170,7 @@ class QueryTest extends TestCase
             ['ul li a::text()', '//ul//li//a/text()'],
             ['ul li a::attr(href)', '//ul//li//a/@*[name() = "href"]'],
             ['ul li a::attr(href|title)', '//ul//li//a/@*[name() = "href" or name() = "title"]'],
+            ['> ul li a', '/ul//li//a'],
         ];
 
         if (function_exists('mb_strtolower')) {
