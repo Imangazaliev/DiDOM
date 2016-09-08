@@ -10,6 +10,22 @@ use DiDom\Query;
 class ElementTest extends TestCase
 {
     /**
+     * @expectedException PHPUnit_Framework_Error
+     */
+    public function testConstructorWithInvalidName()
+    {
+        new Element(null, 'hello');
+    }
+
+    /**
+     * @expectedException PHPUnit_Framework_Error_Warning
+     */
+    public function testConstructorWithInvalidValue()
+    {
+        new Element('span', []);
+    }
+
+    /**
      * @expectedException InvalidArgumentException
      */
     public function testConstructorWithInvalidAttributes()

@@ -27,6 +27,7 @@ class Element
     public function __construct($name, $value = '', $attributes = [])
     {
         $document = new DOMDocument('1.0', 'UTF-8');
+
         $node = is_string($name) ? $document->createElement($name, $value) : $name;
 
         $this->setNode($node);
@@ -295,7 +296,7 @@ class Element
             $node = $node->getNode();
         }
 
-        if (!$node instanceof \DOMNode) {
+        if (!$node instanceof DOMNode) {
             throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s or DOMNode, %s given', __METHOD__, __CLASS__, (is_object($node) ? get_class($node) : gettype($node))));
         }
 
@@ -413,7 +414,7 @@ class Element
             $newNode = $newNode->getNode();
         }
 
-        if (!$newNode instanceof \DOMNode) {
+        if (!$newNode instanceof DOMNode) {
             throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s or DOMNode, %s given', __METHOD__, __CLASS__, (is_object($newNode) ? get_class($newNode) : gettype($newNode))));
         }
 
@@ -449,7 +450,7 @@ class Element
      *
      * @return \DiDom\Element
      */
-    protected function setNode(\DOMNode $node)
+    protected function setNode(DOMNode $node)
     {
         $this->node = $node;
 

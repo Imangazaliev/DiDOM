@@ -166,6 +166,7 @@ class QueryTest extends TestCase
             ['li:nth-of-type(n-3)', '//li[(position() + 3) mod 1 = 0 and position() >= 3]'],
             ['ul:has(li.item)', '//ul[.//li[contains(concat(" ", normalize-space(@class), " "), " item ")]]'],
             ['ul li a::text', '//ul//li//a/text()'],
+            ['ul li a::text()', '//ul//li//a/text()'],
             ['ul li a::attr(href)', '//ul//li//a/@*[name() = "href"]'],
             ['ul li a::attr(href|title)', '//ul//li//a/@*[name() = "href" or name() = "title"]'],
         ];

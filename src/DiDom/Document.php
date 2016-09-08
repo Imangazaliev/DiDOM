@@ -65,7 +65,7 @@ class Document
     }
 
     /**
-     * Adds new child at the end of the children.
+     * Add new child at the end of the children.
      * 
      * @param \DiDom\Element|\DOMNode|array $nodes The appended child
      *
@@ -160,6 +160,11 @@ class Document
         return $this;
     }
 
+    /**
+     * Enable/disable error reporting.
+     * 
+     * @param  boolean $display
+     */
     protected function displayErrors($display = true)
     {
         if ($display) {
@@ -282,11 +287,9 @@ class Document
         $xpath = new DOMXPath($this->document);
 
         $expression = Query::compile($expression, $type);
-        $expression = sprintf('count(%s)', $expression);
+        $expression = sprintf('count(%s) > 0', $expression);
 
-        $count = (int) $xpath->evaluate($expression);
-
-        return $count > 0;
+        return $xpath->evaluate($expression);
     }
 
     /**
@@ -380,7 +383,7 @@ class Document
      * 
      * @return string The document html
      */
-    public function html($options = 0)
+    public function html($options = LIBXML_NOEMPTYTAG)
     {
         return trim($this->document->saveXML($this->getElement(), $options));
     }
@@ -390,7 +393,7 @@ class Document
      * 
      * @param int $options Additional options
      * 
-     * @return string The document html
+     * @return string The document xml
      */
     public function xml($options = 0)
     {
@@ -406,6 +409,10 @@ class Document
      */
     public function format($format = true)
     {
+        if (!is_bool($format)) {
+            throw new InvalidArgumentException(sprintf('%s expects parameter 1 to be boolean, %s given', __METHOD__, gettype($format)));
+        }
+
         $this->document->formatOutput = $format;
 
         return $this;
@@ -436,7 +443,7 @@ class Document
             $element = $document->getElement();
         } else {
             if (!$document instanceof DOMDocument) {
-                throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s or %s, %s given', __METHOD__, __CLASS__, 'DOMDocument', (is_object($document) ? get_class($document) : gettype($document))));
+                throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s or DOMDocument, %s given', __METHOD__, __CLASS__, (is_object($document) ? get_class($document) : gettype($document))));
             }
 
             $element = $document->documentElement;
