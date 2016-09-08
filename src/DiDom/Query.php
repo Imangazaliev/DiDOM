@@ -30,7 +30,7 @@ class Query
      */
     public static function compile($expression, $type = self::TYPE_CSS)
     {
-        if (strcasecmp($type, self::TYPE_XPATH) == 0) {
+        if (strcasecmp($type, self::TYPE_XPATH) === 0) {
             return $expression;
         }
 
@@ -236,6 +236,9 @@ class Query
                 break;
             case '!':
                 $xpath = sprintf('not(@%s="%s")', substr($name, 0, -1), $value);
+                break;
+            case '~':
+                $xpath = sprintf('contains(concat(" ", normalize-space(@%s), " "), " %s ")', substr($name, 0, -1), $value);
                 break;
             default:
                 // if specified only the attribute name

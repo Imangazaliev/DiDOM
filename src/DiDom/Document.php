@@ -139,6 +139,8 @@ class Document
             throw new InvalidArgumentException(sprintf('%s expects parameter 4 to be integer, %s given', __METHOD__, (is_object($options) ? get_class($options) : gettype($options))));
         }
 
+        $string = trim($string);
+
         if ($isFile) {
             $string = $this->loadFile($string);
         }

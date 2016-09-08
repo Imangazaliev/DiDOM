@@ -139,6 +139,7 @@ class QueryTest extends TestCase
             ['a[href*=exapmle.com]', '//a[contains(@href, "exapmle.com")]'],
             ['script[!src]', '//script[not(@src)]'],
             ['a[href!="http://foo.com/"]', '//a[not(@href="http://foo.com/")]'],
+            ['a[foo~="bar"]', '//a[contains(concat(" ", normalize-space(@foo), " "), " bar ")]'],
             ['foo bar baz', '//foo//bar//baz'],
             ['foo > bar > baz', '//foo/bar/baz'],
             ['input, textarea, select', '//input|//textarea|//select'],
