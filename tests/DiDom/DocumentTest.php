@@ -328,6 +328,8 @@ class DocumentTest extends TestCase
 
         $this->assertEquals($items[0]->getNode(), $document->first('ul > li')->getNode());
 
+        $this->assertEquals('One', $document->first('ul > li::text'));
+
         $document = new Document();
 
         $this->assertNull($document->first('ul > li'));

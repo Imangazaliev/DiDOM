@@ -308,29 +308,12 @@ class Document
         $xpath->registerPhpFunctions();
 
         $nodeList = $xpath->query($expression);
-        $result   = array();
+
+        $result = [];
 
         if ($wrapElement) {
             foreach ($nodeList as $node) {
-                if ($node instanceof \DOMElement) {
-                    $result[] = new Element($node);
-
-                    continue;
-                }
-
-                if ($node instanceof \DOMText) {
-                    $result[] = $node->data;
-
-                    continue;
-                }
-
-                if ($node instanceof \DOMAttr) {
-                    $result[] = $node->value;
-
-                    continue;
-                }
-
-                throw new RuntimeException(sprintf('Unknown node type "%s"', get_class($node)));
+                $result[] = $this->wrapNode($node);
             }
         } else {
             foreach ($nodeList as $node) {
@@ -358,7 +341,23 @@ class Document
             return null;
         }
 
-        return $wrapElement ? new Element($nodes[0]) : $nodes[0];
+        return $wrapElement ? $this->wrapNode($nodes[0]) : $nodes[0];
+    }
+
+    protected function wrapNode($node)
+    {
+        switch (get_class($node)) {
+            case 'DOMElement':
+                return new Element($node);
+
+            case 'DOMText':
+                return $node->data;
+
+            case 'DOMAttr':
+                return $node->value;
+        }
+
+        throw new RuntimeException(sprintf('Unknown node type "%s"', get_class($node)));
     }
 
     /**
