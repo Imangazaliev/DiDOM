@@ -4,6 +4,7 @@ namespace DiDom;
 
 use DOMDocument;
 use DOMNode;
+use DOMElement;
 use InvalidArgumentException;
 
 class Element
@@ -207,6 +208,26 @@ class Element
         }
 
         return $this->setAttribute($name, $value);
+    }
+
+    /**
+     * Returns the node attributes or null, if it is not DOMElement.
+     * 
+     * @return array|null
+     */
+    public function attributes()
+    {
+        if (!$this->node instanceof DOMElement) {
+            return null;
+        }
+
+        $attributes = [];
+
+        foreach ($this->node->attributes as $name => $attr) {
+            $attributes[$name] = $attr->value;
+        }
+
+        return $attributes;
     }
 
     /**

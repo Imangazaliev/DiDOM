@@ -258,6 +258,16 @@ class ElementTest extends TestCase
         $this->assertEquals('test', $element->attr('value'));
     }
 
+    public function testAttributes()
+    {
+        $attributes = ['type' => 'text', 'name' => 'username'];
+
+        $node = $this->createNode('input', null, $attributes);
+        $element = new Element($node);
+
+        $this->assertEquals($attributes, $element->attributes());
+    }
+
     public function testHtml()
     {
         $element = new Element('span', 'hello');
