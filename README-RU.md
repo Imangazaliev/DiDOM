@@ -312,7 +312,7 @@ $element = $document->createElement('span', 'Hello');
 
 ```php
 $document = new Document($html);
-$input = $document->find('input[name=email]')[0];
+$input = $document->first('input[name=email]');
 
 var_dump($input->parent());
 ```
@@ -361,7 +361,7 @@ var_dump($item->children());
 
 ```php
 $document = new Document($html);
-$element  = $document->find('input[name=email]')[0];
+$element  = $document->first('input[name=email]');
 
 $document2 = $element->getDocument();
 
@@ -471,15 +471,35 @@ $list->appendChild($items);
 ## Замена элемента
 
 ```php
-$element = new Element('span', 'hello');
+$title = new Element('title', 'foo');
 
-$document->find('.post')[0]->replace($element);
+$document->first('title')->replace($title);
+```
+
+**Внимание:** заменить можно только те элементы, которые были найдены непосредственно в документе:
+
+```php
+// ничего не выйдет
+$document->first('head')->first('title')->replace($title);
+
+// а вот так да
+$document->first('head title')->replace($title);
 ```
 
 ## Удаление элемента
 
 ```php
-$document->find('.post')[0]->remove();
+$document->first('title')->remove();
+```
+
+**Внимание:** удалить можно только те элементы, которые были найдены непосредственно в документе:
+
+```php
+// ничего не выйдет
+$document->first('head')->first('title')->remove();
+
+// а вот так да
+$document->first('head title')->remove();
 ```
 
 ## Работа с кэшем
