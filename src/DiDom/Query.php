@@ -275,12 +275,6 @@ class Query
             case 'last-child':
                 return 'position() = last()';
                 break;
-            case 'empty':
-                return 'count(descendant::*) = 0';
-                break;
-            case 'not-empty':
-                return 'count(descendant::*) > 0';
-                break;
             case 'nth-child':
                 $xpath = sprintf('(name()="%s") and (%s)', $tagName, self::convertNthExpression($parameters[0]));
                 $tagName = '*';
@@ -296,8 +290,20 @@ class Query
             case 'has':
                 return self::cssToXpath($parameters[0], './/');
                 break;
+            case 'not':
+                return sprintf('not(self::%s)', self::cssToXpath($parameters[0], ''));
+                break;
             case 'nth-of-type':
                 return self::convertNthExpression($parameters[0]);
+                break;
+            case 'nth-last-child':
+                return self::convertNthExpression($parameters[0]);
+                break;
+            case 'empty':
+                return 'count(descendant::*) = 0';
+                break;
+            case 'not-empty':
+                return 'count(descendant::*) > 0';
                 break;
         }
 
@@ -317,11 +323,11 @@ class Query
     protected static function convertNthExpression($expression)
     {
         if ($expression === '') {
-            throw new RuntimeException('Invalid selector: nth-child expression must not be empty');
+            throw new RuntimeException('Invalid selector: nth-child (or nth-last-child) expression must not be empty');
         }
 
         if ($expression === 'odd') {
-            return '(position() - 1) mod 2 = 0 and position() >= 1';
+            return 'position() mod 2 = 1 and position() >= 1';
         }
 
         if ($expression === 'even') {
