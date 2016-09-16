@@ -282,8 +282,8 @@ class ElementTest extends TestCase
 
         $element = $document->find('span')[0];
 
-        $this->assertEquals('<span/>', $element->html());
-        $this->assertEquals('<span></span>', $element->html(LIBXML_NOEMPTYTAG));
+        $this->assertEquals('<span></span>', $element->html());
+        $this->assertEquals('<span/>', $element->html(0));
     }
 
     public function testXml()

@@ -233,7 +233,7 @@ class Element
      * 
      * @return string The node HTML
      */
-    public function html($options = 0)
+    public function html($options = LIBXML_NOEMPTYTAG)
     {
         return $this->toDocument()->html($options);
     }
@@ -245,7 +245,7 @@ class Element
      * 
      * @return string
      */
-    public function innerHtml($options = 0)
+    public function innerHtml($options = LIBXML_NOEMPTYTAG)
     {
         $innerHtml = [];
         $childNodes = $this->node->childNodes;
