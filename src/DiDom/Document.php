@@ -86,14 +86,14 @@ class Document
                 throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s\Element or DOMNode, %s given', __METHOD__, __NAMESPACE__, (is_object($node) ? get_class($node) : gettype($node))));
             }
 
-            $this->displayErrors(false);
+            Errors::disable();
 
             $cloned = $node->cloneNode(true);
             $newNode = $this->document->importNode($cloned, true);
 
             $this->document->appendChild($newNode);
 
-            $this->displayErrors(true);
+            Errors::restore();
         }
 
         return $this;
@@ -153,31 +153,13 @@ class Document
 
         $this->type = strtolower($type);
 
-        $this->displayErrors(false);
+        Errors::disable();
 
         $this->type === 'xml' ? $this->document->loadXml($string, $options) : $this->document->loadHtml($string, $options);
 
-        $this->displayErrors(true);
+        Errors::restore();
 
         return $this;
-    }
-
-    /**
-     * Enable/disable error reporting.
-     * 
-     * @param  boolean $display
-     */
-    protected function displayErrors($display = true)
-    {
-        if ($display) {
-            libxml_clear_errors();
-
-            libxml_disable_entity_loader(false);
-            libxml_use_internal_errors(false);
-        } else {
-            libxml_use_internal_errors(true);
-            libxml_disable_entity_loader(true);
-        }
     }
 
     /**
