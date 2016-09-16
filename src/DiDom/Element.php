@@ -259,6 +259,42 @@ class Element
     }
 
     /**
+     * Sets inner HTML.
+     * 
+     * @param string $html
+     */
+    public function setInnerHtml($html)
+    {
+        if (!is_string($html)) {
+            throw new InvalidArgumentException(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, (is_object($html) ? get_class($html) : gettype($html))));
+        }
+
+        // remove all child nodes
+        foreach ($this->node->childNodes as $node) 
+        {
+            $this->node->removeChild($node);
+        }
+
+        if ($html !== '') {
+            Errors::disable();
+
+            $html = "<htmlfragment>$html</htmlfragment>";
+
+            $document = new Document($html);
+
+            $fragment = $document->first('htmlfragment')->getNode();
+
+            foreach ($fragment->childNodes as $node) {
+                $newNode = $this->node->ownerDocument->importNode($node, true);
+
+                $this->node->appendChild($newNode);
+            }
+
+            Errors::restore();
+        }
+    }
+
+    /**
      * Dumps the node into a string using XML formatting.
      * 
      * @param int $options Additional options
