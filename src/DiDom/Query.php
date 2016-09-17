@@ -296,9 +296,6 @@ class Query
             case 'nth-of-type':
                 return self::convertNthExpression($parameters[0]);
                 break;
-            case 'nth-last-child':
-                return self::convertNthExpression($parameters[0]);
-                break;
             case 'empty':
                 return 'count(descendant::*) = 0';
                 break;
@@ -340,11 +337,11 @@ class Query
 
         if (preg_match("/^(?P<mul>[0-9]?n)(?:(?P<sign>\+|\-)(?P<pos>[0-9]+))?$/is", $expression, $segments)) {
             if (isset($segments['mul'])) {
-                $segments['mul'] = strtolower($segments['mul'] === 'n') ? 1 : trim(strtolower($segments['mul']), 'n');
-                $segments['sign'] = (isset($segments['sign']) and $segments['sign'] === '+') ? '-' : '+';
-                $segments['pos'] = isset($segments['pos']) ? $segments['pos'] : 0;
+                $multiplier = $segments['mul'] === 'n' ? 1 : trim($segments['mul'], 'n');
+                $sign = (isset($segments['sign']) and $segments['sign'] === '+') ? '-' : '+';
+                $position = isset($segments['pos']) ? $segments['pos'] : 0;
 
-                return sprintf('(position() %s %d) mod %d = 0 and position() >= %d', $segments['sign'], $segments['pos'], $segments['mul'], $segments['pos']);
+                return sprintf('(position() %s %d) mod %d = 0 and position() >= %d', $sign, $position, $multiplier, $position);
             }
         }
 
