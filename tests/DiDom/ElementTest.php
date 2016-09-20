@@ -267,10 +267,12 @@ class ElementTest extends TestCase
 
     public function testInnerHtml()
     {
-        $html = $this->loadFixture('posts.html');
+        $innerHtml = ' Plain text <span>Lorem ipsum.</span><span>Lorem ipsum.</span>';
+        $html = "<div id=\"root\">$innerHtml</div>";
+
         $document = new Document($html, false);
 
-        $this->assertTrue(is_string($document->find('body')[0]->innerHtml()));
+        $this->assertEquals($innerHtml, $document->first('#root')->innerHtml());
     }
 
     public function testSetInnerHtml()
@@ -282,10 +284,14 @@ class ElementTest extends TestCase
         $this->assertEquals($list, $list->setInnerHtml($html));
         $this->assertEquals(['One', 'Two', 'Three'], $list->find('li::text'));
 
-        $span = new Element('span');
+        $html = '<div id="root"></div>';
+        $innerHtml = ' Plain text <span>Lorem ipsum.</span><span>Lorem ipsum.</span>';
 
-        $this->assertEquals($span, $span->setInnerHtml('  Foo  '));
-        $this->assertEquals('<span>  Foo  </span>', $span->html());
+        $document = new Document($html, false);
+
+        $document->first('#root')->setInnerHtml($innerHtml);
+
+        $this->assertEquals($innerHtml, $document->first('#root')->innerHtml());
     }
 
     public function testHtmlWithOptions()

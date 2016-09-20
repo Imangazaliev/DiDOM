@@ -242,10 +242,11 @@ class Element
      * Dumps the node descendants into a string using HTML formatting.
      * 
      * @param int $options Additional options
+     * @param sting $delimiter
      * 
      * @return string
      */
-    public function innerHtml($options = LIBXML_NOEMPTYTAG)
+    public function innerHtml($options = LIBXML_NOEMPTYTAG, $delimiter = '')
     {
         $innerHtml = [];
         $childNodes = $this->node->childNodes;
@@ -255,7 +256,7 @@ class Element
             $innerHtml[] = $node->ownerDocument->saveXml($node, $options);
         }
 
-        return implode('', $innerHtml);
+        return implode($delimiter, $innerHtml);
     }
 
     /**
