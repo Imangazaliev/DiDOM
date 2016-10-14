@@ -273,6 +273,21 @@ class ElementTest extends TestCase
         $this->assertTrue(is_string($document->find('body')[0]->innerHtml()));
     }
 
+    public function testSetInnerHtml()
+    {
+        $list = new Element('ul');
+
+        $html = '<li>One</li><li>Two</li><li>Three</li>';
+
+        $this->assertEquals($list, $list->setInnerHtml($html));
+        $this->assertEquals(['One', 'Two', 'Three'], $list->find('li::text'));
+
+        $span = new Element('span');
+
+        $this->assertEquals($span, $span->setInnerHtml('  Foo  '));
+        $this->assertEquals('<span>  Foo  </span>', $span->html());
+    }
+
     public function testHtmlWithOptions()
     {
         $html = '<html><body><span></span></body></html>';

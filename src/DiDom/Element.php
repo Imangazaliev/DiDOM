@@ -262,6 +262,8 @@ class Element
      * Sets inner HTML.
      * 
      * @param string $html
+     * 
+     * @return Element
      */
     public function setInnerHtml($html)
     {
@@ -292,6 +294,8 @@ class Element
 
             Errors::restore();
         }
+
+        return $this;
     }
 
     /**
