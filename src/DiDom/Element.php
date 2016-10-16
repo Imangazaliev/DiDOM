@@ -153,6 +153,14 @@ class Element
      */
     public function setAttribute($name, $value)
     {
+        if (is_numeric($value)) {
+            $value = (string) $value;
+        }
+
+        if (!is_string($value) and $value !== null) {
+            throw new InvalidArgumentException(sprintf('%s expects parameter 2 to be string or null, %s given', __METHOD__, (is_object($value) ? get_class($value) : gettype($value))));
+        }
+
         $this->node->setAttribute($name, $value);
 
         return $this;

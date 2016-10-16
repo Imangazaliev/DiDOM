@@ -194,16 +194,29 @@ class ElementTest extends TestCase
         $this->assertTrue($element->hasAttribute('value'));
     }
 
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testSetAttributeWithInvalidValue()
+    {
+        $element = new Element('input');
+        $element->setAttribute('value', []);
+    }
+
     public function testSetAttribute()
     {
         $node = $this->createNode('input');
 
         $element = new Element($node);
+
         $element->setAttribute('value', 'test');
+        $this->assertEquals('test', $element->getAttribute('value'));
 
-        $node = $element->getNode();
+        $element->setAttribute('value', 10);
+        $this->assertEquals('10', $element->getAttribute('value'));
 
-        $this->assertEquals('test', $node->getAttribute('value'));
+        $element->setAttribute('value', 3.14);
+        $this->assertEquals('3.14', $element->getAttribute('value'));
     }
 
     public function testGetAttribute()
