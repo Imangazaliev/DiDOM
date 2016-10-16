@@ -50,6 +50,14 @@ class QueryTest extends TestCase
     /**
      * @expectedException RuntimeException
      */
+    public function testEmptyAttributeName()
+    {
+        Query::compile('input[=foo]');
+    }
+
+    /**
+     * @expectedException RuntimeException
+     */
     public function testUnknownPseudoClass()
     {
         Query::compile('li:unknown-pseudo-class');

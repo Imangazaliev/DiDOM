@@ -214,6 +214,16 @@ class Query
      */
     protected static function convertAttribute($name, $value)
     {
+        $isSimpleSelector = !in_array(substr($name, 0, 1), ['^', '!']);
+        $isSimpleSelector = $isSimpleSelector && (!in_array(substr($name, -1), ['^', '$', '*', '!', '~']));
+
+        if ($isSimpleSelector) {
+            // if specified only the attribute name
+            $xpath = $value === null ? '@'.$name : sprintf('@%s="%s"', $name, $value);
+
+            return $xpath;
+        }
+
         // if the attribute name starts with ^
         // example: *[^data-]
         if (substr($name, 0, 1) === '^') {
@@ -245,10 +255,6 @@ class Query
                 break;
             case '~':
                 $xpath = sprintf('contains(concat(" ", normalize-space(@%s), " "), " %s ")', substr($name, 0, -1), $value);
-                break;
-            default:
-                // if specified only the attribute name
-                $xpath = $value === null ? '@'.$name : sprintf('@%s="%s"', $name, $value);
                 break;
         }
 
@@ -417,6 +423,10 @@ class Query
                 foreach ($attributes as $attribute) {
                     if ($attribute !== '') {
                         list($name, $value) = array_pad(explode('=', $attribute, 2), 2, null);
+
+                        if ($name === '') {
+                            throw new RuntimeException('Invalid selector: attribute name must not be empty');
+                        }
 
                         // equal null if specified only the attribute name
                         $result['attributes'][$name] = is_string($value) ? trim($value, '\'"') : null;
