@@ -477,6 +477,16 @@ class DocumentTest extends TestCase
         $this->assertInstanceOf('DOMElement', $document->getElement());
     }
 
+    /**
+     * @expectedException RuntimeException
+     */
+    public function testEmptyDocumentToElement()
+    {
+        $document = new Document();
+
+        $document->toElement();
+    }
+
     public function testToElement()
     {
         $html = $this->loadFixture('posts.html');

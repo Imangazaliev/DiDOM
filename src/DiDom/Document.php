@@ -489,7 +489,11 @@ class Document
      */
     public function toElement()
     {
-        return new Element($this->getElement());
+        if ($this->document->documentElement === null) {
+            throw new RuntimeException('Cannot convert empty document to Element');
+        }
+
+        return new Element($this->document->documentElement);
     }
 
     /**
