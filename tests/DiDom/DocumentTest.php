@@ -350,6 +350,19 @@ class DocumentTest extends TestCase
         }
     }
 
+    public function testCount()
+    {
+        $html = '<ul><li>One</li><li>Two</li><li>Three</li></ul>';
+
+        $document = new Document($html, false);
+
+        $this->assertEquals(3, $document->count('li'));
+
+        $document = new Document();
+
+        $this->assertEquals(0, $document->count('li'));
+    }
+
     public function testHtml()
     {
         $html = $this->loadFixture('posts.html');

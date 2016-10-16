@@ -132,6 +132,19 @@ class Element
     }
 
     /**
+     * Counts nodes for a given XPath expression or a CSS selector.
+     * 
+     * @param string $expression XPath expression or CSS selector
+     * @param string $type The type of the expression
+     *
+     * @return int
+     */
+    public function count($expression, $type = Query::TYPE_CSS)
+    {
+        return $this->toDocument()->count($expression, $type);
+    }
+
+    /**
      * Determine if an attribute exists on the element.
      *
      * @param string $name The attribute name

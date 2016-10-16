@@ -181,6 +181,20 @@ class ElementTest extends TestCase
         }
     }
 
+    public function testCount()
+    {
+        $html = '<ul><li>One</li><li>Two</li><li>Three</li></ul>';
+
+        $document = new Document($html, false);
+        $list = $document->first('ul');
+
+        $this->assertEquals(3, $list->count('li'));
+
+        $document = new Element('ul');
+
+        $this->assertEquals(0, $document->count('li'));
+    }
+
     public function testHasAttribute()
     {
         $node = $this->createNode('input');

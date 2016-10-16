@@ -361,6 +361,24 @@ class Document
     }
 
     /**
+     * Counts nodes for a given XPath expression or a CSS selector.
+     * 
+     * @param string $expression XPath expression or CSS selector
+     * @param string $type The type of the expression
+     *
+     * @return int
+     */
+    public function count($expression, $type = Query::TYPE_CSS)
+    {
+        $xpath = new DOMXPath($this->document);
+
+        $expression = Query::compile($expression, $type);
+        $expression = sprintf('count(%s)', $expression);
+
+        return $xpath->evaluate($expression);
+    }
+
+    /**
      * Dumps the internal document into a string using HTML formatting.
      * 
      * @param int $options Additional options
