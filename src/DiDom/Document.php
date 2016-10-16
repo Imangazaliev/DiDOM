@@ -259,7 +259,7 @@ class Document
     }
 
     /**
-     * Checks the existence of the item.
+     * Checks the existence of the node.
      * 
      * @param string $expression XPath expression or CSS selector
      * @param string $type The type of the expression
@@ -277,7 +277,7 @@ class Document
     }
 
     /**
-     * Searches for an item in the DOM tree for a given XPath expression or a CSS selector.
+     * Searches for an node in the DOM tree for a given XPath expression or a CSS selector.
      * 
      * @param string $expression XPath expression or a CSS selector
      * @param string $type The type of the expression
@@ -312,7 +312,7 @@ class Document
     }
 
     /**
-     * Searches for an item in the DOM tree and returns first element or null.
+     * Searches for an node in the DOM tree and returns first element or null.
      * 
      * @param string $expression XPath expression or a CSS selector
      * @param string $type The type of the expression
@@ -348,7 +348,7 @@ class Document
     }
 
     /**
-     * Searches for an item in the DOM tree for a given XPath expression.
+     * Searches for an node in the DOM tree for a given XPath expression.
      * 
      * @param string $expression XPath expression
      * @param bool   $wrapElement Returns array of \DiDom\Element if true, otherwise array of \DOMElement
@@ -485,7 +485,7 @@ class Document
     }
 
     /**
-     * Searches for an item in the DOM tree for a given XPath expression or a CSS selector.
+     * Searches for an node in the DOM tree for a given XPath expression or a CSS selector.
      * 
      * @param string $expression XPath expression or a CSS selector
      * @param string $type The type of the expression
