@@ -145,6 +145,72 @@ class Element
     }
 
     /**
+     * Checks that the node matches selector.
+     * 
+     * @param string $selector CSS selector
+     * @param bool $strict
+     *
+     * @return bool
+     */
+    public function matches($selector, $strict = false)
+    {
+        if (!$strict) {
+            // remove child nodes
+            $node = $this->node->cloneNode();
+
+            $innerHtml = $node->ownerDocument->saveXml($node, LIBXML_NOEMPTYTAG);
+            $html = "<root>$innerHtml</root>";
+
+            $selector = 'root > '.trim($selector);
+
+            $document = new Document($html);
+
+            return $document->has($selector);
+        }
+
+        $segments = Query::getSegments($selector);
+
+        $segments['tag'] = array_key_exists('tag', $segments) ? $segments['tag'] : null;
+
+        if ($segments['tag'] !== $this->tag and $segments['tag'] !== '*') {
+            return false;
+        }
+
+        $segments['id'] = array_key_exists('id', $segments) ? $segments['id'] : null;
+
+        if ($segments['id'] !== $this->getAttribute('id')) {
+            return false;
+        }
+
+        $classes = $this->hasAttribute('class') ? explode(' ', trim($this->getAttribute('class'))) : [];
+
+        $segments['classes'] = array_key_exists('classes', $segments) ? $segments['classes'] : [];
+
+        $diff1 = array_diff($segments['classes'], $classes);
+        $diff2 = array_diff($classes, $segments['classes']);
+
+        if (count($diff1) > 0 or count($diff2) > 0) {
+            return false;
+        }
+
+        $attributes = $this->attributes();
+
+        unset($attributes['id']);
+        unset($attributes['class']);
+
+        $segments['attributes'] = array_key_exists('attributes', $segments) ? $segments['attributes'] : [];
+
+        $diff1 = array_diff_assoc($segments['attributes'], $attributes);
+        $diff2 = array_diff_assoc($attributes, $segments['attributes']);
+
+        if (count($diff1) > 0 or count($diff2) > 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Determine if an attribute exists on the element.
      *
      * @param string $name The attribute name

@@ -195,6 +195,29 @@ class ElementTest extends TestCase
         $this->assertEquals(0, $document->count('li'));
     }
 
+    public function testMatches()
+    {
+        $element = new Element('ul', null, ['id' => 'foo', 'class' => 'bar baz']);
+
+        $this->assertTrue($element->matches('ul'));
+        $this->assertTrue($element->matches('#foo'));
+        $this->assertTrue($element->matches('.bar'));
+        $this->assertTrue($element->matches('ul#foo.bar.baz'));
+        $this->assertFalse($element->matches('a#foo.bar.baz'));
+
+        // strict
+        $this->assertTrue($element->matches('ul#foo.bar.baz', true));
+        $this->assertFalse($element->matches('ul#foo.bar', true));
+        $this->assertFalse($element->matches('ul#foo', true));
+        $this->assertFalse($element->matches('ul.bar.baz', true));
+        $this->assertFalse($element->matches('#foo.bar.baz', true));
+        $this->assertFalse($element->matches('ul.bar.baz', true));
+
+        $element = new Element('p');
+
+        $this->assertTrue($element->matches('p', true));
+    }
+
     public function testHasAttribute()
     {
         $node = $this->createNode('input');
