@@ -146,7 +146,7 @@ class QueryTest extends TestCase
             ['*[^data-=foo]', '//*[@*[starts-with(name(), "data-")]="foo"]'],
             ['a[href^=https]', '//a[starts-with(@href, "https")]'],
             ['img[src$=png]', '//img[ends-with(@src, "png")]'],
-            ['a[href*=exapmle.com]', '//a[contains(@href, "exapmle.com")]'],
+            ['a[href*=example.com]', '//a[contains(@href, "example.com")]'],
             ['script[!src]', '//script[not(@src)]'],
             ['a[href!="http://foo.com/"]', '//a[not(@href="http://foo.com/")]'],
             ['a[foo~="bar"]', '//a[contains(concat(" ", normalize-space(@foo), " "), " bar ")]'],
@@ -249,7 +249,7 @@ class QueryTest extends TestCase
     {
         $segments = [
             ['selector' => 'a', 'tag' => 'a'],
-            ['selector' => '#foo', 'tag' => '*', 'id' => 'foo'],
+            ['selector' => '#foo', 'id' => 'foo'],
             ['selector' => 'a#foo', 'tag' => 'a', 'id' => 'foo'],
             ['selector' => 'a.foo', 'tag' => 'a', 'classes' => ['foo']],
             ['selector' => 'a.foo.bar', 'tag' => 'a', 'classes' => ['foo', 'bar']],
@@ -262,7 +262,7 @@ class QueryTest extends TestCase
             ['selector' => 'a[href^=https]', 'tag' => 'a', 'attributes' => ['href^' => 'https']],
             ['selector' => 'li:first-child', 'tag' => 'li', 'pseudo' => 'first-child'],
             ['selector' => 'ul >', 'tag' => 'ul', 'rel' => '>'],
-            ['selector' => '#id.foo[name=value]:first-child >', 'tag' => '*', 'id' => 'id', 'classes' => ['foo'], 'attributes' => ['name' => 'value'], 'pseudo' => 'first-child', 'rel' => '>'],
+            ['selector' => '#id.foo[name=value]:first-child >', 'id' => 'id', 'classes' => ['foo'], 'attributes' => ['name' => 'value'], 'pseudo' => 'first-child', 'rel' => '>'],
             ['selector' => 'li.bar:nth-child(2n)', 'tag' => 'li', 'classes' => ['bar'], 'pseudo' => 'nth-child', 'expr' => '2n'],
         ];
 

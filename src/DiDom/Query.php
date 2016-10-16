@@ -163,7 +163,7 @@ class Query
     {
         $tagName = isset($segments['tag']) ? $segments['tag'] : '*';
 
-        $attributes = array();
+        $attributes = [];
 
         // if the id attribute specified
         if (isset($segments['id'])) {
@@ -408,7 +408,10 @@ class Query
             }
 
             $result['selector'] = $segments[0];
-            $result['tag']      = (isset($segments['tag']) and $segments['tag'] !== '') ? $segments['tag'] : '*';
+
+            if (isset($segments['tag']) and $segments['tag'] !== '') {
+                $result['tag'] = $segments['tag'];
+            }
 
             // if the id attribute specified
             if (isset($segments['id']) and $segments['id'] !== '') {
