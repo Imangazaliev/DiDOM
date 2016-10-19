@@ -4,6 +4,7 @@ namespace DiDom;
 
 use DOMDocument;
 use DOMNode;
+use DOMText;
 use DOMElement;
 use InvalidArgumentException;
 
@@ -25,13 +26,21 @@ class Element
      *
      * @throws \InvalidArgumentException if the attributes is not an array
      */
-    public function __construct($name, $value = '', $attributes = [])
+    public function __construct($name, $value = null, $attributes = [])
     {
         $document = new DOMDocument('1.0', 'UTF-8');
 
-        $node = is_string($name) ? $document->createElement($name, $value) : $name;
+        if (is_string($name)) {
+            $node = $document->createElement($name);
 
-        $this->setNode($node);
+            $this->setNode($node);
+
+            if ($value !== null) {
+                $this->setValue($value);
+            }
+        } else {
+            $this->setNode($name);
+        }
 
         if (!is_array($attributes)) {
             throw new InvalidArgumentException(sprintf('%s expects parameter 3 to be array, %s given', __METHOD__, (is_object($attributes) ? get_class($attributes) : gettype($attributes))));
@@ -414,16 +423,32 @@ class Element
      * @param string $value The new value of the node
      *
      * @return \DiDom\Element
+     *
+     * @throws \InvalidArgumentException if value is not string
      */
     public function setValue($value)
     {
-        if (!is_string($value)) {
+        if (is_numeric($value)) {
+            $value = (string) $value;
+        }
+
+        if (!is_string($value) and $value !== null) {
             throw new InvalidArgumentException(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, (is_object($value) ? get_class($value) : gettype($value))));
         }
 
         $this->node->nodeValue = $value;
 
         return $this;
+    }
+
+    /**
+     * Returns true if current node is text.
+     * 
+     * @return bool
+     */
+    public function isTextNode()
+    {
+        return $this->node instanceof DOMText;
     }
 
     /**

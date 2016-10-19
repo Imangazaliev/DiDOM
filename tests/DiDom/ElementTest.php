@@ -9,16 +9,19 @@ use DiDom\Query;
 
 class ElementTest extends TestCase
 {
-    /**
-     * @expectedException PHPUnit_Framework_Error
-     */
     public function testConstructorWithInvalidName()
     {
+        if (PHP_VERSION_ID >= 70000) {
+            $this->setExpectedException('TypeError');
+        } else {
+            $this->setExpectedException('PHPUnit_Framework_Error');
+        }
+
         new Element(null, 'hello');
     }
 
     /**
-     * @expectedException PHPUnit_Framework_Error_Warning
+     * @expectedException InvalidArgumentException
      */
     public function testConstructorWithInvalidValue()
     {
@@ -394,6 +397,18 @@ class ElementTest extends TestCase
         $element->setValue('test');
 
         $this->assertEquals('test', $element->text());
+    }
+
+    public function testIsTextNode()
+    {
+        $element = new Element('div');
+
+        $element->setInnerHtml(' Foo <span>Bar</span>');
+
+        $children = $element->children();
+
+        $this->assertTrue($children[0]->isTextNode());
+        $this->assertFalse($children[1]->isTextNode());
     }
 
     public function testIs()

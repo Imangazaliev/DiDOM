@@ -57,11 +57,17 @@ class Document
      *
      * @return \DiDom\Element created element
      */
-    public function createElement($name, $value = '', $attributes = [])
+    public function createElement($name, $value = null, $attributes = [])
     {
-        $node = $this->document->createElement($name, $value);
+        $node = $this->document->createElement($name);
 
-        return new Element($node, null, $attributes);
+        $element = new Element($node, null, $attributes);
+
+        if ($value !== null) {
+            $element->setValue($value);
+        }
+
+        return $element;
     }
 
     /**

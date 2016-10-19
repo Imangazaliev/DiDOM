@@ -205,7 +205,7 @@ class DocumentTest extends TestCase
     {
         $document = new Document($html, false, 'UTF-8');
 
-        $this->assertEquals($text, $document->find('div')[0]->text());
+        $this->assertEquals($text, $document->first('div')->text());
     }
 
     public function testCreateElement()
