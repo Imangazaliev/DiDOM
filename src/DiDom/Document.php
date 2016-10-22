@@ -49,8 +49,23 @@ class Document
     }
 
     /**
+     * Create new document.
+     *
+     * @param string $string HTML or XML string or file path
+     * @param bool   $isFile Indicates that in first parameter was passed to the file path
+     * @param string $encoding The document encoding
+     * @param string $type The document type
+     *
+     * @return \DiDom\Document
+     */
+    public static function create($string = null, $isFile = false, $encoding = 'UTF-8', $type = 'html')
+    {
+        return new Document($string, $isFile, $encoding, $type);
+    }
+
+    /**
      * Create new element node.
-     * 
+     *
      * @param string $name The tag name of the element
      * @param string $value The value of the element
      * @param array  $attributes The attributes of the element
@@ -68,6 +83,36 @@ class Document
         }
 
         return $element;
+    }
+
+    /**
+     * Create new element node by CSS selector.
+     *
+     * @param string $selector
+     * @param string $value
+     * @param array $attributes
+     *
+     * @return \DiDom\Element
+     */
+    public function createElementBySelector($selector, $value = null, $attributes = [])
+    {
+        $segments = Query::getSegments($selector);
+
+        $name = array_key_exists('tag', $segments) ? $segments['tag'] : 'div';
+
+        if (array_key_exists('attributes', $segments)) {
+            $attributes = array_merge($attributes, $segments['attributes']);
+        }
+
+        if (array_key_exists('id', $segments)) {
+            $attributes['id'] = $segments['id'];
+        }
+
+        if (array_key_exists('classes', $segments)) {
+            $attributes['class'] = implode(' ', $segments['classes']);
+        }
+
+        return $this->createElement($name, $value, $attributes);
     }
 
     /**

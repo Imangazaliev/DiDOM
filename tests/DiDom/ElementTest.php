@@ -51,6 +51,24 @@ class ElementTest extends TestCase
         $this->assertEquals($node, $element->getNode());
     }
 
+    public function testCreate()
+    {
+        $element = Element::create('span', 'Foo', ['class' => 'bar']);
+
+        $this->assertEquals('span', $element->tag);
+        $this->assertEquals('Foo', $element->text());
+        $this->assertEquals(['class' => 'bar'], $element->attributes());
+    }
+
+    public function testCreateBySelector()
+    {
+        $element = Element::createBySelector('li.item.active', 'Foo', ['data-id' => 1]);
+
+        $this->assertEquals('li', $element->tag);
+        $this->assertEquals('Foo', $element->text());
+        $this->assertEquals(['class' => 'item active', 'data-id' => 1], $element->attributes());
+    }
+
     /**
      * @expectedException InvalidArgumentException
      */

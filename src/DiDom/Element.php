@@ -52,6 +52,36 @@ class Element
     }
 
     /**
+     * Create new element.
+     * 
+     * @param \DOMNode|string $name The tag name of the element
+     * @param string $value The value of the element
+     * @param array  $attributes The attributes of the element
+     *
+     * @return \DiDom\Element
+     *
+     * @throws \InvalidArgumentException if the attributes is not an array
+     */
+    public static function create($name, $value = null, $attributes = [])
+    {
+        return new Element($name, $value, $attributes);
+    }
+
+    /**
+     * Create new element node by CSS selector.
+     *
+     * @param string $selector
+     * @param string $value
+     * @param array $attributes
+     *
+     * @return \DiDom\Element
+     */
+    public static function createBySelector($selector, $value = null, $attributes = [])
+    {
+        return Document::create()->createElementBySelector($selector, $value, $attributes);
+    }
+
+    /**
      * Adds new child at the end of the children.
      * 
      * @param \DiDom\Element|\DOMNode|array $nodes The appended child
