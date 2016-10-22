@@ -76,11 +76,7 @@ class Document
     {
         $node = $this->document->createElement($name);
 
-        $element = new Element($node, null, $attributes);
-
-        if ($value !== null) {
-            $element->setValue($value);
-        }
+        $element = new Element($node, $value, $attributes);
 
         return $element;
     }

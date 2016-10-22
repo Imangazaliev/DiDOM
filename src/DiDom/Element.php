@@ -30,18 +30,18 @@ class Element
      */
     public function __construct($name, $value = null, $attributes = [])
     {
-        $document = new DOMDocument('1.0', 'UTF-8');
-
         if (is_string($name)) {
+            $document = new DOMDocument('1.0', 'UTF-8');
+
             $node = $document->createElement($name);
 
             $this->setNode($node);
-
-            if ($value !== null) {
-                $this->setValue($value);
-            }
         } else {
             $this->setNode($name);
+        }
+
+        if ($value !== null) {
+            $this->setValue($value);
         }
 
         if (!is_array($attributes)) {
