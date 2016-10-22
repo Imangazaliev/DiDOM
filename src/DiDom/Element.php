@@ -7,6 +7,7 @@ use DOMNode;
 use DOMText;
 use DOMElement;
 use InvalidArgumentException;
+use RuntimeException;
 
 class Element
 {
@@ -209,7 +210,9 @@ class Element
 
         $segments = Query::getSegments($selector);
 
-        $segments['tag'] = array_key_exists('tag', $segments) ? $segments['tag'] : null;
+        if (!array_key_exists('tag', $segments)) {
+            throw new RuntimeException(sprintf('Tag name must be specified in %s', $selector));
+        }
 
         if ($segments['tag'] !== $this->tag and $segments['tag'] !== '*') {
             return false;

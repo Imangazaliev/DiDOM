@@ -216,6 +216,16 @@ class ElementTest extends TestCase
         $this->assertEquals(0, $document->count('li'));
     }
 
+    /**
+     * @expectedException RuntimeException
+     */
+    public function testMatchesStrictWithoutTagName()
+    {
+        $element = new Element('ul', null, ['id' => 'foo', 'class' => 'bar baz']);
+
+        $element->matches('#foo.bar.baz', true);
+    }
+
     public function testMatches()
     {
         $element = new Element('ul', null, ['id' => 'foo', 'class' => 'bar baz']);
@@ -231,7 +241,6 @@ class ElementTest extends TestCase
         $this->assertFalse($element->matches('ul#foo.bar', true));
         $this->assertFalse($element->matches('ul#foo', true));
         $this->assertFalse($element->matches('ul.bar.baz', true));
-        $this->assertFalse($element->matches('#foo.bar.baz', true));
         $this->assertFalse($element->matches('ul.bar.baz', true));
 
         $element = new Element('p');

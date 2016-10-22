@@ -49,6 +49,115 @@ class DocumentTest extends TestCase
     }
 
     /**
+     * @dataProvider loadHtmlCharsetTests
+     */
+    public function testLoadHtmlCharset($html, $text)
+    {
+        $document = new Document($html, false, 'UTF-8');
+
+        $this->assertEquals($text, $document->first('div')->text());
+    }
+
+    public function loadHtmlCharsetTests()
+    {
+        return array(
+            array('<html><div class="foo">English language</html>', 'English language'),
+            array('<html><div class="foo">Русский язык</html>', 'Русский язык'),
+            array('<html><div class="foo">اللغة العربية</html>', 'اللغة العربية'),
+            array('<html><div class="foo">漢語</html>', '漢語'),
+            array('<html><div class="foo">Tiếng Việt</html>', 'Tiếng Việt'),
+        );
+    }
+
+    public function testCreate()
+    {
+        $this->assertInstanceOf(Document::class, Document::create());
+    }
+
+    public function testCreateElement()
+    {
+        $html = $this->loadFixture('posts.html');
+
+        $document = new Document($html, false);
+        $element  = $document->createElement('span', 'value');
+
+        $this->assertInstanceOf('DiDom\Element', $element);
+        $this->assertEquals('span', $element->getNode()->tagName);
+        $this->assertEquals('value', $element->getNode()->textContent);
+
+        $element = $document->createElement('span');
+        $this->assertEquals('', $element->text());
+
+        $element = $document->createElement('input', '', ['name' => 'username']);
+        $this->assertEquals('username', $element->getNode()->getAttribute('name'));
+    }
+
+    public function testCreateElementBySelector()
+    {
+        $document = new Document();
+
+        $element = $document->createElementBySelector('a.external-link[href=http://example.com]');
+
+        $this->assertEquals('a', $element->tag);
+        $this->assertEquals('', $element->text());
+        $this->assertEquals(['href' => 'http://example.com', 'class' => 'external-link'], $element->attributes());
+
+        $element = $document->createElementBySelector('#block', 'Foo');
+
+        $this->assertEquals('div', $element->tag);
+        $this->assertEquals('Foo', $element->text());
+        $this->assertEquals(['id' => 'block'], $element->attributes());
+
+        $element = $document->createElementBySelector('input', null, ['name' => 'name', 'placeholder' => 'Enter your name']);
+
+        $this->assertEquals('input', $element->tag);
+        $this->assertEquals('', $element->text());
+        $this->assertEquals(['name' => 'name', 'placeholder' => 'Enter your name'], $element->attributes());
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testAppendChildWithInvalidArgument()
+    {
+        $html = $this->loadFixture('posts.html');
+
+        $document = new Document($html);
+        $document->appendChild('foo');
+    }
+
+    public function testAppendChild()
+    {
+        $html = '<!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <title>Document</title>
+        </head>
+        <body>
+
+        </body>
+        </html>';
+
+        $document = new Document($html);
+
+        $this->assertCount(0, $document->find('span'));
+
+        $node = $document->createElement('span');
+        $document->appendChild($node);
+
+        $this->assertCount(1, $document->find('span'));
+
+        $nodes = [];
+        $nodes[] = $document->createElement('span');
+        $nodes[] = $document->createElement('span');
+
+        $document->appendChild($nodes);
+
+        $this->assertCount(3, $document->find('span'));
+    }
+
+    /**
      * @expectedException InvalidArgumentException
      */
     public function testLoadWithInvalidContentArgument()
@@ -145,124 +254,6 @@ class DocumentTest extends TestCase
     {
         $document = new Document();
         $document->loadXmlFile(array('foo'));
-    }
-
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testAppendChildWithInvalidArgument()
-    {
-        $html = $this->loadFixture('posts.html');
-
-        $document = new Document($html);
-        $document->appendChild('foo');
-    }
-
-    public function testAppendChild()
-    {
-        $html = '<!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <title>Document</title>
-        </head>
-        <body>
-            
-        </body>
-        </html>';
-
-        $document = new Document($html);
-
-        $this->assertCount(0, $document->find('span'));
-
-        $node = $document->createElement('span');
-        $document->appendChild($node);
-
-        $this->assertCount(1, $document->find('span'));
-
-        $nodes = [];
-        $nodes[] = $document->createElement('span');
-        $nodes[] = $document->createElement('span');
-
-        $document->appendChild($nodes);
-
-        $this->assertCount(3, $document->find('span'));
-    }
-
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testIsWithInvalidArgument()
-    {
-        $document = new Document();
-        $document->is(null);
-    }
-
-    /**
-     * @dataProvider loadHtmlCharsetTests
-     */
-    public function testLoadHtmlCharset($html, $text)
-    {
-        $document = new Document($html, false, 'UTF-8');
-
-        $this->assertEquals($text, $document->first('div')->text());
-    }
-
-    public function testCreate()
-    {
-        $this->assertInstanceOf(Document::class, Document::create());
-    }
-
-    public function testCreateElement()
-    {
-        $html = $this->loadFixture('posts.html');
-
-        $document = new Document($html, false);
-        $element  = $document->createElement('span', 'value');
-
-        $this->assertInstanceOf('DiDom\Element', $element);
-        $this->assertEquals('span', $element->getNode()->tagName);
-        $this->assertEquals('value', $element->getNode()->textContent);
-
-        $element = $document->createElement('span');
-        $this->assertEquals('', $element->text());
-
-        $element = $document->createElement('input', '', ['name' => 'username']);
-        $this->assertEquals('username', $element->getNode()->getAttribute('name'));
-    }
-
-    public function testCreateElementBySelector()
-    {
-        $document = new Document();
-
-        $element = $document->createElementBySelector('a.external-link[href=http://example.com]');
-
-        $this->assertEquals('a', $element->tag);
-        $this->assertEquals('', $element->text());
-        $this->assertEquals(['href' => 'http://example.com', 'class' => 'external-link'], $element->attributes());
-
-        $element = $document->createElementBySelector('#block', 'Foo');
-
-        $this->assertEquals('div', $element->tag);
-        $this->assertEquals('Foo', $element->text());
-        $this->assertEquals(['id' => 'block'], $element->attributes());
-
-        $element = $document->createElementBySelector('input', null, ['name' => 'name', 'placeholder' => 'Enter your name']);
-
-        $this->assertEquals('input', $element->tag);
-        $this->assertEquals('', $element->text());
-        $this->assertEquals(['name' => 'name', 'placeholder' => 'Enter your name'], $element->attributes());
-    }
-
-    public function loadHtmlCharsetTests()
-    {
-        return array(
-            array('<html><div class="foo">English language</html>', 'English language'),
-            array('<html><div class="foo">Русский язык</html>', 'Русский язык'),
-            array('<html><div class="foo">اللغة العربية</html>', 'اللغة العربية'),
-            array('<html><div class="foo">漢語</html>', '漢語'),
-            array('<html><div class="foo">Tiếng Việt</html>', 'Tiếng Việt'),
-        );
     }
 
     public function testHas()
@@ -466,6 +457,15 @@ class DocumentTest extends TestCase
         $document = new Document($xml, false, 'UTF-8', 'xml');
 
         $this->assertEquals('xml', $document->getType());
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testIsWithInvalidArgument()
+    {
+        $document = new Document();
+        $document->is(null);
     }
 
     public function testIs()
