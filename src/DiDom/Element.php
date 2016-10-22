@@ -8,6 +8,7 @@ use DOMText;
 use DOMElement;
 use InvalidArgumentException;
 use RuntimeException;
+use LogicException;
 
 class Element
 {
@@ -197,6 +198,10 @@ class Element
         if (!$strict) {
             // remove child nodes
             $node = $this->node->cloneNode();
+
+            if (!$this->node instanceof \DOMElement) {
+                throw new LogicException('Node must be an instance of DOMElement');
+            }
 
             $innerHtml = $node->ownerDocument->saveXml($node, LIBXML_NOEMPTYTAG);
             $html = "<root>$innerHtml</root>";
@@ -507,7 +512,7 @@ class Element
     }
 
     /**
-     * @return \DiDom\Element|null
+     * @return \DiDom\Element|\DiDom\Document|null
      */
     public function parent()
     {
@@ -515,7 +520,38 @@ class Element
             return null;
         }
 
+        if ($this->node->parentNode instanceof \DOMDocument) {
+            return new Document($this->node->parentNode);
+        }
+
         return new Element($this->node->parentNode);
+    }
+
+    /**
+     * Returns first parent node matches passed selector.
+     *
+     * @param string $selector
+     * @param bool $strict
+     *
+     * @return \DiDom\Element|null
+     */
+    public function closest($selector, $strict = false)
+    {
+        $node = $this;
+
+        while (true) {
+            $parent = $node->parent();
+
+            if ($parent === null or $parent instanceof Document) {
+                return null;
+            }
+
+            if ($parent->matches($selector, $strict)) {
+                return $parent;
+            }
+
+            $node = $parent;
+        }
     }
 
     /**
@@ -649,12 +685,16 @@ class Element
     /**
      * Sets current \DOMNode instance.
      *
-     * @param \DOMNode $node
+     * @param \DOMElement|\DOMText $node
      *
      * @return \DiDom\Element
      */
-    protected function setNode(DOMNode $node)
+    protected function setNode($node)
     {
+        if (!$node instanceof \DOMElement and !$node instanceof \DOMText) {
+            throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of DOMElement or DOMText, %s given', __METHOD__, (is_object($node) ? get_class($node) : gettype($node))));
+        }
+
         $this->node = $node;
 
         return $this;

@@ -9,14 +9,11 @@ use DiDom\Query;
 
 class ElementTest extends TestCase
 {
+    /**
+     * @expectedException InvalidArgumentException
+     */
     public function testConstructorWithInvalidName()
     {
-        if (PHP_VERSION_ID >= 70000) {
-            $this->setExpectedException('TypeError');
-        } else {
-            $this->setExpectedException('PHPUnit_Framework_Error');
-        }
-
         new Element(null, 'hello');
     }
 
@@ -463,6 +460,27 @@ class ElementTest extends TestCase
         $element = $document->createElement('span', 'value');
 
         $this->assertEquals($document->getDocument(), $element->getDocument()->getDocument());
+    }
+
+    public function testClosest()
+    {
+        $html = '
+            <nav>
+                <ul class="menu">
+                    <li><a href="#">Foo</a></li>
+                    <li><a href="#">Bar</a></li>
+                    <li><a href="#">Baz</a></li>
+                </ul>
+            </nav>
+        ';
+
+        $document = new Document($html);
+
+        $menu = $document->first('.menu');
+        $link = $document->first('a');
+
+        $this->assertNull($link->closest('.unknown-class'));
+        $this->assertEquals($menu, $link->closest('.menu'));
     }
 
     public function testPreviousSibling()
