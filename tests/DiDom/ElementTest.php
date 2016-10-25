@@ -14,7 +14,7 @@ class ElementTest extends TestCase
      */
     public function testConstructorWithInvalidName()
     {
-        new Element(null, 'hello');
+        new Element(null);
     }
 
     /**
@@ -30,7 +30,7 @@ class ElementTest extends TestCase
      */
     public function testConstructorWithInvalidAttributes()
     {
-        new Element('span', 'hello', null);
+        new Element('span', 'Foo', null);
     }
 
     public function testConstructor()
@@ -42,7 +42,19 @@ class ElementTest extends TestCase
         $this->assertEquals('John', $element->getNode()->getAttribute('value'));
 
         // create from DOMElement
-        $node = $this->createNode('input');
+        $node = new \DOMElement('span', 'Foo');
+        $element = new Element($node);
+
+        $this->assertEquals($node, $element->getNode());
+
+        // create from DOMText
+        $node = new \DOMText('Foo');
+        $element = new Element($node);
+
+        $this->assertEquals($node, $element->getNode());
+
+        // create from DOMComment
+        $node = new \DOMComment('Foo');
         $element = new Element($node);
 
         $this->assertEquals($node, $element->getNode());
@@ -427,12 +439,26 @@ class ElementTest extends TestCase
     {
         $element = new Element('div');
 
-        $element->setInnerHtml(' Foo <span>Bar</span>');
+        $element->setInnerHtml(' Foo <span>Bar</span><!-- Baz -->');
 
         $children = $element->children();
 
         $this->assertTrue($children[0]->isTextNode());
         $this->assertFalse($children[1]->isTextNode());
+        $this->assertFalse($children[2]->isTextNode());
+    }
+
+    public function testIsCommentNode()
+    {
+        $element = new Element('div');
+
+        $element->setInnerHtml(' Foo <span>Bar</span><!-- Baz -->');
+
+        $children = $element->children();
+
+        $this->assertFalse($children[0]->isCommentNode());
+        $this->assertFalse($children[1]->isCommentNode());
+        $this->assertTrue($children[2]->isCommentNode());
     }
 
     public function testIs()

@@ -4,7 +4,6 @@ namespace DiDom;
 
 use DOMDocument;
 use DOMNode;
-use DOMText;
 use DOMElement;
 use InvalidArgumentException;
 use RuntimeException;
@@ -486,7 +485,17 @@ class Element
      */
     public function isTextNode()
     {
-        return $this->node instanceof DOMText;
+        return $this->node instanceof \DOMText;
+    }
+
+    /**
+     * Returns true if current node is comment.
+     *
+     * @return bool
+     */
+    public function isCommentNode()
+    {
+        return $this->node instanceof \DOMComment;
     }
 
     /**
@@ -685,14 +694,16 @@ class Element
     /**
      * Sets current \DOMNode instance.
      *
-     * @param \DOMElement|\DOMText $node
+     * @param \DOMElement|\DOMText|\DOMComment $node
      *
      * @return \DiDom\Element
      */
     protected function setNode($node)
     {
-        if (!$node instanceof \DOMElement and !$node instanceof \DOMText) {
-            throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of DOMElement or DOMText, %s given', __METHOD__, (is_object($node) ? get_class($node) : gettype($node))));
+        $allowedClasses = ['DOMElement', 'DOMText', 'DOMComment'];
+
+        if (!in_array(get_class($node), $allowedClasses)) {
+            throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of DOMElement, DOMText or DOMComment, %s given', __METHOD__, (is_object($node) ? get_class($node) : gettype($node))));
         }
 
         $this->node = $node;
