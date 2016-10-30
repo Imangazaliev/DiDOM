@@ -394,8 +394,8 @@ class Query
         $tag = '(?P<tag>[\*|\w|\-]+)?';
         $id = '(?:#(?P<id>[\w|\-]+))?';
         $classes = '(?P<classes>\.[\w|\-|\.]+)*';
-        $attrs = '(?P<attrs>\[.+\])*';
-        $name = '(?P<pseudo>[\w\-]*)';
+        $attrs = '(?P<attrs>(?:\[.+?\])*)?';
+        $name = '(?P<pseudo>[\w\-]+)';
         $expr = '(?:\((?P<expr>[^\)]+)\))';
         $pseudo = '(?::'.$name.$expr.'?)?';
         $rel = '\s*(?P<rel>>)?';
