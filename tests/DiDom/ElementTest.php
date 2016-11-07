@@ -374,7 +374,7 @@ class ElementTest extends TestCase
     public function testHtmlWithOptions()
     {
         $html = '<html><body><span></span></body></html>';
-        
+
         $document = new Document();
         $document->loadHtml($html);
 
@@ -396,7 +396,7 @@ class ElementTest extends TestCase
     public function testXmlWithOptions()
     {
         $html = '<html><body><span></span></body></html>';
-        
+
         $document = new Document();
         $document->loadHtml($html);
 
@@ -840,5 +840,25 @@ class ElementTest extends TestCase
         foreach ($elements as $element) {
             $this->assertInstanceOf('DiDom\Element', $element);
         }
+    }
+
+    public function testFirstElementMethods()
+    {
+        $html = '<div id="first"><span><a>text</a></span></div>';
+        
+        $document = new Document();
+        $document->loadHtml($html);
+        
+        $element = $document->first('#first');
+
+        $this->assertEquals('text', $element->firstElementText('a'));
+        $this->assertEquals(null, $element->firstElementText('#inexistence'));
+        
+        $this->assertEquals('<a>text</a>', $element->firstElementInnerHtml('span'));
+        $this->assertEquals(null, $element->firstElementInnerHtml('#inexistence'));
+        
+        $this->assertEquals('<span><a>text</a></span>', $element->firstElementHtml('span'));
+        $this->assertEquals(null, $element->firstElementHtml('#inexistence'));
+        
     }
 }

@@ -12,6 +12,8 @@ use LogicException;
 
 class Element
 {
+    use common;
+    
     /**
      * The DOM element instance.
      * 

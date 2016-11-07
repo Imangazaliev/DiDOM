@@ -554,4 +554,21 @@ class DocumentTest extends TestCase
             $this->assertInstanceOf('DiDom\Element', $element);
         }
     }
+
+    public function testFirstElementMethods()
+    {
+        $html = '<div id="first"><span><a>text</a></span></div>';
+
+        $document = new Document();
+        $document->loadHtml($html);
+
+        $this->assertEquals('text', $document->firstElementText('#first'));
+        $this->assertEquals(null, $document->firstElementText('#inexistence'));
+
+        $this->assertEquals('<span><a>text</a></span>', $document->firstElementInnerHtml('#first'));
+        $this->assertEquals(null, $document->firstElementInnerHtml('#inexistence'));
+
+        $this->assertEquals('<div id="first"><span><a>text</a></span></div>', $document->firstElementHtml('#first'));
+        $this->assertEquals(null, $document->firstElementHtml('#inexistence'));
+    }
 }
