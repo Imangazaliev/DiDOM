@@ -680,6 +680,16 @@ class Element
     }
 
     /**
+     * Get line number for a node.
+     * 
+     * @return int
+     */
+    public function getLineNo()
+    {
+        return $this->node->getLineNo();
+    }
+
+    /**
      * Clones a node.
      * 
      * @param bool $deep Indicates whether to copy all descendant nodes

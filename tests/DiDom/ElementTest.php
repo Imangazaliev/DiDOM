@@ -758,6 +758,23 @@ class ElementTest extends TestCase
         $document->find('li')[0]->replace(null);
     }
 
+    public function testGetLineNo()
+    {
+        $element = new Element('div');
+
+        $this->assertEquals(0, $element->getLineNo());
+
+        $html = '<ul>
+            <li>One</li>
+            <li>Two</li>
+            <li>Three</li>
+        </ul>';
+
+        $document = new Document($html, false);
+
+        $this->assertEquals(4, $document->find('li')[2]->getLineNo());
+    }
+
     public function testCloneNode()
     {
         $element = new Element('input');
