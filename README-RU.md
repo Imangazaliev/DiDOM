@@ -219,7 +219,7 @@ $document->find('a.foo::text');
 $document->find('a.bar::attr(href|title)');
 
 // все ссылки, которые являются прямыми потомками текущего элемента
-$document->find('> a');
+$element->find('> a');
 ```
 
 ## Изменение содержимого
@@ -605,7 +605,7 @@ echo $document->count('a');
 Возвращает `true`, если узел подходит под селектор:
 
 ```php
-$element->matches('div.#content');
+$element->matches('div#content');
 ```
 
 #### `isTextNode`
@@ -614,6 +614,14 @@ $element->matches('div.#content');
 
 ```php
 $element->isTextNode();
+```
+
+#### `isCommentNode`
+
+Проверяет, является ли элемент комментарием (DOMComment):
+
+```php
+$element->isCommentNode();
 ```
 
 ## Сравнение с другими парсерами
