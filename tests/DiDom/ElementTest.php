@@ -88,6 +88,16 @@ class ElementTest extends TestCase
         $element->appendChild('foo');
     }
 
+    /**
+     * @expectedException LogicException
+     */
+    public function testAppendChildWithoutParentNode()
+    {
+        $element = new Element(new \DOMElement('div'));
+
+        $element->appendChild(new Element('div'));
+    }
+
     public function testAppendChild()
     {
         $list = new Element('ul');
@@ -695,6 +705,16 @@ class ElementTest extends TestCase
         $this->assertCount(0, $document->find('span'));
     }
 
+    /**
+     * @expectedException LogicException
+     */
+    public function testRemoveWithoutParentNode()
+    {
+        $element = new Element('div', 'Foo');
+
+        $element->remove();
+    }
+
     public function testReplace()
     {
         $html = '<ul><li>One</li><li>Two</li><li>Three</li></ul>';
@@ -708,6 +728,7 @@ class ElementTest extends TestCase
         $this->assertEquals($third->getNode(), $document->find('li')[0]->getNode());
         $this->assertCount(3, $document->find('li'));
 
+        // replace without cloning
         $document = new Document($html, false);
 
         $first = $document->find('li')[0];
@@ -731,6 +752,17 @@ class ElementTest extends TestCase
         $this->assertEquals($first->getNode(), $first->replace($newElement)->getNode());
         $this->assertEquals('Foo', $document->find('li')[0]->text());
         $this->assertCount(3, $document->find('li'));
+
+        // replace with new node
+        $html = '<span>Foo <a href="#">Bar</a> Baz</span>';
+
+        $document = new Document($html, false);
+
+        $anchor = $document->first('a');
+
+        $textNode = new \DOMText($anchor->text());
+
+        $anchor->replace($textNode);
     }
 
     public function testReplaceWithDifferentDocuments()
@@ -756,6 +788,16 @@ class ElementTest extends TestCase
         $document = new Document($html, false);
 
         $document->find('li')[0]->replace(null);
+    }
+
+    /**
+     * @expectedException LogicException
+     */
+    public function testReplaceElementWithoutParentNode()
+    {
+        $element = new Element('div', 'Foo');
+
+        $element->replace(new Element('div', 'Bar'));
     }
 
     public function testGetLineNo()

@@ -89,10 +89,15 @@ class Element
      *
      * @return \DiDom\Element
      *
+     * @throws \LogicException if current node has no owner document
      * @throws \InvalidArgumentException if the provided argument is not an instance of \DOMNode or \DiDom\Element
      */
     public function appendChild($nodes)
     {
+        if ($this->node->ownerDocument === null) {
+            throw new LogicException('Can not append child to element without owner document');
+        }
+
         $nodes = is_array($nodes) ? $nodes : [$nodes];
 
         foreach ($nodes as $node) {
@@ -640,9 +645,15 @@ class Element
      * Removes child from list of children.
      * 
      * @return \DiDom\Element the node that has been removed
+     *
+     * @throws \LogicException if current node has no parent node
      */
     public function remove()
     {
+        if ($this->node->parentNode === null) {
+            throw new LogicException('Can not remove element without parent node');
+        }
+
         $node = $this->node->parentNode->removeChild($this->node);
 
         return new Element($node);
@@ -655,9 +666,15 @@ class Element
      * @param bool $clone Clone the node if true, otherwise move it
      * 
      * @return \DiDom\Element The node that has been replaced
+     *
+     * @throws \LogicException if current node has no parent node
      */
     public function replace($newNode, $clone = true)
     {
+        if ($this->node->parentNode === null) {
+            throw new LogicException('Can not replace element without parent node');
+        }
+
         if ($newNode instanceof self) {
             $newNode = $newNode->getNode();
         }
@@ -670,7 +687,7 @@ class Element
             $newNode = $newNode->cloneNode(true);
         }
 
-        if (!$this->getDocument()->is($newNode->ownerDocument)) {
+        if ($newNode->ownerDocument === null or !$this->getDocument()->is($newNode->ownerDocument)) {
             $newNode = $this->node->ownerDocument->importNode($newNode, true);
         }
 
