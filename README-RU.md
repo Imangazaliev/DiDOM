@@ -5,7 +5,7 @@
 [![Latest Stable Version](https://poser.pugx.org/imangazaliev/didom/v/stable)](https://packagist.org/packages/imangazaliev/didom)
 [![License](https://poser.pugx.org/imangazaliev/didom/license)](https://packagist.org/packages/imangazaliev/didom)
 
-[README на английском](README.md)
+[English version](README.md)
 
 DiDOM - простая и быстрая библиотека для парсинга HTML.
 
