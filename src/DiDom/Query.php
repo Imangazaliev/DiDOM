@@ -310,7 +310,7 @@ class Query
                 break;
         }
 
-        throw new RuntimeException('Invalid selector: unknown pseudo-class');
+        throw new RuntimeException(sprintf('Invalid selector: unknown pseudo-class "%s"', $pseudo));
     }
 
     /**
