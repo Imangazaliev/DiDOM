@@ -202,7 +202,7 @@ $document->find('a[href*=example.com]');
 // text of the links with "foo" class
 $document->find('a.foo::text');
 
-// address and title af all the fields with "bar" class
+// address and title of all the fields with "bar" class
 $document->find('a.bar::attr(href|title)');
 ```
 
