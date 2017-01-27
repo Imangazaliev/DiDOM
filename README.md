@@ -99,7 +99,7 @@ DiDOM accepts CSS selector or XPath as an expression for search. You need to pat
 ```php
 use DiDom\Document;
 use DiDom\Query;
-    
+
 ...
 
 // CSS selector
@@ -270,7 +270,7 @@ echo $posts[0]->text();
 use DiDom\Element;
 
 $element = new Element('span', 'Hello');
-    
+
 // Outputs "<span>Hello</span>"
 echo $element->html();
 ```
@@ -384,7 +384,10 @@ $element->attr('name', 'username');
 ```php
 $element->name = 'username';
 ```
-
+#### Getting value of an node attribute
+```php
+$nodeType = $element->getNodeAttribute('nodeType');
+```
 #### Getting value of an attribute
 
 ##### With method `getAttribute`:
@@ -494,7 +497,7 @@ Cache is an array of XPath expressions, that were converted from CSS.
 #### Getting from cache
 ```php
 use DiDom\Query;
-    
+
 ...
 
 $xpath    = Query::compile('h2');
