@@ -157,7 +157,7 @@ if ($document->has('.post')) {
 но быстрее так:
 
 ```php
-if (count($elements = $document->find('.post')) != 0) {
+if (count($elements = $document->find('.post')) > 0) {
     // код
 }
 ```
@@ -404,6 +404,7 @@ var_dump($item->children());
 
 ```php
 $document = new Document($html);
+
 $element  = $document->first('input[name=email]');
 
 $document2 = $element->getDocument();
@@ -508,12 +509,14 @@ var_dump($element->is($element2));
 $list = new Element('ul');
 
 $item = new Element('li', 'Item 1');
+
+$list->appendChild($item);
+
 $items = [
     new Element('li', 'Item 2'),
     new Element('li', 'Item 3'),
 ];
 
-$list->appendChild($item);
 $list->appendChild($items);
 ```
 
