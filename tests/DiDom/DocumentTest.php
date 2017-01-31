@@ -309,6 +309,19 @@ class DocumentTest extends TestCase
         }
     }
 
+    public function testFindWithContext()
+    {
+        $document = new Document($this->loadFixture('posts.html'));
+
+        $post = $document->find('.post')[1];
+        $title = $document->find('.post .title')[1];
+
+        $titleInContext = $document->find('.title', Query::TYPE_CSS, true, $post)[0];
+
+        $this->assertTrue($title->is($titleInContext));
+        $this->assertFalse($title->is($post->find('.title')[0]));
+    }
+
     public function testFindText()
     {
         $html = $this->loadFixture('menu.html');

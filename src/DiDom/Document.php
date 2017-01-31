@@ -341,10 +341,11 @@ class Document
      * @param string $expression XPath expression or a CSS selector
      * @param string $type The type of the expression
      * @param bool   $wrapElement Returns array of \DiDom\Element if true, otherwise array of \DOMElement
+     * @param \DOMElement $contextNode
      *
      * @return \DiDom\Element[]|\DOMElement[]
      */
-    public function find($expression, $type = Query::TYPE_CSS, $wrapElement = true)
+    public function find($expression, $type = Query::TYPE_CSS, $wrapElement = true, $contextNode = null)
     {
         $expression = Query::compile($expression, $type);
 
@@ -353,7 +354,19 @@ class Document
         $xpath->registerNamespace("php", "http://php.net/xpath");
         $xpath->registerPhpFunctions();
 
-        $nodeList = $xpath->query($expression);
+        if ($contextNode !== null) {
+            if ($contextNode instanceof Element) {
+                $contextNode = $contextNode->getNode();
+            }
+
+            if (!$contextNode instanceof \DOMElement) {
+                throw new InvalidArgumentException(sprintf('Argument 4 passed to %s must be an instance of %s\Element or DOMElement, %s given', __METHOD__, __NAMESPACE__, (is_object($contextNode) ? get_class($contextNode) : gettype($contextNode))));
+            }
+
+            $expression = '.'.$expression;
+        }
+
+        $nodeList = $xpath->query($expression, $contextNode);
 
         $result = [];
 
@@ -376,12 +389,16 @@ class Document
      * @param string $expression XPath expression or a CSS selector
      * @param string $type The type of the expression
      * @param bool   $wrapElement Returns \DiDom\Element if true, otherwise \DOMElement
+     * @param \DOMElement $contextNode
      *
      * @return \DiDom\Element|\DOMElement|null
      */
-    public function first($expression, $type = Query::TYPE_CSS, $wrapElement = true)
+    public function first($expression, $type = Query::TYPE_CSS, $wrapElement = true, $contextNode = null)
     {
-        $nodes = $this->find($expression, $type, false);
+        $expression = Query::compile($expression, $type);
+        $expression = sprintf('(%s)[1]', $expression);
+
+        $nodes = $this->find($expression, Query::TYPE_XPATH, false, $contextNode);
 
         if (count($nodes) === 0) {
             return null;
@@ -411,12 +428,13 @@ class Document
      * 
      * @param string $expression XPath expression
      * @param bool   $wrapElement Returns array of \DiDom\Element if true, otherwise array of \DOMElement
+     * @param \DOMElement $contextNode
      *
      * @return \DiDom\Element[]|\DOMElement[]
      */
-    public function xpath($expression, $wrapElement = true)
+    public function xpath($expression, $wrapElement = true, $contextNode = null)
     {
-        return $this->find($expression, Query::TYPE_XPATH, $wrapElement);
+        return $this->find($expression, Query::TYPE_XPATH, $wrapElement, $contextNode);
     }
 
     /**
