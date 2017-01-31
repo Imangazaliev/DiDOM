@@ -71,7 +71,7 @@ class DocumentTest extends TestCase
 
     public function testCreate()
     {
-        $this->assertInstanceOf(Document::class, Document::create());
+        $this->assertInstanceOf('DiDom\Document', Document::create());
     }
 
     public function testCreateElement()
@@ -418,7 +418,7 @@ class DocumentTest extends TestCase
     public function testHtmlWithOptions()
     {
         $html = '<html><body><span></span></body></html>';
-        
+
         $document = new Document();
         $document->loadHtml($html);
 
@@ -437,7 +437,7 @@ class DocumentTest extends TestCase
     public function testXmlWithOptions()
     {
         $xml = '<foo><bar></bar></foo>';
-        
+
         $document = new Document();
         $document->loadXml($xml);
 
@@ -511,7 +511,7 @@ class DocumentTest extends TestCase
         $document = new Document($html, false);
         $document2 = new Document();
 
-        $this->assertFalse($document->is($document2));        
+        $this->assertFalse($document->is($document2));
     }
 
     public function testGetDocument()

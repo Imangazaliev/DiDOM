@@ -13,14 +13,14 @@ class Element
 {
     /**
      * The DOM element instance.
-     * 
+     *
      * @var \DOMNode;
      */
     protected $node;
 
     /**
      * Constructor.
-     * 
+     *
      * @param \DOMNode|string $name The tag name of the element
      * @param string $value The value of the element
      * @param array  $attributes The attributes of the element
@@ -54,7 +54,7 @@ class Element
 
     /**
      * Create new element.
-     * 
+     *
      * @param \DOMNode|string $name The tag name of the element
      * @param string $value The value of the element
      * @param array  $attributes The attributes of the element
@@ -84,7 +84,7 @@ class Element
 
     /**
      * Adds new child at the end of the children.
-     * 
+     *
      * @param \DiDom\Element|\DOMNode|array $nodes The appended child
      *
      * @return \DiDom\Element|\DiDom\Element[]
@@ -136,7 +136,7 @@ class Element
 
     /**
      * Checks the existence of the node.
-     * 
+     *
      * @param string $expression XPath expression or CSS selector
      * @param string $type The type of the expression
      *
@@ -149,7 +149,7 @@ class Element
 
     /**
      * Searches for an node in the DOM tree for a given XPath expression or a CSS selector.
-     * 
+     *
      * @param string $expression XPath expression or a CSS selector
      * @param string $type The type of the expression
      * @param bool   $wrapElement Returns array of \DiDom\Element if true, otherwise array of \DOMElement
@@ -163,7 +163,7 @@ class Element
 
     /**
      * Searches for an node in the DOM tree and returns first element or null.
-     * 
+     *
      * @param string $expression XPath expression or a CSS selector
      * @param string $type The type of the expression
      * @param bool   $wrapElement Returns \DiDom\Element if true, otherwise \DOMElement
@@ -177,7 +177,7 @@ class Element
 
     /**
      * Searches for an node in the DOM tree for a given XPath expression.
-     * 
+     *
      * @param string $expression XPath expression
      * @param bool   $wrapElement Returns array of \DiDom\Element if true, otherwise array of \DOMElement
      *
@@ -190,7 +190,7 @@ class Element
 
     /**
      * Counts nodes for a given XPath expression or a CSS selector.
-     * 
+     *
      * @param string $expression XPath expression or CSS selector
      * @param string $type The type of the expression
      *
@@ -203,7 +203,7 @@ class Element
 
     /**
      * Checks that the node matches selector.
-     * 
+     *
      * @param string $selector CSS selector
      * @param bool $strict
      *
@@ -358,7 +358,7 @@ class Element
 
     /**
      * Returns the node attributes or null, if it is not DOMElement.
-     * 
+     *
      * @return array|null
      */
     public function attributes()
@@ -378,9 +378,9 @@ class Element
 
     /**
      * Dumps the node into a string using HTML formatting.
-     * 
+     *
      * @param int $options Additional options
-     * 
+     *
      * @return string The node HTML
      */
     public function html($options = LIBXML_NOEMPTYTAG)
@@ -390,10 +390,10 @@ class Element
 
     /**
      * Dumps the node descendants into a string using HTML formatting.
-     * 
+     *
      * @param int $options Additional options
      * @param sting $delimiter
-     * 
+     *
      * @return string
      */
     public function innerHtml($options = LIBXML_NOEMPTYTAG, $delimiter = '')
@@ -401,7 +401,7 @@ class Element
         $innerHtml = [];
         $childNodes = $this->node->childNodes;
 
-        foreach ($childNodes as $node) 
+        foreach ($childNodes as $node)
         {
             $innerHtml[] = $node->ownerDocument->saveXml($node, $options);
         }
@@ -411,9 +411,9 @@ class Element
 
     /**
      * Sets inner HTML.
-     * 
+     *
      * @param string $html
-     * 
+     *
      * @return Element
      */
     public function setInnerHtml($html)
@@ -423,7 +423,7 @@ class Element
         }
 
         // remove all child nodes
-        foreach ($this->node->childNodes as $node) 
+        foreach ($this->node->childNodes as $node)
         {
             $this->node->removeChild($node);
         }
@@ -451,9 +451,9 @@ class Element
 
     /**
      * Dumps the node into a string using XML formatting.
-     * 
+     *
      * @param int $options Additional options
-     * 
+     *
      * @return string The node XML
      */
     public function xml($options = 0)
@@ -463,7 +463,7 @@ class Element
 
     /**
      * Get the text content of this node and its descendants.
-     * 
+     *
      * @return string The node value
      */
     public function text()
@@ -497,7 +497,7 @@ class Element
 
     /**
      * Returns true if current node is text.
-     * 
+     *
      * @return bool
      */
     public function isTextNode()
@@ -517,7 +517,7 @@ class Element
 
     /**
      * Indicates if two nodes are the same node.
-     * 
+     *
      * @param \DiDom\Element|\DOMNode $node
      *
      * @return bool
@@ -645,7 +645,7 @@ class Element
     {
         $children = [];
 
-        foreach ($this->node->childNodes as $node) 
+        foreach ($this->node->childNodes as $node)
         {
             $children[] = new Element($node);
         }
@@ -655,7 +655,7 @@ class Element
 
     /**
      * Removes child from list of children.
-     * 
+     *
      * @return \DiDom\Element the node that has been removed
      *
      * @throws \LogicException if current node has no parent node
@@ -673,10 +673,10 @@ class Element
 
     /**
      * Replaces a child.
-     * 
+     *
      * @param \DOMNode|\DiDom\Element $newChild The new node
      * @param bool $clone Clone the node if true, otherwise move it
-     * 
+     *
      * @return \DiDom\Element The node that has been replaced
      *
      * @throws \LogicException if current node has no parent node
@@ -710,7 +710,7 @@ class Element
 
     /**
      * Get line number for a node.
-     * 
+     *
      * @return int
      */
     public function getLineNo()
@@ -720,9 +720,9 @@ class Element
 
     /**
      * Clones a node.
-     * 
+     *
      * @param bool $deep Indicates whether to copy all descendant nodes
-     * 
+     *
      * @return \DiDom\Element The cloned node
      */
     public function cloneNode($deep = true)
@@ -752,7 +752,7 @@ class Element
 
     /**
      * Get current \DOMNode instance.
-     * 
+     *
      * @return \DOMNode
      */
     public function getNode()
@@ -762,7 +762,7 @@ class Element
 
     /**
      * Returns the document associated with this node.
-     * 
+     *
      * @return \DiDom\Document|null
      */
     public function getDocument()
@@ -778,7 +778,7 @@ class Element
      * Get the DOM document with the current element.
      *
      * @param string $encoding The document encoding
-     * 
+     *
      * @return \DiDom\Document
      */
     public function toDocument($encoding = 'UTF-8')
@@ -854,7 +854,7 @@ class Element
 
     /**
      * Searches for an node in the DOM tree for a given XPath expression or a CSS selector.
-     * 
+     *
      * @param string $expression XPath expression or a CSS selector
      * @param string $type The type of the expression
      * @param bool   $wrapElement Returns array of \DiDom\Element if true, otherwise array of \DOMElement

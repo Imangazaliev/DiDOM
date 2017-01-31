@@ -150,8 +150,8 @@ class ElementTest extends TestCase
         $document = new \DOMDocument();
         $document->loadHTML($html);
 
-        $node = $document->getElementsByTagName('body')->item(0);
-        $element = new Element($node);
+        $domElement = $document->getElementsByTagName('body')->item(0);
+        $element = new Element($domElement);
 
         $elements = $element->find($selector, $type);
 
@@ -408,7 +408,7 @@ class ElementTest extends TestCase
     public function testHtmlWithOptions()
     {
         $html = '<html><body><span></span></body></html>';
-        
+
         $document = new Document();
         $document->loadHtml($html);
 
@@ -430,7 +430,7 @@ class ElementTest extends TestCase
     public function testXmlWithOptions()
     {
         $html = '<html><body><span></span></body></html>';
-        
+
         $document = new Document();
         $document->loadHtml($html);
 
