@@ -104,18 +104,30 @@ class ElementTest extends TestCase
 
         $this->assertCount(0, $list->find('li'));
 
-        $node = new Element('li', 'foo');
-        $list->appendChild($node);
+        $item = new Element('li', 'foo');
+        $appendedChild = $list->appendChild($item);
 
         $this->assertCount(1, $list->find('li'));
+        $this->assertInstanceOf('DiDom\Element', $appendedChild);
+        $this->assertEquals('foo', $appendedChild->text());
+
+        $appendedChild->remove();
+
+        $this->assertCount(0, $list->find('li'));
 
         $items = [];
         $items[] = new Element('li', 'bar');
         $items[] = new Element('li', 'baz');
 
-        $list->appendChild($items);
+        $appendedChildren = $list->appendChild($items);
 
-        $this->assertCount(3, $list->find('li'));
+        $this->assertCount(2, $appendedChildren);
+        $this->assertCount(2, $list->find('li'));
+
+        foreach (['bar', 'baz'] as $index => $value) {
+            $this->assertInstanceOf('DiDom\Element', $appendedChildren[$index]);
+            $this->assertEquals($value, $appendedChildren[$index]->text());
+        }
     }
 
     public function testHas()

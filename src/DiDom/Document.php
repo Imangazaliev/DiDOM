@@ -113,16 +113,24 @@ class Document
 
     /**
      * Add new child at the end of the children.
-     * 
+     *
      * @param \DiDom\Element|\DOMNode|array $nodes The appended child
      *
-     * @return \DiDom\Document
+     * @return \DiDom\Element|\DiDom\Element[]
      *
      * @throws \InvalidArgumentException if the provided argument is not an instance of \DOMNode or \DiDom\Element
      */
     public function appendChild($nodes)
     {
-        $nodes = is_array($nodes) ? $nodes : [$nodes];
+        $returnArray = true;
+
+        if (!is_array($nodes)) {
+            $nodes = [$nodes];
+
+            $returnArray = false;
+        }
+
+        $result = [];
 
         foreach ($nodes as $node) {
             if ($node instanceof Element) {
@@ -138,12 +146,16 @@ class Document
             $cloned = $node->cloneNode(true);
             $newNode = $this->document->importNode($cloned, true);
 
-            $this->document->appendChild($newNode);
+            $result[] = $this->document->appendChild($newNode);
 
             Errors::restore();
         }
 
-        return $this;
+        $result = array_map(function (\DOMNode $node) {
+            return new Element($node);
+        }, $result);
+
+        return $returnArray ? $result : $result[0];
     }
 
     /**

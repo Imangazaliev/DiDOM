@@ -144,17 +144,29 @@ class DocumentTest extends TestCase
         $this->assertCount(0, $document->find('span'));
 
         $node = $document->createElement('span');
-        $document->appendChild($node);
+        $appendedChild = $document->appendChild($node);
 
         $this->assertCount(1, $document->find('span'));
+        $this->assertTrue($appendedChild->is($document->first('span')));
+
+        $appendedChild->remove();
+
+        $this->assertCount(0, $document->find('span'));
 
         $nodes = [];
         $nodes[] = $document->createElement('span');
         $nodes[] = $document->createElement('span');
 
-        $document->appendChild($nodes);
+        $appendedChildren = $document->appendChild($nodes);
 
-        $this->assertCount(3, $document->find('span'));
+        $nodes = $document->find('span');
+
+        $this->assertCount(2, $appendedChildren);
+        $this->assertCount(2, $nodes);
+
+        foreach ($appendedChildren as $index => $child) {
+            $this->assertTrue($child->is($nodes[$index]));
+        }
     }
 
     /**

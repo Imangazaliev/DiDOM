@@ -87,7 +87,7 @@ class Element
      * 
      * @param \DiDom\Element|\DOMNode|array $nodes The appended child
      *
-     * @return \DiDom\Element
+     * @return \DiDom\Element|\DiDom\Element[]
      *
      * @throws \LogicException if current node has no owner document
      * @throws \InvalidArgumentException if the provided argument is not an instance of \DOMNode or \DiDom\Element
@@ -98,7 +98,15 @@ class Element
             throw new LogicException('Can not append child to element without owner document');
         }
 
-        $nodes = is_array($nodes) ? $nodes : [$nodes];
+        $returnArray = true;
+
+        if (!is_array($nodes)) {
+            $nodes = [$nodes];
+
+            $returnArray = false;
+        }
+
+        $result = [];
 
         foreach ($nodes as $node) {
             if ($node instanceof Element) {
@@ -114,12 +122,16 @@ class Element
             $cloned = $node->cloneNode(true);
             $newNode = $this->node->ownerDocument->importNode($cloned, true);
 
-            $this->node->appendChild($newNode);
+            $result[] = $this->node->appendChild($newNode);
 
             Errors::restore();
         }
 
-        return $this;
+        $result = array_map(function (\DOMNode $node) {
+            return new Element($node);
+        }, $result);
+
+        return $returnArray ? $result : $result[0];
     }
 
     /**
