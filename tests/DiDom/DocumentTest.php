@@ -378,6 +378,26 @@ class DocumentTest extends TestCase
         $this->assertNull($document->first('ul > li'));
     }
 
+    public function testFirstWithContext()
+    {
+        $html = '
+            <div class="root">
+                <span>Foo</span>
+
+                <div><span>Bar</span></div>
+            </div>
+        ';
+
+        $document = new Document($html);
+
+        $div = $document->first('.root div');
+        $span = $document->first('.root div span');
+
+        $result = $document->first('span', Query::TYPE_CSS, true, $div);
+
+        $this->assertTrue($span->is($result));
+    }
+
     public function testXpath()
     {
         $html = $this->loadFixture('posts.html');

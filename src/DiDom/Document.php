@@ -365,7 +365,9 @@ class Document
                 throw new InvalidArgumentException(sprintf('Argument 4 passed to %s must be an instance of %s\Element or DOMElement, %s given', __METHOD__, __NAMESPACE__, (is_object($contextNode) ? get_class($contextNode) : gettype($contextNode))));
             }
 
-            $expression = '.'.$expression;
+            if ($type === Query::TYPE_CSS) {
+                $expression = '.'.$expression;
+            }
         }
 
         $nodeList = $xpath->query($expression, $contextNode);
@@ -398,6 +400,11 @@ class Document
     public function first($expression, $type = Query::TYPE_CSS, $wrapElement = true, $contextNode = null)
     {
         $expression = Query::compile($expression, $type);
+
+        if ($contextNode !== null and $type === Query::TYPE_CSS) {
+            $expression = '.'.$expression;
+        }
+
         $expression = sprintf('(%s)[1]', $expression);
 
         $nodes = $this->find($expression, Query::TYPE_XPATH, false, $contextNode);
