@@ -131,6 +131,8 @@ class Query
      * @param array  $args
      * 
      * @return string
+     * 
+     * @throws RuntimeException if the passed property is unknown
      */
     protected static function convertProperty($name, $args = [])
     {

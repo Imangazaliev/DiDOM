@@ -208,6 +208,8 @@ class Element
      * @param bool $strict
      *
      * @return bool
+     * 
+     * @throws \LogicException if current node is not instance of \DOMElement
      */
     public function matches($selector, $strict = false)
     {

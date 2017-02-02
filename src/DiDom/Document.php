@@ -26,6 +26,8 @@ class Document
      * @param bool   $isFile Indicates that in first parameter was passed to the file path
      * @param string $encoding The document encoding
      * @param string $type The document type
+     * 
+     * @throws \InvalidArgumentException if the passed encoding is not a string
      */
     public function __construct($string = null, $isFile = false, $encoding = 'UTF-8', $type = 'html')
     {
@@ -118,7 +120,7 @@ class Document
      *
      * @return \DiDom\Element|\DiDom\Element[]
      *
-     * @throws \InvalidArgumentException if the provided argument is not an instance of \DOMNode or \DiDom\Element
+     * @throws \InvalidArgumentException if the passed argument is not an instance of \DOMNode or \DiDom\Element
      */
     public function appendChild($nodes)
     {

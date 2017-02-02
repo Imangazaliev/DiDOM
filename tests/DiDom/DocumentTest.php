@@ -270,8 +270,7 @@ class DocumentTest extends TestCase
 
     public function testHas()
     {
-        $html = $this->loadFixture('posts.html');
-        $document = new Document($html, false);
+        $document = new Document($this->loadFixture('posts.html'));
 
         $this->assertTrue($document->has('.posts'));
         $this->assertFalse($document->has('.fake'));
@@ -282,7 +281,7 @@ class DocumentTest extends TestCase
      */
     public function testFind($html, $selector, $type, $count)
     {
-        $document = new Document($html, false);
+        $document = new Document($html);
         $elements = $document->find($selector, $type);
 
         $this->assertTrue(is_array($elements));
@@ -298,7 +297,7 @@ class DocumentTest extends TestCase
      */
     public function testFindAndReturnDomElement($html, $selector, $type, $count)
     {
-        $document = new Document($html, false);
+        $document = new Document($html);
         $elements = $document->find($selector, $type, false);
 
         $this->assertTrue(is_array($elements));
@@ -326,7 +325,7 @@ class DocumentTest extends TestCase
     {
         $html = $this->loadFixture('menu.html');
 
-        $document = new Document($html, false);
+        $document = new Document($html);
         $texts = $document->find('//a/text()', Query::TYPE_XPATH);
 
         $this->assertTrue(is_array($texts));
@@ -339,7 +338,7 @@ class DocumentTest extends TestCase
     {
         $html = $this->loadFixture('menu.html');
 
-        $document = new Document($html, false);
+        $document = new Document($html);
         $links = $document->find('//a/@href', Query::TYPE_XPATH);
 
         $this->assertTrue(is_array($links));

@@ -167,7 +167,7 @@ class ElementTest extends TestCase
     {
         $html = '<ul><li>One</li><li>Two</li><li>Three</li></ul>';
 
-        $document = new Document($html, false);
+        $document = new Document($html);
 
         $list = $document->first('ul');
 
