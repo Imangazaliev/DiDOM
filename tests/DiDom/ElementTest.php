@@ -163,6 +163,69 @@ class ElementTest extends TestCase
         }
     }
 
+    /**
+     * @expectedException LogicException
+     */
+    public function testFindInDocumentWithoutOwnerDocument()
+    {
+        $element = new Element(new \DOMElement('div'));
+
+        $element->findInDocument('.foo');
+    }
+
+    public function testFindInDocument()
+    {
+        $html = '<ul><li>One</li><li>Two</li><li>Three</li></ul>';
+
+        $document = new Document($html);
+
+        $items = $document->find('li');
+        $list = $document->first('ul');
+
+        foreach ($list->find('li') as $index => $item) {
+            $this->assertFalse($item->is($items[$index]));
+        }
+
+        foreach ($list->findInDocument('li') as $index => $item) {
+            $this->assertTrue($item->is($items[$index]));
+        }
+
+        $this->assertCount(3, $document->find('li'));
+
+        $list->findInDocument('li')[0]->remove();
+
+        $this->assertCount(2, $document->find('li'));
+    }
+
+    /**
+     * @expectedException LogicException
+     */
+    public function testFirstInDocumentWithoutOwnerDocument()
+    {
+        $element = new Element(new \DOMElement('div'));
+
+        $element->firstInDocument('.foo');
+    }
+
+    public function testFirstInDocument()
+    {
+        $html = '<ul><li>One</li><li>Two</li><li>Three</li></ul>';
+
+        $document = new Document($html);
+
+        $item = $document->first('li');
+        $list = $document->first('ul');
+
+        $this->assertFalse($item->is($list->first('li')));
+        $this->assertTrue($item->is($list->firstInDocument('li')));
+
+        $this->assertCount(3, $document->find('li'));
+
+        $list->findInDocument('li')[0]->remove();
+
+        $this->assertCount(2, $document->find('li'));
+    }
+
     public function testFirst()
     {
         $html = '<ul><li>One</li><li>Two</li><li>Three</li></ul>';

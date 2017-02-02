@@ -162,6 +162,28 @@ class Element
     }
 
     /**
+     * Searches for an node in the owner document using current node as context.
+     *
+     * @param string $expression XPath expression or a CSS selector
+     * @param string $type The type of the expression
+     * @param bool   $wrapElement Returns array of \DiDom\Element if true, otherwise array of \DOMElement
+     *
+     * @return \DiDom\Element[]|\DOMElement[]
+     * 
+     * @throws \LogicException if current node has no owner document
+     */
+    public function findInDocument($expression, $type = Query::TYPE_CSS, $wrapElement = true)
+    {
+        $ownerDocument = $this->getDocument();
+
+        if ($ownerDocument === null) {
+            throw new LogicException('Can not search in context without owner document');
+        }
+
+        return $ownerDocument->find($expression, $type, $wrapElement, $this->node);
+    }
+
+    /**
      * Searches for an node in the DOM tree and returns first element or null.
      *
      * @param string $expression XPath expression or a CSS selector
@@ -173,6 +195,26 @@ class Element
     public function first($expression, $type = Query::TYPE_CSS, $wrapElement = true)
     {
         return $this->toDocument()->first($expression, $type, $wrapElement);
+    }
+
+    /**
+     * Searches for an node in the owner document using current node as context and returns first element or null.
+     *
+     * @param string $expression XPath expression or a CSS selector
+     * @param string $type The type of the expression
+     * @param bool   $wrapElement Returns \DiDom\Element if true, otherwise \DOMElement
+     *
+     * @return \DiDom\Element|\DOMElement|null
+     */
+    public function firstInDocument($expression, $type = Query::TYPE_CSS, $wrapElement = true)
+    {
+        $ownerDocument = $this->getDocument();
+
+        if ($ownerDocument === null) {
+            throw new LogicException('Can not search in context without owner document');
+        }
+
+        return $ownerDocument->first($expression, $type, $wrapElement, $this->node);
     }
 
     /**
