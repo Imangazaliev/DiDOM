@@ -9,6 +9,8 @@ use RuntimeException;
 
 class Document
 {
+    use common;
+    
     /**
      * @var \DOMDocument
      */
