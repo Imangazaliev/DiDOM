@@ -169,7 +169,7 @@ class Element
      * @param bool   $wrapElement Returns array of \DiDom\Element if true, otherwise array of \DOMElement
      *
      * @return \DiDom\Element[]|\DOMElement[]
-     * 
+     *
      * @throws \LogicException if current node has no owner document
      */
     public function findInDocument($expression, $type = Query::TYPE_CSS, $wrapElement = true)
@@ -250,7 +250,7 @@ class Element
      * @param bool $strict
      *
      * @return bool
-     * 
+     *
      * @throws \LogicException if current node is not instance of \DOMElement
      */
     public function matches($selector, $strict = false)
@@ -435,12 +435,32 @@ class Element
     /**
      * Dumps the node descendants into a string using HTML formatting.
      *
+     * @param sting $delimiter
+     *
+     * @return string
+     */
+    public function innerHTML($delimiter = '')
+    {
+        $innerHtml = [];
+        $childNodes = $this->node->childNodes;
+
+        foreach ($childNodes as $node)
+        {
+            $innerHtml[] = $node->ownerDocument->saveHTML($node);
+        }
+
+        return implode($delimiter, $innerHtml);
+    }
+
+    /**
+     * Dumps the node descendants into a string using XML formatting.
+     *
      * @param int $options Additional options
      * @param sting $delimiter
      *
      * @return string
      */
-    public function innerHtml($options = LIBXML_NOEMPTYTAG, $delimiter = '')
+    public function innerXML($options = LIBXML_NOEMPTYTAG, $delimiter = '')
     {
         $innerHtml = [];
         $childNodes = $this->node->childNodes;
