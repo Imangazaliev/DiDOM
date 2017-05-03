@@ -22,8 +22,10 @@ class Element
      * Constructor.
      *
      * @param \DOMNode|string $name The tag name of the element
-     * @param string $value The value of the element
+     * @param string|null $value The value of the element
      * @param array  $attributes The attributes of the element
+     *
+     * @return void
      *
      * @throws \InvalidArgumentException if the attributes is not an array
      */
@@ -56,7 +58,7 @@ class Element
      * Create new element.
      *
      * @param \DOMNode|string $name The tag name of the element
-     * @param string $value The value of the element
+     * @param string|null $value The value of the element
      * @param array  $attributes The attributes of the element
      *
      * @return \DiDom\Element
@@ -72,7 +74,7 @@ class Element
      * Create new element node by CSS selector.
      *
      * @param string $selector
-     * @param string $value
+     * @param string|null $value
      * @param array $attributes
      *
      * @return \DiDom\Element
