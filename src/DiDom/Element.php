@@ -44,7 +44,13 @@ class Element
         }
 
         if (!is_array($attributes)) {
-            throw new InvalidArgumentException(sprintf('%s expects parameter 3 to be array, %s given', __METHOD__, (is_object($attributes) ? get_class($attributes) : gettype($attributes))));
+            throw new InvalidArgumentException(
+	        sprintf(
+		    '%s expects parameter 3 to be array, %s given', 
+		    __METHOD__, 
+		    (is_object($attributes) ? get_class($attributes) : gettype($attributes))
+		)
+	    );
         }
 
         foreach ($attributes as $name => $value) {
@@ -56,8 +62,8 @@ class Element
      * Create new element.
      *
      * @param \DOMNode|string $name The tag name of the element
-     * @param string $value The value of the element
-     * @param array  $attributes The attributes of the element
+     * @param string|null     $value The value of the element
+     * @param array           $attributes The attributes of the element
      *
      * @return \DiDom\Element
      *
@@ -71,9 +77,9 @@ class Element
     /**
      * Create new element node by CSS selector.
      *
-     * @param string $selector
-     * @param string $value
-     * @param array $attributes
+     * @param string      $selector
+     * @param string|null $value
+     * @param array       $attributes
      *
      * @return \DiDom\Element
      */
@@ -95,7 +101,9 @@ class Element
     public function appendChild($nodes)
     {
         if ($this->node->ownerDocument === null) {
-            throw new LogicException('Can not append child to element without owner document');
+            throw new LogicException(
+	        'Can not append child to element without owner document'
+	    );
         }
 
         $returnArray = true;
@@ -114,7 +122,14 @@ class Element
             }
 
             if (!$node instanceof \DOMNode) {
-                throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s\Element or DOMNode, %s given', __METHOD__, __NAMESPACE__, (is_object($node) ? get_class($node) : gettype($node))));
+                throw new InvalidArgumentException(
+		    sprintf(
+		        'Argument 1 passed to %s must be an instance of %s\Element or DOMNode, %s given', 
+			__METHOD__, 
+			__NAMESPACE__, 
+			(is_object($node) ? get_class($node) : gettype($node))
+		    )
+		);
             }
 
             Errors::disable();
@@ -177,7 +192,9 @@ class Element
         $ownerDocument = $this->getDocument();
 
         if ($ownerDocument === null) {
-            throw new LogicException('Can not search in context without owner document');
+            throw new LogicException(
+	        'Can not search in context without owner document'
+	    );
         }
 
         return $ownerDocument->find($expression, $type, $wrapElement, $this->node);
@@ -205,13 +222,17 @@ class Element
      * @param bool   $wrapElement Returns \DiDom\Element if true, otherwise \DOMElement
      *
      * @return \DiDom\Element|\DOMElement|null
+     *
+     * @throws \LogicException
      */
     public function firstInDocument($expression, $type = Query::TYPE_CSS, $wrapElement = true)
     {
         $ownerDocument = $this->getDocument();
 
         if ($ownerDocument === null) {
-            throw new LogicException('Can not search in context without owner document');
+            throw new LogicException(
+	        'Can not search in context without owner document'
+	    );
         }
 
         return $ownerDocument->first($expression, $type, $wrapElement, $this->node);
@@ -252,6 +273,7 @@ class Element
      * @return bool
      * 
      * @throws \LogicException if current node is not instance of \DOMElement
+     * @throws RunTimeException
      */
     public function matches($selector, $strict = false)
     {
@@ -260,7 +282,9 @@ class Element
             $node = $this->node->cloneNode();
 
             if (!$this->node instanceof \DOMElement) {
-                throw new LogicException('Node must be an instance of DOMElement');
+                throw new LogicException(
+		    'Node must be an instance of DOMElement'
+		);
             }
 
             $innerHtml = $node->ownerDocument->saveXml($node, LIBXML_NOEMPTYTAG);
@@ -276,7 +300,12 @@ class Element
         $segments = Query::getSegments($selector);
 
         if (!array_key_exists('tag', $segments)) {
-            throw new RuntimeException(sprintf('Tag name must be specified in %s', $selector));
+            throw new RuntimeException(
+	        sprintf(
+		    'Tag name must be specified in %s', 
+		    $selector
+		)
+	    );
         }
 
         if ($segments['tag'] !== $this->tag and $segments['tag'] !== '*') {
@@ -336,6 +365,8 @@ class Element
      * @param string $value The attribute value
      *
      * @return \DiDom\Element
+     *
+     * @throws \InvalidArgumentException
      */
     public function setAttribute($name, $value)
     {
@@ -344,7 +375,13 @@ class Element
         }
 
         if (!is_string($value) and $value !== null) {
-            throw new InvalidArgumentException(sprintf('%s expects parameter 2 to be string or null, %s given', __METHOD__, (is_object($value) ? get_class($value) : gettype($value))));
+            throw new InvalidArgumentException(
+	        sprintf(
+		    '%s expects parameter 2 to be string or null, %s given', 
+		    __METHOD__, 
+		    (is_object($value) ? get_class($value) : gettype($value))
+	       )
+	    );
         }
 
         $this->node->setAttribute($name, $value);
