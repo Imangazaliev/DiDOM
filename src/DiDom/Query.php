@@ -104,9 +104,13 @@ class Query
     }
 
     /**
-     * @param string $property
+     * Parse property
+     * 
+     * @param  string $property
      * 
      * @return array
+     * 
+     * @throws  \RuntimeException
      */
     protected static function parseProperty($property)
     {
@@ -150,10 +154,14 @@ class Query
             return sprintf('@*[%s]', implode(' or ', $attributes));
         }
 
-        throw new RuntimeException('Invalid selector: unknown property type');
+        throw new RuntimeException(
+            'Invalid selector: unknown property type'
+        );
     }
 
     /**
+     * Build Xpath
+     * 
      * @param array  $segments
      * @param string $prefix Specifies the nesting of nodes
      *
@@ -196,7 +204,9 @@ class Query
         }
 
         if (count($attributes) === 0 and !isset($segments['tag'])) {
-            throw new InvalidArgumentException('The array of segments should contain the name of the tag or at least one attribute');
+            throw new InvalidArgumentException(
+                'The array of segments should contain the name of the tag or at least one attribute'
+            );
         }
 
         $xpath = $prefix.$tagName;
@@ -209,6 +219,8 @@ class Query
     }
 
     /**
+     * Convert attribute
+     * 
      * @param string $name  The attribute name
      * @param string $value The attribute value
      * 

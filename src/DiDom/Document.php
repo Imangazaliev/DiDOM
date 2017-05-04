@@ -27,6 +27,7 @@ class Document
      * @param string $encoding The document encoding
      * @param string $type The document type
      * 
+     * @return  void
      * @throws \InvalidArgumentException if the passed encoding is not a string
      */
     public function __construct($string = null, $isFile = false, $encoding = 'UTF-8', $type = 'html')
@@ -166,6 +167,8 @@ class Document
      * @param bool $value
      *
      * @return \DiDom\Document
+     * 
+     * @throws \InvalidArgumentException
      */
     public function preserveWhiteSpace($value = true)
     {
@@ -185,6 +188,10 @@ class Document
      * @param bool   $isFile Indicates that in first parameter was passed to the file path
      * @param string $type Type of document
      * @param int    $options Additional parameters
+     * 
+     * @return \DiDom\Document
+     * 
+     * @throws  \InvalidArgumentException
      */
     public function load($string, $isFile = false, $type = 'html', $options = 0)
     {
@@ -346,6 +353,8 @@ class Document
      * @param \DOMElement $contextNode
      *
      * @return \DiDom\Element[]|\DOMElement[]
+     * 
+     * @throws \InvalidArgumentException
      */
     public function find($expression, $type = Query::TYPE_CSS, $wrapElement = true, $contextNode = null)
     {
@@ -396,6 +405,8 @@ class Document
      * @param \DOMElement $contextNode
      *
      * @return \DiDom\Element|\DOMElement|null
+     * 
+     * @throws \RuntimeException
      */
     public function first($expression, $type = Query::TYPE_CSS, $wrapElement = true, $contextNode = null)
     {
@@ -416,6 +427,15 @@ class Document
         return $wrapElement ? $this->wrapNode($nodes[0]) : $nodes[0];
     }
 
+    /**
+     * Wrap node 
+     * 
+     * @param \DOMElement|\DOMText|\DOMAttr $node
+     * 
+     * @return mixed
+     * 
+     * @throws \RuntimeException
+     */
     protected function wrapNode($node)
     {
         switch (get_class($node)) {
@@ -494,6 +514,8 @@ class Document
      * @param bool $format Formats output if true
      *
      * @return \DiDom\Document
+     * 
+     * @throws \InvalidArgumentException
      */
     public function format($format = true)
     {
@@ -555,6 +577,8 @@ class Document
     }
 
     /**
+     * Get document.
+     * 
      * @return \DOMDocument
      */
     public function getDocument()
@@ -563,6 +587,8 @@ class Document
     }
 
     /**
+     * Get element.
+     * 
      * @return \DOMElement
      */
     public function getElement()
@@ -571,7 +597,11 @@ class Document
     }
 
     /**
+     * Convert a document to an element.
+     * 
      * @return \DiDom\Element
+     * 
+     * @throws \RuntimeException
      */
     public function toElement()
     {
