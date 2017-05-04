@@ -22,8 +22,8 @@ class Element
      * Constructor.
      *
      * @param \DOMNode|string $name The tag name of the element
-     * @param string $value The value of the element
-     * @param array  $attributes The attributes of the element
+     * @param string|null     $value The value of the element
+     * @param array           $attributes The attributes of the element
      *
      * @throws \InvalidArgumentException if the attributes is not an array
      */
