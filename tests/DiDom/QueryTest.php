@@ -48,7 +48,7 @@ class QueryTest extends TestCase
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException DiDom\Exceptions\InvalidSelectorException
      */
     public function testEmptyAttributeName()
     {
@@ -56,7 +56,7 @@ class QueryTest extends TestCase
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException DiDom\Exceptions\InvalidSelectorException
      */
     public function testUnknownPseudoClass()
     {
@@ -64,7 +64,7 @@ class QueryTest extends TestCase
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException DiDom\Exceptions\InvalidSelectorException
      */
     public function testEmptyNthExpression()
     {
@@ -72,7 +72,7 @@ class QueryTest extends TestCase
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException DiDom\Exceptions\InvalidSelectorException
      */
     public function testUnknownNthExpression()
     {
@@ -80,7 +80,7 @@ class QueryTest extends TestCase
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException DiDom\Exceptions\InvalidSelectorException
      */
     public function testGetSegmentsWithEmptyClass()
     {
@@ -88,7 +88,7 @@ class QueryTest extends TestCase
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException DiDom\Exceptions\InvalidSelectorException
      */
     public function testCompilehWithEmptyClass()
     {
@@ -228,7 +228,7 @@ class QueryTest extends TestCase
             ['tag' => 'a', 'classes' => ['foo', 'bar']],
             ['tag' => 'a', 'attributes' => ['href' => null]],
             ['tag' => 'a', 'attributes' => ['href' => 'http://example.com/']],
-            ['tag' => 'a', 'attributes' => ['href' => 'http://example.com/', 'title' => 'Example Domain']], // 
+            ['tag' => 'a', 'attributes' => ['href' => 'http://example.com/', 'title' => 'Example Domain']],
             ['tag' => 'a', 'attributes' => ['target' => '_blank', 'href^' => 'https']],
             ['tag' => 'a', 'attributes' => ['href$' => '.com']],
             ['tag' => 'a', 'attributes' => ['href*' => 'example']],

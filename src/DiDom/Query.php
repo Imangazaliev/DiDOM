@@ -2,14 +2,14 @@
 
 namespace DiDom;
 
+use DiDom\Exceptions\InvalidSelectorException;
 use InvalidArgumentException;
-use RuntimeException;
 
 class Query
 {
     /**
      * Types of expressions.
-     * 
+     *
      * @const string
      */
     const TYPE_XPATH = 'XPATH';
@@ -56,7 +56,7 @@ class Query
 
     /**
      * Converts a CSS selector into an XPath expression.
-     * 
+     *
      * @param string $selector A CSS selector
      * @param string $prefix Specifies the nesting of nodes
      *
@@ -105,8 +105,10 @@ class Query
 
     /**
      * @param string $property
-     * 
+     *
      * @return array
+     *
+     * @throws InvalidSelectorException
      */
     protected static function parseProperty($property)
     {
@@ -123,16 +125,16 @@ class Query
             return $result;
         }
 
-        throw new RuntimeException('Invalid selector');
+        throw new InvalidSelectorException(sprintf('Invalid property: %s', $property));
     }
 
     /**
      * @param string $name
      * @param array  $args
-     * 
+     *
      * @return string
-     * 
-     * @throws RuntimeException if the passed property is unknown
+     *
+     * @throws InvalidSelectorException if the passed property is unknown
      */
     protected static function convertProperty($name, $args = [])
     {
@@ -150,7 +152,7 @@ class Query
             return sprintf('@*[%s]', implode(' or ', $attributes));
         }
 
-        throw new RuntimeException('Invalid selector: unknown property type');
+        throw new InvalidSelectorException(sprintf('Invalid selector: unknown property type "%s"', $name));
     }
 
     /**
@@ -188,7 +190,7 @@ class Query
 
         // if the pseudo class specified
         if (isset($segments['pseudo'])) {
-            $expression   = isset($segments['expr']) ? trim($segments['expr']) : '';
+            $expression = isset($segments['expr']) ? trim($segments['expr']) : '';
 
             $parameters = explode(',', $expression);
 
@@ -211,7 +213,7 @@ class Query
     /**
      * @param string $name  The attribute name
      * @param string $value The attribute value
-     * 
+     *
      * @return string
      */
     protected static function convertAttribute($name, $value)
@@ -265,14 +267,14 @@ class Query
 
     /**
      * Converts a CSS pseudo-class into an XPath expression.
-     * 
+     *
      * @param string $pseudo Pseudo-class
      * @param string $parameters
      * @param string $tagName
      *
      * @return string
      *
-     * @throws \RuntimeException if passed an unknown pseudo-class
+     * @throws \InvalidSelectorException if passed an unknown pseudo-class
      */
     protected static function convertPseudo($pseudo, $parameters = [], &$tagName)
     {
@@ -312,23 +314,23 @@ class Query
                 break;
         }
 
-        throw new RuntimeException(sprintf('Invalid selector: unknown pseudo-class "%s"', $pseudo));
+        throw new InvalidSelectorException(sprintf('Invalid selector: unknown pseudo-class "%s"', $pseudo));
     }
 
     /**
      * Converts nth-expression into an XPath expression.
-     * 
+     *
      * @param string $expression nth-expression
-     * 
+     *
      * @return string
-     * 
-     * @throws \RuntimeException if passed nth-child is empty
-     * @throws \RuntimeException if passed an unknown nth-child expression
+     *
+     * @throws \InvalidSelectorException if passed nth-child is empty
+     * @throws \InvalidSelectorException if passed an unknown nth-child expression
      */
     protected static function convertNthExpression($expression)
     {
         if ($expression === '') {
-            throw new RuntimeException('Invalid selector: nth-child (or nth-last-child) expression must not be empty');
+            throw new InvalidSelectorException('Invalid selector: nth-child (or nth-last-child) expression must not be empty');
         }
 
         if ($expression === 'odd') {
@@ -353,13 +355,13 @@ class Query
             }
         }
 
-        throw new RuntimeException('Invalid selector: invalid nth-child expression');
+        throw new InvalidSelectorException(sprintf('Invalid selector: invalid nth-child expression "%s"', $expression));
     }
 
     /**
      * @param string $string
      * @param bool   $caseSensetive
-     * 
+     *
      * @return string
      */
     protected static function convertContains($string, $caseSensetive = false)
@@ -377,13 +379,13 @@ class Query
 
     /**
      * Splits the CSS selector into parts (tag name, ID, classes, attributes, pseudo-class).
-     * 
+     *
      * @param string $selector CSS selector
      *
      * @return array
      *
      * @throws \InvalidArgumentException if an empty string is passed
-     * @throws \RuntimeException if the selector is not valid
+     * @throws \InvalidSelectorException if the selector is not valid
      */
     public static function getSegments($selector)
     {
@@ -406,7 +408,7 @@ class Query
 
         if (preg_match($regexp, $selector, $segments)) {
             if ($segments[0] === '') {
-                throw new RuntimeException('Invalid selector');
+                throw new InvalidSelectorException(sprintf('Invalid selector "%s"', $selector));
             }
 
             $result['selector'] = $segments[0];
@@ -430,7 +432,7 @@ class Query
                         list($name, $value) = array_pad(explode('=', $attribute, 2), 2, null);
 
                         if ($name === '') {
-                            throw new RuntimeException('Invalid selector: attribute name must not be empty');
+                            throw new InvalidSelectorException(sprintf('Invalid selector "%s": attribute name must not be empty', $selector));
                         }
 
                         // equal null if specified only the attribute name
@@ -468,7 +470,7 @@ class Query
             return $result;
         }
 
-        throw new RuntimeException('Invalid selector');
+        throw new InvalidSelectorException(sprintf('Invalid selector: %s', $selector));
     }
 
     /**
