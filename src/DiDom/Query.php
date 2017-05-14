@@ -244,21 +244,24 @@ class Query
             return $xpath;
         }
 
-        switch (substr($name, -1)) {
+        $symbol = substr($name, -1);
+        $name = substr($name, 0, -1);
+
+        switch ($symbol) {
             case '^':
-                $xpath = sprintf('starts-with(@%s, "%s")', substr($name, 0, -1), $value);
+                $xpath = sprintf('starts-with(@%s, "%s")', $name, $value);
                 break;
             case '$':
-                $xpath = sprintf('ends-with(@%s, "%s")', substr($name, 0, -1), $value);
+                $xpath = sprintf('substring(@%s, string-length(@%s) - string-length("%s") + 1) = "%s"', $name, $name, $value, $value);
                 break;
             case '*':
-                $xpath = sprintf('contains(@%s, "%s")', substr($name, 0, -1), $value);
+                $xpath = sprintf('contains(@%s, "%s")', $name, $value);
                 break;
             case '!':
-                $xpath = sprintf('not(@%s="%s")', substr($name, 0, -1), $value);
+                $xpath = sprintf('not(@%s="%s")', $name, $value);
                 break;
             case '~':
-                $xpath = sprintf('contains(concat(" ", normalize-space(@%s), " "), " %s ")', substr($name, 0, -1), $value);
+                $xpath = sprintf('contains(concat(" ", normalize-space(@%s), " "), " %s ")', $name, $value);
                 break;
         }
 

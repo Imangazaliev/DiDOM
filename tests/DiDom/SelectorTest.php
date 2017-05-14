@@ -10,7 +10,20 @@ class SelectorTest extends TestCase
 {
     public function testTag()
     {
-        $document = $this->getList();
+        $html = '
+            <ul id="first">
+                <li><a href="#">Item 1</a></li>
+                <li><a href="#">Item 2</a></li>
+                <li><a href="#">Item 3</a></li>
+            </ul>
+            <ol id="second">
+                <li><a href="#">Item 1</a></li>
+                <li><a href="#">Item 2</a></li>
+                <li><a href="#">Item 3</a></li>
+            </ol>
+        ';
+
+        $document = new Document($html);
 
         $expected = ['Item 1', 'Item 2', 'Item 3', 'Item 1', 'Item 2', 'Item 3'];
 
@@ -25,7 +38,20 @@ class SelectorTest extends TestCase
 
     public function testNestedTag()
     {
-        $document = $this->getList();
+        $html = '
+            <ul id="first">
+                <li><a href="#">Item 1</a></li>
+                <li><a href="#">Item 2</a></li>
+                <li><a href="#">Item 3</a></li>
+            </ul>
+            <ol id="second">
+                <li><a href="#">Item 1</a></li>
+                <li><a href="#">Item 2</a></li>
+                <li><a href="#">Item 3</a></li>
+            </ol>
+        ';
+
+        $document = new Document($html);
 
         $expected = ['Item 1', 'Item 2', 'Item 3'];
 
@@ -112,21 +138,126 @@ class SelectorTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
-    protected function getList()
+    public function testAttributes()
     {
         $html = '
-            <ul id="first">
-                <li><a href="#">Item 1</a></li>
-                <li><a href="#">Item 2</a></li>
-                <li><a href="#">Item 3</a></li>
+            <ul class="links">
+                <li>
+                    <a href="https://foo.com" title="Foo" target="_blank">Foo</a>
+                    <a href="http://bar.com" title="Bar" rel="noreferrer">Bar</a>
+                    <a href="https://baz.org" title="Baz" rel="nofollow noreferrer">Baz</a>
+                    <a href="http://qux.org" title="Qux" target="_blank" rel="nofollow">Qux</a>
+                </li>
             </ul>
-            <ol id="second">
-                <li><a href="#">Item 1</a></li>
-                <li><a href="#">Item 2</a></li>
-                <li><a href="#">Item 3</a></li>
-            </ol>
         ';
 
-        return new Document($html);
+        $document = new Document($html);
+
+        // has attribute
+
+        $expected = ['Foo', 'Qux'];
+
+        $result = [];
+
+        foreach ($document->find('a[target]') as $element) {
+            $result[] = $element->text();
+        }
+
+        $this->assertEquals($expected, $result);
+
+        // has no attribute
+
+        $expected = ['Bar', 'Baz'];
+
+        $result = [];
+
+        foreach ($document->find('a[!target]') as $element) {
+            $result[] = $element->text();
+        }
+
+        $this->assertEquals($expected, $result);
+
+        // equals
+
+        $expected = ['Baz'];
+
+        $result = [];
+
+        foreach ($document->find('a[href="https://baz.org"]') as $element) {
+            $result[] = $element->text();
+        }
+
+        $this->assertEquals($expected, $result);
+
+        // not equals
+
+        $expected = ['Foo', 'Bar', 'Qux'];
+
+        $result = [];
+
+        foreach ($document->find('a[href!="https://baz.org"]') as $element) {
+            $result[] = $element->text();
+        }
+
+        $this->assertEquals($expected, $result);
+
+        // starts with
+
+        $expected = ['Foo', 'Baz'];
+
+        $result = [];
+
+        foreach ($document->find('a[href^="https"]') as $element) {
+            $result[] = $element->text();
+        }
+
+        // ends with
+
+        $expected = ['Baz', 'Qux'];
+
+        $result = [];
+
+        foreach ($document->find('a[href$="org"]') as $element) {
+            $result[] = $element->text();
+        }
+
+        $this->assertEquals($expected, $result);
+
+        // contains word
+
+        $expected = ['Bar', 'Baz'];
+
+        $result = [];
+
+        foreach ($document->find('a[rel~="noreferrer"]') as $element) {
+            $result[] = $element->text();
+        }
+
+        $this->assertEquals($expected, $result);
+        $this->assertEquals([], $document->find('a[rel~="noref"]'));
+
+        // contains substring
+
+        $expected = ['Bar', 'Baz'];
+
+        $result = [];
+
+        foreach ($document->find('a[href*="ba"]') as $element) {
+            $result[] = $element->text();
+        }
+
+        $this->assertEquals($expected, $result);
+
+        // multiple attribute conditions
+
+        $expected = ['Qux'];
+
+        $result = [];
+
+        foreach ($document->find('a[target="_blank"][rel="nofollow"]') as $element) {
+            $result[] = $element->text();
+        }
+
+        $this->assertEquals($expected, $result);
     }
 }
