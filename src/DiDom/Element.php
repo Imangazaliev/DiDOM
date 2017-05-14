@@ -22,7 +22,7 @@ class Element
      * Constructor.
      *
      * @param \DOMNode|string $name The tag name of the element
-     * @param string $value The value of the element
+     * @param string|null $value The value of the element
      * @param array  $attributes The attributes of the element
      *
      * @throws \InvalidArgumentException if the attributes is not an array
@@ -56,7 +56,7 @@ class Element
      * Create new element.
      *
      * @param \DOMNode|string $name The tag name of the element
-     * @param string $value The value of the element
+     * @param string|null $value The value of the element
      * @param array  $attributes The attributes of the element
      *
      * @return \DiDom\Element
@@ -72,7 +72,7 @@ class Element
      * Create new element node by CSS selector.
      *
      * @param string $selector
-     * @param string $value
+     * @param string|null $value
      * @param array $attributes
      *
      * @return \DiDom\Element
@@ -356,7 +356,7 @@ class Element
      * Access to the element's attributes.
      *
      * @param string $name The attribute name
-     * @param string $default The value returned if the attribute does not exist
+     * @param string|null $default The value returned if the attribute does not exist
      *
      * @return string|null The value of the attribute or null if attribute does not exist
      */
@@ -387,7 +387,7 @@ class Element
      * Alias for getAttribute and setAttribute methods.
      *
      * @param string $name The attribute name
-     * @param string $value The attribute value or null if the attribute does not exist
+     * @param string|null $value The attribute value or null if the attribute does not exist
      *
      * @return string|null|\DiDom\Element
      */

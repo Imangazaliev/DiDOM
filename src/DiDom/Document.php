@@ -22,7 +22,7 @@ class Document
     /**
      * Constructor.
      *
-     * @param string $string HTML or XML string or file path
+     * @param string|null $string HTML or XML string or file path
      * @param bool   $isFile Indicates that in first parameter was passed to the file path
      * @param string $encoding The document encoding
      * @param string $type The document type
@@ -53,7 +53,7 @@ class Document
     /**
      * Create new document.
      *
-     * @param string $string HTML or XML string or file path
+     * @param string|null $string HTML or XML string or file path
      * @param bool   $isFile Indicates that in first parameter was passed to the file path
      * @param string $encoding The document encoding
      * @param string $type The document type
@@ -69,7 +69,7 @@ class Document
      * Create new element node.
      *
      * @param string $name The tag name of the element
-     * @param string $value The value of the element
+     * @param string|null $value The value of the element
      * @param array  $attributes The attributes of the element
      *
      * @return \DiDom\Element created element
@@ -87,7 +87,7 @@ class Document
      * Create new element node by CSS selector.
      *
      * @param string $selector
-     * @param string $value
+     * @param string|null $value
      * @param array $attributes
      *
      * @return \DiDom\Element
@@ -294,7 +294,7 @@ class Document
      *
      * @param string $filepath The path to the file
      *
-     * @return strting
+     * @return string
      *
      * @throws \InvalidArgumentException if the file path is not a string
      * @throws \RuntimeException if the file does not exist
@@ -345,9 +345,11 @@ class Document
      * @param string $expression XPath expression or a CSS selector
      * @param string $type The type of the expression
      * @param bool   $wrapElement Returns array of \DiDom\Element if true, otherwise array of \DOMElement
-     * @param \DOMElement $contextNode
+     * @param \DOMElement|null $contextNode
      *
      * @return \DiDom\Element[]|\DOMElement[]
+     *
+     * @throws InvalidArgumentException if context node is not \DOMElement
      */
     public function find($expression, $type = Query::TYPE_CSS, $wrapElement = true, $contextNode = null)
     {
@@ -395,7 +397,7 @@ class Document
      * @param string $expression XPath expression or a CSS selector
      * @param string $type The type of the expression
      * @param bool   $wrapElement Returns \DiDom\Element if true, otherwise \DOMElement
-     * @param \DOMElement $contextNode
+     * @param \DOMElement|null $contextNode
      *
      * @return \DiDom\Element|\DOMElement|null
      */
@@ -418,6 +420,13 @@ class Document
         return $wrapElement ? $this->wrapNode($nodes[0]) : $nodes[0];
     }
 
+    /**
+     * @param DOMElement|DOMText|DOMAttr $node
+     *
+     * @return \DiDom\Element|string
+     *
+     * @throws InvalidArgumentException if node is not DOMElement, DOMText or DOMAttr
+     */
     protected function wrapNode($node)
     {
         switch (get_class($node)) {
@@ -431,7 +440,7 @@ class Document
                 return $node->value;
         }
 
-        throw new RuntimeException(sprintf('Unknown node type "%s"', get_class($node)));
+        throw new InvalidArgumentException(sprintf('Unknown node type "%s"', get_class($node)));
     }
 
     /**
