@@ -306,7 +306,7 @@ class Document
             }
         }
 
-        $content = file_get_contents($filepath);
+        $content = @file_get_contents($filepath);
 
         if ($content === false) {
             throw new RuntimeException(sprintf('Could not load file %s', $filepath));
