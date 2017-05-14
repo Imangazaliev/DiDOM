@@ -181,12 +181,12 @@ class Document
     /**
      * Load HTML or XML.
      *
-     * @param string $string HTML or XML string or file path
-     * @param bool   $isFile Indicates that in first parameter was passed to the file path
-     * @param string $type Type of document
-     * @param int    $options Additional parameters
+     * @param string   $string HTML or XML string or file path
+     * @param bool     $isFile Indicates that in first parameter was passed to the file path
+     * @param string   $type Type of the document
+     * @param int|null $options Additional parameters
      */
-    public function load($string, $isFile = false, $type = 'html', $options = 0)
+    public function load($string, $isFile = false, $type = 'html', $options = null)
     {
         if (!is_string($string)) {
             throw new InvalidArgumentException(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, (is_object($string) ? get_class($string) : gettype($string))));
@@ -194,6 +194,12 @@ class Document
 
         if (!in_array(strtolower($type), ['xml', 'html'])) {
             throw new InvalidArgumentException(sprintf('Document type must be "xml" or "html", %s given', __METHOD__, (is_object($type) ? get_class($type) : gettype($type))));
+        }
+
+        if ($options === null) {
+            // LIBXML_HTML_NOIMPLIED - turns off the automatic adding of implied html/body... elements
+            // LIBXML_HTML_NODEFDTD - prevents a default doctype being added when one is not found
+            $options = LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD;
         }
 
         if (!is_integer($options)) {
@@ -222,14 +228,14 @@ class Document
     /**
      * Load HTML from a string.
      *
-     * @param string $html The HTML string
-     * @param int    $options Additional parameters
+     * @param string   $html The HTML string
+     * @param int|null $options Additional parameters
      *
      * @return \DiDom\Document
      *
      * @throws \InvalidArgumentException if the provided argument is not a string
      */
-    public function loadHtml($html, $options = 0)
+    public function loadHtml($html, $options = null)
     {
         return $this->load($html, false, 'html', $options);
     }
@@ -237,8 +243,8 @@ class Document
     /**
      * Load HTML from a file.
      *
-     * @param string $filepath The path to the HTML file
-     * @param int    $options Additional parameters
+     * @param string   $filepath The path to the HTML file
+     * @param int|null $options  Additional parameters
      *
      * @return \DiDom\Document
      *
@@ -246,7 +252,7 @@ class Document
      * @throws \RuntimeException if the file does not exist
      * @throws \RuntimeException if you are unable to load the file
      */
-    public function loadHtmlFile($filepath, $options = 0)
+    public function loadHtmlFile($filepath, $options = null)
     {
         return $this->load($filepath, true, 'html', $options);
     }
@@ -254,14 +260,14 @@ class Document
     /**
      * Load XML from a string.
      *
-     * @param string $xml The XML string
-     * @param int    $options Additional parameters
+     * @param string   $xml The XML string
+     * @param int|null $options Additional parameters
      *
      * @return \DiDom\Document
      *
      * @throws \InvalidArgumentException if the provided argument is not a string
      */
-    public function loadXml($xml, $options = 0)
+    public function loadXml($xml, $options = null)
     {
         return $this->load($xml, false, 'xml', $options);
     }
@@ -269,8 +275,8 @@ class Document
     /**
      * Load XML from a file.
      *
-     * @param string $filepath The path to the XML file
-     * @param int    $options Additional parameters
+     * @param string   $filepath The path to the XML file
+     * @param int|null $options Additional parameters
      *
      * @return \DiDom\Document
      *
@@ -278,7 +284,7 @@ class Document
      * @throws \RuntimeException if the file does not exist
      * @throws \RuntimeException if you are unable to load the file
      */
-    public function loadXmlFile($filepath, $options = 0)
+    public function loadXmlFile($filepath, $options = null)
     {
         return $this->load($filepath, true, 'xml', $options);
     }
