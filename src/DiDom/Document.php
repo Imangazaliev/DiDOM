@@ -197,9 +197,8 @@ class Document
         }
 
         if ($options === null) {
-            // LIBXML_HTML_NOIMPLIED - turns off the automatic adding of implied html/body... elements
             // LIBXML_HTML_NODEFDTD - prevents a default doctype being added when one is not found
-            $options = LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD;
+            $options = LIBXML_HTML_NODEFDTD;
         }
 
         if (!is_integer($options)) {
