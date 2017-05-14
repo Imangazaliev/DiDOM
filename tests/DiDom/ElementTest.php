@@ -340,6 +340,25 @@ class ElementTest extends TestCase
         $element = new Element('p');
 
         $this->assertTrue($element->matches('p', true));
+
+        $html = '<!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <title>Document</title>
+        </head>
+        <body>
+            <a href="#"><img src="foo.jpg" alt="Foo"></a>
+        </body>
+        </html>';
+
+        $document = new Document($html, false);
+        $anchor = $document->first('a');
+
+        $this->assertTrue($anchor->matches('a:has(img[src$=".jpg"])'));
+        $this->assertTrue($anchor->matches('a img'));
+        $this->assertFalse($anchor->matches('a img[alt="Bar"]'));
+        $this->assertFalse($anchor->matches('img'));
     }
 
     public function testHasAttribute()

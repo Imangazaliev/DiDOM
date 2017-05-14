@@ -263,7 +263,7 @@ class Element
                 throw new LogicException('Node must be an instance of DOMElement');
             }
 
-            $innerHtml = $node->ownerDocument->saveXml($node, LIBXML_NOEMPTYTAG);
+            $innerHtml = $this->html();
             $html = "<root>$innerHtml</root>";
 
             $selector = 'root > '.trim($selector);
