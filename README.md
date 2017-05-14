@@ -29,6 +29,7 @@ DiDOM - simple and fast HTML parser.
 - [Replacing element](#replacing-element)
 - [Removing element](#removing-element)
 - [Working with cache](#working-with-cache)
+- [Miscellaneous](#miscellaneous)
 - [Comparison with other parsers](#comparison-with-other-parsers)
 
 ## Installation
@@ -39,7 +40,7 @@ To install DiDOM run the command:
 
 ## Quick start
 
-```php    
+```php
 use DiDom\Document;
 
 $document = new Document('http://www.news.com/', true);
@@ -57,7 +58,7 @@ DiDom allows to load HTML in several ways:
 
 ##### With constructor
 
-```php    
+```php
 // the first parameter is a string with HTML
 $document = new Document($html);
 
@@ -99,7 +100,7 @@ DiDOM accepts CSS selector or XPath as an expression for search. You need to pat
 ```php
 use DiDom\Document;
 use DiDom\Query;
-    
+
 ...
 
 // CSS selector
@@ -108,6 +109,8 @@ $posts = $document->find('.post');
 // XPath
 $posts = $document->find("//div[contains(@class, 'post')]", Query::TYPE_XPATH);
 ```
+
+If the elements that match a given expression are found, then method returns an array of instances of `DiDom\Element`, otherwise - an empty array. You could also get an array of `DOMElement` objects. To get this, pass `false` as the third parameter.
 
 ##### With magic method `__invoke()`:
 
@@ -124,10 +127,8 @@ $posts = $document->xpath("//*[contains(concat(' ', normalize-space(@class), ' '
 You can do search inside an element:
 
 ```php
-echo $document->find('.post')[0]->find('h2')[0]->text();
+echo $document->find('nav')[0]->first('ul.menu')->xpath('//li')[0]->text();
 ```
-
-If the elements that match a given expression are found, then method returns an array of instances of `DiDom\Element`, otherwise - an empty array. You could also get an array of `DOMElement` objects. To get this, pass `false` as the third parameter.
 
 ### Verify if element exists
 
@@ -212,11 +213,12 @@ $document->find('a.bar::attr(href|title)');
 
 ##### With method `html()`:
 
-```php    
+```php
 $posts = $document->find('.post');
 
 echo $posts[0]->html();
 ```
+
 ##### Casting to string:
 
 ```php
@@ -248,15 +250,17 @@ Document does not have the method `innerHtml()`, therefore, if you need to get i
 $innerHtml = $document->toElement()->innerHtml();
 ```
 
-#### Additional parameters
+### Getting XML
 
 ```php
-$html = $document->format()->html(LIBXML_NOEMPTYTAG);
+echo $document->xml();
+
+echo $document->first('book')->xml();
 ```
 
 ### Getting content
 
-```php    
+```php
 $posts = $document->find('.post');
 
 echo $posts[0]->text();
@@ -270,7 +274,7 @@ echo $posts[0]->text();
 use DiDom\Element;
 
 $element = new Element('span', 'Hello');
-    
+
 // Outputs "<span>Hello</span>"
 echo $element->html();
 ```
@@ -501,7 +505,7 @@ Cache is an array of XPath expressions, that were converted from CSS.
 #### Getting from cache
 ```php
 use DiDom\Query;
-    
+
 ...
 
 $xpath    = Query::compile('h2');
@@ -513,6 +517,60 @@ var_dump($compiled);
 #### Installing cache
 ```php
 Query::setCompiled(['h2' => '//h2']);
+```
+
+## Miscellaneous
+
+#### `preserveWhiteSpace`
+
+By default, whitespace preserving is disabled.
+
+You can enable the `preserveWhiteSpace` option before loading the document:
+
+```php
+$document = new Document();
+
+$document->preserveWhiteSpace();
+
+$document->loadXml($xml);
+```
+
+#### `count`
+
+The `count ()` method counts children that match the selector:
+
+```php
+// print the number of links in the document
+echo $document->count('a');
+```
+
+#### `matches`
+
+Returns `true` if the node matches the selector:
+
+```php
+$element->matches('div#content');
+
+// strict match
+// returns true if the element is a div with id equals content and nothing else
+// if the element has any other attributes the method returns false
+$element->matches('div#content', true);
+```
+
+#### `isTextNode`
+
+Checks whether an element is a text node (DOMText):
+
+```php
+$element->isTextNode();
+```
+
+#### `isCommentNode`
+
+Checks whether the element is a comment (DOMComment):
+
+```php
+$element->isCommentNode();
 ```
 
 ## Comparison with other parsers
