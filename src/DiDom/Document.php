@@ -26,7 +26,7 @@ class Document
      * @param bool   $isFile Indicates that in first parameter was passed to the file path
      * @param string $encoding The document encoding
      * @param string $type The document type
-     * 
+     *
      * @throws \InvalidArgumentException if the passed encoding is not a string
      */
     public function __construct($string = null, $isFile = false, $encoding = 'UTF-8', $type = 'html')
@@ -206,11 +206,7 @@ class Document
             $string = $this->loadFile($string);
         }
 
-        if (substr($string, 0, 5) !== '<?xml') {
-            $prolog = sprintf('<?xml version="1.0" encoding="%s"?>', $this->document->encoding);
-
-            $string = $prolog.$string;
-        }
+        $string = Encoder::convertToHtmlEntities($string, $this->document->encoding);
 
         $this->type = strtolower($type);
 
@@ -467,13 +463,11 @@ class Document
     /**
      * Dumps the internal document into a string using HTML formatting.
      *
-     * @param int $options Additional options
-     *
      * @return string The document html
      */
-    public function html($options = LIBXML_NOEMPTYTAG)
+    public function html()
     {
-        return trim($this->document->saveXML($this->getElement(), $options));
+        return trim($this->document->saveHTML($this->document));
     }
 
     /**

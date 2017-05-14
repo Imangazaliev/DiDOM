@@ -428,21 +428,28 @@ class DocumentTest extends TestCase
 
     public function testHtml()
     {
-        $html = $this->loadFixture('posts.html');
-        $document = new Document($html, false);
+        $html = '
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Document</title>
+</head>
+<body>
+English language <br>
+Русский язык <br>
+اللغة العربية <br>
+漢語 <br>
+Tiếng Việt <br>
 
-        $this->assertTrue(is_string($document->html()));
-    }
+&lt; &gt;
+</body>
+</html>
+        ';
 
-    public function testHtmlWithOptions()
-    {
-        $html = '<html><body><span></span></body></html>';
+        $document = new Document($html);
 
-        $document = new Document();
-        $document->loadHtml($html);
-
-        $this->assertEquals('<html><body><span></span></body></html>', $document->html());
-        $this->assertEquals('<html><body><span/></body></html>', $document->html(0));
+        $this->assertEquals(trim($html), $document->html());
     }
 
     public function testXml()

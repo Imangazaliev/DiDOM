@@ -444,9 +444,42 @@ class ElementTest extends TestCase
         $innerHtml = ' Plain text <span>Lorem ipsum.</span><span>Lorem ipsum.</span>';
         $html = "<div id=\"root\">$innerHtml</div>";
 
-        $document = new Document($html, false);
+        $document = new Document($html);
 
         $this->assertEquals($innerHtml, $document->first('#root')->innerHtml());
+
+        $html = '
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Document</title>
+</head>
+<body>
+English language <br>
+Русский язык <br>
+اللغة العربية <br>
+漢語 <br>
+Tiếng Việt <br>
+
+&lt; &gt;
+</body>
+</html>
+        ';
+
+        $expectedContent = '
+English language <br>
+Русский язык <br>
+اللغة العربية <br>
+漢語 <br>
+Tiếng Việt <br>
+
+&lt; &gt;
+';
+
+        $document = new Document($html);
+
+        $this->assertEquals($expectedContent, $document->first('body')->innerHtml());
     }
 
     public function testSetInnerHtml()
@@ -466,19 +499,6 @@ class ElementTest extends TestCase
         $document->first('#root')->setInnerHtml($innerHtml);
 
         $this->assertEquals($innerHtml, $document->first('#root')->innerHtml());
-    }
-
-    public function testHtmlWithOptions()
-    {
-        $html = '<html><body><span></span></body></html>';
-
-        $document = new Document();
-        $document->loadHtml($html);
-
-        $element = $document->find('span')[0];
-
-        $this->assertEquals('<span></span>', $element->html());
-        $this->assertEquals('<span/>', $element->html(0));
     }
 
     public function testXml()
