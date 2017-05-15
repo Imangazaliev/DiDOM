@@ -815,14 +815,44 @@ Tiếng Việt <br>
         $this->assertNull($element->parent());
     }
 
+    public function testRemoveChild()
+    {
+        $html = '<div><span>Foo</span></div>';
+        $document = new Document($html, false);
+
+        $div = $document->first('div');
+        $span = $document->first('span');
+
+        $this->assertEquals($span->getNode(), $div->removeChild($span)->getNode());
+        $this->assertCount(0, $document->find('span'));
+    }
+
+    public function testRemoveChildren()
+    {
+        $html = '<div><span>Foo</span>Bar<!-- Baz --></div>';
+        $document = new Document($html, false);
+
+        $div = $document->first('div');
+        $span = $document->first('span');
+
+        $childNodes = $div->children();
+        $removedNodes = $div->removeChildren();
+
+        foreach ($childNodes as $index => $childNode) {
+            $this->assertEquals($childNode->getNode(), $removedNodes[$index]->getNode());
+        }
+
+        $this->assertCount(0, $document->find('span'));
+    }
+
     public function testRemove()
     {
         $html = '<div><span>Foo</span></div>';
         $document = new Document($html, false);
 
-        $element = $document->find('span')[0];
+        $span = $document->first('span');
 
-        $this->assertEquals($element->getNode(), $element->remove()->getNode());
+        $this->assertEquals($span->getNode(), $span->remove()->getNode());
         $this->assertCount(0, $document->find('span'));
     }
 

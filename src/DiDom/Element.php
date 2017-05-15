@@ -440,11 +440,10 @@ class Element
     public function innerHtml($delimiter = '')
     {
         $innerHtml = [];
-        $childNodes = $this->node->childNodes;
 
-        foreach ($childNodes as $node)
+        foreach ($this->node->childNodes as $childNode)
         {
-            $innerHtml[] = $node->ownerDocument->saveHTML($node);
+            $innerHtml[] = $childNode->ownerDocument->saveHTML($childNode);
         }
 
         return implode($delimiter, $innerHtml);
@@ -463,21 +462,7 @@ class Element
             throw new InvalidArgumentException(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, (is_object($html) ? get_class($html) : gettype($html))));
         }
 
-        // remove all child nodes
-
-        // we need to collect child nodes to array
-        // because removing nodes from the DOMNodeList on iterating is not working
-        $childNodes = [];
-
-        foreach ($this->node->childNodes as $childNode)
-        {
-            $childNodes[] = $childNode;
-        }
-
-        foreach ($childNodes as $childNode)
-        {
-            $this->node->removeChild($childNode);
-        }
+        $this->removeChildren();
 
         if ($html !== '') {
             Errors::disable();
@@ -707,6 +692,56 @@ class Element
     /**
      * Removes child from list of children.
      *
+     * @param \DOMNode|\DiDom\Element $childNode
+     *
+     * @return \DiDom\Element the node that has been removed
+     */
+    public function removeChild($childNode)
+    {
+        if ($childNode instanceof self) {
+            $childNode = $childNode->getNode();
+        }
+
+        if (!$childNode instanceof DOMNode) {
+            throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s or DOMNode, %s given', __METHOD__, __CLASS__, (is_object($childNode) ? get_class($childNode) : gettype($childNode))));
+        }
+
+        $removedNode = $this->node->removeChild($childNode);
+
+        return new Element($removedNode);
+    }
+
+    /**
+     * Removes all child nodes.
+     *
+     * @return \DiDom\Element the nodes that has been removed
+     */
+    public function removeChildren()
+    {
+        // we need to collect child nodes to array
+        // because removing nodes from the DOMNodeList on iterating is not working
+        $childNodes = [];
+
+        foreach ($this->node->childNodes as $childNode)
+        {
+            $childNodes[] = $childNode;
+        }
+
+        $removedNodes = [];
+
+        foreach ($childNodes as $childNode)
+        {
+            $removedNode = $this->node->removeChild($childNode);
+
+            $removedNodes[] = new Element($removedNode);
+        }
+
+        return $removedNodes;
+    }
+
+    /**
+     * Removes current node from the parent.
+     *
      * @return \DiDom\Element the node that has been removed
      *
      * @throws \LogicException if current node has no parent node
@@ -717,9 +752,9 @@ class Element
             throw new LogicException('Can not remove element without parent node');
         }
 
-        $node = $this->node->parentNode->removeChild($this->node);
+        $removedNode = $this->node->parentNode->removeChild($this->node);
 
-        return new Element($node);
+        return new Element($removedNode);
     }
 
     /**
