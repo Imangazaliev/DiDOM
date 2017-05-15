@@ -464,9 +464,19 @@ class Element
         }
 
         // remove all child nodes
-        foreach ($this->node->childNodes as $node)
+
+        // we need to collect child nodes to array
+        // because removing nodes from the DOMNodeList on iterating is not working
+        $childNodes = [];
+
+        foreach ($this->node->childNodes as $childNode)
         {
-            $this->node->removeChild($node);
+            $childNodes[] = $childNode;
+        }
+
+        foreach ($childNodes as $childNode)
+        {
+            $this->node->removeChild($childNode);
         }
 
         if ($html !== '') {

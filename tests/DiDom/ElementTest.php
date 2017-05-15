@@ -510,6 +510,13 @@ Tiếng Việt <br>
         $this->assertEquals($list, $list->setInnerHtml($html));
         $this->assertEquals(['One', 'Two', 'Three'], $list->find('li::text'));
 
+        // check inner HTML rewrite works
+
+        $html = '<li>Foo</li><li>Bar</li><li>Baz</li>';
+
+        $this->assertEquals($list, $list->setInnerHtml($html));
+        $this->assertEquals(['Foo', 'Bar', 'Baz'], $list->find('li::text'));
+
         $html = '<div id="root"></div>';
         $innerHtml = ' Plain text <span>Lorem ipsum.</span><span>Lorem ipsum.</span>';
 
