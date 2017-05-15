@@ -40,7 +40,15 @@ class QueryTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException DiDom\Exceptions\InvalidSelectorException
+     */
+    public function testCompileWithEmptySelector()
+    {
+        Query::compile('');
+    }
+
+    /**
+     * @expectedException DiDom\Exceptions\InvalidSelectorException
      */
     public function testGetSegmentsWithEmptySelector()
     {

@@ -387,15 +387,14 @@ class Query
      *
      * @return array
      *
-     * @throws \InvalidArgumentException if an empty string is passed
-     * @throws \InvalidSelectorException if the selector is not valid
+     * @throws \InvalidSelectorException if the selector is empty or not valid
      */
     public static function getSegments($selector)
     {
         $selector = trim($selector);
 
         if ($selector === '') {
-            throw new InvalidArgumentException('The selector must not be empty');
+            throw new InvalidSelectorException('The selector must not be empty');
         }
 
         $tag = '(?P<tag>[\*|\w|\-]+)?';
