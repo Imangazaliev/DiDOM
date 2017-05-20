@@ -359,6 +359,16 @@ class ElementTest extends TestCase
         $this->assertTrue($anchor->matches('a img'));
         $this->assertFalse($anchor->matches('a img[alt="Bar"]'));
         $this->assertFalse($anchor->matches('img'));
+
+        $textNode = new \DOMText('Foo');
+        $element = new Element($textNode);
+
+        $this->assertFalse($element->matches('#foo'));
+
+        $commentNode = new \DOMComment('Foo');
+        $element = new Element($commentNode);
+
+        $this->assertFalse($element->matches('#foo'));
     }
 
     public function testHasAttribute()

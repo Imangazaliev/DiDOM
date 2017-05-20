@@ -251,17 +251,17 @@ class Element
      *
      * @return bool
      *
-     * @throws \LogicException if current node is not instance of \DOMElement
+     * @throws \RuntimeException if tag name is not specified in strict mode
      */
     public function matches($selector, $strict = false)
     {
+        if (!$this->node instanceof \DOMElement) {
+            return false;
+        }
+
         if (!$strict) {
             // remove child nodes
             $node = $this->node->cloneNode();
-
-            if (!$this->node instanceof \DOMElement) {
-                throw new LogicException('Node must be an instance of DOMElement');
-            }
 
             $innerHtml = $this->html();
             $html = "<root>$innerHtml</root>";
