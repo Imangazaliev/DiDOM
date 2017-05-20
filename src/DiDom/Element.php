@@ -679,6 +679,14 @@ class Element
     /**
      * @return \DiDom\Element[]
      */
+    public function hasChildren()
+    {
+        return $this->node->hasChildNodes();
+    }
+
+    /**
+     * @return \DiDom\Element[]
+     */
     public function children()
     {
         $children = [];

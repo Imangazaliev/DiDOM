@@ -807,6 +807,23 @@ Tiếng Việt <br>
         $this->assertEquals($lastChild, $paragraph->lastChild()->getNode());
     }
 
+    public function testHasChildren()
+    {
+        $html = '
+            <p class="element"><br></p>
+            <p class="text">Foo</p>
+            <p class="comment"><!-- Foo --></p>
+            <p class="empty"></p>
+        ';
+
+        $document = new Document($html);
+
+        $this->assertTrue($document->first('.element')->hasChildren());
+        $this->assertTrue($document->first('.text')->hasChildren());
+        $this->assertTrue($document->first('.comment')->hasChildren());
+        $this->assertFalse($document->first('.empty')->hasChildren());
+    }
+
     public function testChildren()
     {
         $html = '<ul><li>One</li><li>Two</li><li>Three</li></ul>';
