@@ -268,7 +268,9 @@ class Element
 
             $selector = 'root > '.trim($selector);
 
-            $document = new Document($html);
+            $document = new Document();
+
+            $document->loadHtml($html, LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED);
 
             return $document->has($selector);
         }

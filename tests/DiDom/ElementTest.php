@@ -621,6 +621,7 @@ Tiếng Việt <br>
 
     public function testClosest()
     {
+        // without body and html tags
         $html = '
             <nav>
                 <ul class="menu">
@@ -638,6 +639,22 @@ Tiếng Việt <br>
 
         $this->assertNull($link->closest('.unknown-class'));
         $this->assertEquals($menu, $link->closest('.menu'));
+
+        $html = '<!DOCTYPE html>
+        <html>
+        <body>
+            <nav></nav>
+            <ul class="menu">
+                <li><a href="#">Foo</a></li>
+                <li><a href="#">Bar</a></li>
+                <li><a href="#">Baz</a></li>
+            </ul>
+        </body>
+        </html>';
+
+        $document = new Document($html);
+
+        $this->assertNull($document->first('ul.menu')->closest('nav'));
     }
 
     public function testPreviousSibling()
