@@ -25,6 +25,8 @@ class Element
      * @param string|null $value The value of the element
      * @param array  $attributes The attributes of the element
      *
+     * @return void
+     *
      * @throws \InvalidArgumentException if the attributes is not an array
      */
     public function __construct($name, $value = null, $attributes = [])
