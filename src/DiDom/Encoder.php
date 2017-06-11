@@ -12,6 +12,10 @@ class Encoder
      */
     public static function convertToHtmlEntities($string, $encoding)
     {
+        if (function_exists('mb_convert_encoding')) {
+            return mb_convert_encoding($string, 'HTML-ENTITIES', $encoding);
+        }
+
         if ('UTF-8' !== $encoding) {
             $string = iconv($encoding, 'UTF-8//IGNORE', $string);
         }
