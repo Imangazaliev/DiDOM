@@ -493,23 +493,6 @@ Tiếng Việt <br>
         $this->assertEquals('foo', $document->text());
     }
 
-    public function testGetType()
-    {
-        $document = new Document();
-
-        $this->assertNull($document->getType());
-
-        $html = $this->loadFixture('posts.html');
-        $document = new Document($html);
-
-        $this->assertEquals('html', $document->getType());
-
-        $xml = $this->loadFixture('books.xml');
-        $document = new Document($xml, false, 'UTF-8', 'xml');
-
-        $this->assertEquals('xml', $document->getType());
-    }
-
     /**
      * @expectedException InvalidArgumentException
      */
@@ -538,6 +521,56 @@ Tiếng Việt <br>
         $document2 = new Document();
 
         $this->assertFalse($document->is($document2));
+    }
+
+    public function testGetType()
+    {
+        // empty document
+
+        $document = new Document();
+
+        $this->assertNull($document->getType());
+
+        // html
+
+        $html = $this->loadFixture('posts.html');
+
+        $document = new Document($html);
+        $this->assertEquals('html', $document->getType());
+
+        $document = new Document();
+        $document->loadHtml($html);
+        $this->assertEquals('html', $document->getType());
+
+        $document = new Document();
+        $document->load($html, false, 'html');
+        $this->assertEquals('html', $document->getType());
+
+        // xml
+
+        $xml = $this->loadFixture('books.xml');
+
+        $document = new Document($xml, false, 'UTF-8', 'xml');
+        $this->assertEquals('xml', $document->getType());
+
+        $document = new Document();
+        $document->loadXml($xml);
+        $this->assertEquals('xml', $document->getType());
+
+        $document = new Document();
+        $document->load($xml, false, 'xml');
+        $this->assertEquals('xml', $document->getType());
+    }
+
+    public function testGetEncoding()
+    {
+        $document = new Document();
+
+        $this->assertEquals('UTF-8', $document->getEncoding());
+
+        $document = new Document(null, false, 'CP-1251');
+
+        $this->assertEquals('CP-1251', $document->getEncoding());
     }
 
     public function testGetDocument()

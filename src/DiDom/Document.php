@@ -20,6 +20,11 @@ class Document
     protected $type;
 
     /**
+     * @var string
+     */
+    protected $encoding;
+
+    /**
      * Constructor.
      *
      * @param string|null $string HTML or XML string or file path
@@ -40,6 +45,8 @@ class Document
         if (!is_string($encoding)) {
             throw new InvalidArgumentException(sprintf('%s expects parameter 3 to be string, %s given', __METHOD__, gettype($encoding)));
         }
+
+        $this->encoding = $encoding;
 
         $this->document = new DOMDocument('1.0', $encoding);
 
@@ -211,7 +218,7 @@ class Document
             $string = $this->loadFile($string);
         }
 
-        $string = Encoder::convertToHtmlEntities($string, $this->document->encoding);
+        $string = Encoder::convertToHtmlEntities($string, $this->encoding);
 
         $this->type = strtolower($type);
 
@@ -560,6 +567,16 @@ class Document
     public function getType()
     {
         return $this->type;
+    }
+
+    /**
+     * Returns the encoding of document (XML or HTML).
+     *
+     * @return string
+     */
+    public function getEncoding()
+    {
+        return $this->encoding;
     }
 
     /**
