@@ -218,7 +218,9 @@ class Document
             $string = $this->loadFile($string);
         }
 
-        $string = Encoder::convertToHtmlEntities($string, $this->encoding);
+        if (strtolower($type) === 'html') {
+            $string = Encoder::convertToHtmlEntities($string, $this->encoding);
+        }
 
         $this->type = strtolower($type);
 

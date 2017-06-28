@@ -214,6 +214,43 @@ class DocumentTest extends TestCase
         $document->load('foo', false, 'html', 'bar');
     }
 
+    public function testLoadHtmlDocument()
+    {
+        $html = '
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Document</title>
+            </head>
+            <body>
+                <div class="foo">Foo — Bar — Baz</div>
+            </body>
+            </html>
+        ';
+
+        $document = new Document();
+
+        $document->load($html, false, 'html');
+
+        $this->assertEquals('Foo — Bar — Baz', $document->first('.foo')->text());
+    }
+
+    public function testLoadXmlDocument()
+    {
+        $xml = '
+            <?xml version="1.0" encoding="UTF-8"?>
+            <root>
+                <foo>Foo — Bar — Baz</foo>
+            </root>
+        ';
+
+        $document = new Document();
+
+        $document->load($xml, false, 'xml');
+
+        $this->assertEquals('Foo — Bar — Baz', $document->first('foo')->text());
+    }
+
     /**
      * @expectedException InvalidArgumentException
      */
