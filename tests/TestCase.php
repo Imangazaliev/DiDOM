@@ -23,7 +23,7 @@ class TestCase extends PHPUnit_Framework_TestCase
             return file_get_contents($path);
         }
 
-        throw new Exception(sprintf('Fixture "%s" does not exists', $filename));
+        throw new Exception(sprintf('Fixture "%s" does not exist', $filename));
     }
 
     protected function createNode($name, $value = null, $attributes = [])
