@@ -8,6 +8,30 @@ use DiDom\Query;
 class QueryTest extends TestCase
 {
     /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testCompileWithNonStringExpression()
+    {
+        Query::compile(null);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testCompileWithNonStringExpressionType()
+    {
+        Query::compile('h1', null);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testCompileWithUnknownExpressionType()
+    {
+        Query::compile('h1', 'foo');
+    }
+
+    /**
      * @dataProvider compileCssTests
      */
     public function testCompileCssSelector($selector, $xpath)

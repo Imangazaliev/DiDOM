@@ -30,6 +30,18 @@ class Query
      */
     public static function compile($expression, $type = self::TYPE_CSS)
     {
+        if (!is_string($expression)) {
+            throw new InvalidArgumentException(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, gettype($expression)));
+        }
+
+        if (!is_string($type)) {
+            throw new InvalidArgumentException(sprintf('%s expects parameter 2 to be string, %s given', __METHOD__, gettype($type)));
+        }
+
+        if (strcasecmp($type, self::TYPE_XPATH) !== 0 and strcasecmp($type, self::TYPE_CSS) !== 0) {
+            throw new InvalidArgumentException(sprintf('Unknown expression type "%s"', $type));
+        }
+
         if (strcasecmp($type, self::TYPE_XPATH) === 0) {
             return $expression;
         }
