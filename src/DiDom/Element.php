@@ -619,27 +619,75 @@ class Element
     }
 
     /**
+     * @param string|null $selector
+     *
      * @return \DiDom\Element|null
      */
-    public function previousSibling()
+    public function previousSibling($selector = null)
     {
         if ($this->node->previousSibling === null) {
             return null;
+        }
+
+        if ($selector === null) {
+            return new Element($this->node->previousSibling);
+        }
+
+        $node = $this->node->previousSibling;
+
+        while ($node !== null) {
+            if (get_class($node) !== 'DOMElement') {
+                $node = $node->previousSibling;
+
+                continue;
+            }
+
+            $element = new Element($node);
+
+            if ($element->matches($selector)) {
+                return $element;
+            }
+
+            $node = $node->previousSibling;
         }
 
         return new Element($this->node->previousSibling);
     }
 
     /**
+     * @param string|null $selector
+     *
      * @return \DiDom\Element|null
      */
-    public function nextSibling()
+    public function nextSibling($selector = null)
     {
         if ($this->node->nextSibling === null) {
             return null;
         }
 
-        return new Element($this->node->nextSibling);
+        if ($selector === null) {
+            return new Element($this->node->nextSibling);
+        }
+
+        $node = $this->node->nextSibling;
+
+        while ($node !== null) {
+            if (get_class($node) !== 'DOMElement') {
+                $node = $node->nextSibling;
+
+                continue;
+            }
+
+            $element = new Element($node);
+
+            if ($element->matches($selector)) {
+                return $element;
+            }
+
+            $node = $node->nextSibling;
+        }
+
+        return null;
     }
 
     /**

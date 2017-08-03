@@ -678,9 +678,9 @@ Tiếng Việt <br>
         $item = $list->getNode()->childNodes->item(1);
         $item = new Element($item);
 
-        $previousSibling = $list->getNode()->childNodes->item(0);
+        $expectedNode = $list->getNode()->childNodes->item(0);
 
-        $this->assertEquals($previousSibling, $item->previousSibling()->getNode());
+        $this->assertEquals($expectedNode, $item->previousSibling()->getNode());
 
         $item = $list->getNode()->childNodes->item(0);
         $item = new Element($item);
@@ -695,9 +695,33 @@ Tiếng Việt <br>
         $paragraph = $document->first('p');
         $span = $paragraph->first('span');
 
-        $previousSibling = $span->getNode()->previousSibling;
+        $expectedNode = $span->getNode()->previousSibling;
 
-        $this->assertEquals($previousSibling, $span->previousSibling()->getNode());
+        $this->assertEquals($expectedNode, $span->previousSibling()->getNode());
+    }
+
+    public function testPreviousSiblingWithSelector()
+    {
+        $html =
+            '<ul>'.
+            '<li><a href="https://amazon.com">Amazon</a></li>'.
+            '<li><a href="https://facebook.com">Facebook</a></li>'.
+            '<li><a href="https://google.com">Google</a></li>'.
+            '<li><a href="https://www.w3.org">W3C</a></li>'.
+            '<li><a href="https://wikipedia.org">Wikipedia</a></li>'.
+            '</ul>'
+        ;
+
+        $document = new Document($html, false);
+
+        $list = $document->first('ul');
+
+        $item = $list->getNode()->childNodes->item(4);
+        $item = new Element($item);
+
+        $expectedNode = $list->getNode()->childNodes->item(2);
+
+        $this->assertEquals($expectedNode, $item->previousSibling('li:has(a[href$=".com"])')->getNode());
     }
 
     public function testNextSibling()
@@ -711,9 +735,9 @@ Tiếng Việt <br>
         $item = $list->getNode()->childNodes->item(0);
         $item = new Element($item);
 
-        $nextSibling = $list->getNode()->childNodes->item(1);
+        $expectedNode = $list->getNode()->childNodes->item(1);
 
-        $this->assertEquals($nextSibling, $item->nextSibling()->getNode());
+        $this->assertEquals($expectedNode, $item->nextSibling()->getNode());
 
         $item = $list->getNode()->childNodes->item(2);
         $item = new Element($item);
@@ -728,9 +752,33 @@ Tiếng Việt <br>
         $paragraph = $document->first('p');
         $span = $paragraph->first('span');
 
-        $nextSibling = $span->getNode()->nextSibling;
+        $expectedNode = $span->getNode()->nextSibling;
 
-        $this->assertEquals($nextSibling, $span->nextSibling()->getNode());
+        $this->assertEquals($expectedNode, $span->nextSibling()->getNode());
+    }
+
+    public function testNextSiblingWithSelector()
+    {
+        $html =
+            '<ul>'.
+                '<li><a href="https://amazon.com">Amazon</a></li>'.
+                '<li><a href="https://facebook.com">Facebook</a></li>'.
+                '<li><a href="https://google.com">Google</a></li>'.
+                '<li><a href="https://www.w3.org">W3C</a></li>'.
+                '<li><a href="https://wikipedia.org">Wikipedia</a></li>'.
+            '</ul>'
+        ;
+
+        $document = new Document($html, false);
+
+        $list = $document->first('ul');
+
+        $item = $list->getNode()->childNodes->item(0);
+        $item = new Element($item);
+
+        $expectedNode = $list->getNode()->childNodes->item(3);
+
+        $this->assertEquals($expectedNode, $item->nextSibling('li:has(a[href$=".org"])')->getNode());
     }
 
     public function testChild()
