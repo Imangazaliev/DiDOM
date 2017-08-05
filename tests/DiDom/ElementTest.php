@@ -706,11 +706,11 @@ Tiếng Việt <br>
     {
         $html =
             '<ul>'.
-            '<li><a href="https://amazon.com">Amazon</a></li>'.
-            '<li><a href="https://facebook.com">Facebook</a></li>'.
-            '<li><a href="https://google.com">Google</a></li>'.
-            '<li><a href="https://www.w3.org">W3C</a></li>'.
-            '<li><a href="https://wikipedia.org">Wikipedia</a></li>'.
+                '<li><a href="https://amazon.com">Amazon</a></li>'.
+                '<li><a href="https://facebook.com">Facebook</a></li>'.
+                '<li><a href="https://google.com">Google</a></li>'.
+                '<li><a href="https://www.w3.org">W3C</a></li>'.
+                '<li><a href="https://wikipedia.org">Wikipedia</a></li>'.
             '</ul>'
         ;
 
@@ -738,6 +738,92 @@ Tiếng Việt <br>
         $expectedNode = $paragraph->getNode()->childNodes->item(1);
 
         $this->assertEquals($expectedNode, $span->previousSibling(null, true)->getNode());
+    }
+
+    public function testPreviousSiblings()
+    {
+        $html = '<p>Foo <span>Bar</span> Baz <span>Qux</span></p>';
+
+        $document = new Document($html, false);
+
+        $paragraph = $document->first('p');
+        $span = $paragraph->find('span')[1];
+
+        $childNodes = $paragraph->getNode()->childNodes;
+
+        $expectedResult = [
+            $childNodes->item(0),
+            $childNodes->item(1),
+            $childNodes->item(2),
+        ];
+
+        $previousSiblings = $span->previousSiblings();
+
+        $this->assertCount(count($expectedResult), $previousSiblings);
+
+        foreach ($previousSiblings as $index => $previousSibling) {
+            $this->assertEquals($expectedResult[$index], $previousSibling->getNode());
+        }
+    }
+
+    public function testPreviousSiblingsWithSelector()
+    {
+        $html =
+            '<ul>'.
+                '<li><a href="https://amazon.com">Amazon</a></li>'.
+                '<li><a href="https://facebook.com">Facebook</a></li>'.
+                '<li><a href="https://google.com">Google</a></li>'.
+                '<li><a href="https://www.w3.org">W3C</a></li>'.
+                '<li><a href="https://wikipedia.org">Wikipedia</a></li>'.
+            '</ul>'
+        ;
+
+        $document = new Document($html, false);
+
+        $list = $document->first('ul');
+
+        $item = $list->getNode()->childNodes->item(4);
+        $item = new Element($item);
+
+        $childNodes = $list->getNode()->childNodes;
+
+        $expectedResult = [
+            $childNodes->item(0),
+            $childNodes->item(1),
+            $childNodes->item(2),
+        ];
+
+        $previousSiblings = $item->previousSiblings('li:has(a[href$=".com"])');
+
+        $this->assertCount(count($expectedResult), $previousSiblings);
+
+        foreach ($previousSiblings as $index => $previousSibling) {
+            $this->assertEquals($expectedResult[$index], $previousSibling->getNode());
+        }
+    }
+
+    public function testPreviousSiblingsElementsOnly()
+    {
+        $html = '<p>Foo <span>Bar</span> Baz <span>Qux</span></p>';
+
+        $document = new Document($html, false);
+
+        $paragraph = $document->first('p');
+        $span = $paragraph->find('span')[1];
+
+        $childNodes = $paragraph->getNode()->childNodes;
+
+        $expectedResult = [
+            $childNodes->item(1),
+        ];
+
+        $previousSiblings = $span->previousSiblings(null, true);
+
+        $this->assertCount(count($expectedResult), $previousSiblings);
+
+        foreach ($previousSiblings as $index => $previousSibling) {
+            $this->assertEquals($expectedResult[$index], $previousSibling->getNode());
+        }
     }
 
     public function testNextSibling()
@@ -811,6 +897,90 @@ Tiếng Việt <br>
         $expectedNode = $paragraph->getNode()->childNodes->item(3);
 
         $this->assertEquals($expectedNode, $span->nextSibling(null, true)->getNode());
+    }
+
+    public function testNextSiblings()
+    {
+        $html = '<p>Foo <span>Bar</span> Baz <span>Qux</span></p>';
+
+        $document = new Document($html, false);
+
+        $paragraph = $document->first('p');
+        $span = $paragraph->find('span')[0];
+
+        $childNodes = $paragraph->getNode()->childNodes;
+
+        $expectedResult = [
+            $childNodes->item(2),
+            $childNodes->item(3),
+        ];
+
+        $nextSiblings = $span->nextSiblings();
+
+        $this->assertCount(count($expectedResult), $nextSiblings);
+
+        foreach ($nextSiblings as $index => $nextSibling) {
+            $this->assertEquals($expectedResult[$index], $nextSibling->getNode());
+        }
+    }
+
+    public function testNextSiblingsWithSelector()
+    {
+        $html =
+            '<ul>'.
+            '<li><a href="https://amazon.com">Amazon</a></li>'.
+            '<li><a href="https://facebook.com">Facebook</a></li>'.
+            '<li><a href="https://google.com">Google</a></li>'.
+            '<li><a href="https://www.w3.org">W3C</a></li>'.
+            '<li><a href="https://wikipedia.org">Wikipedia</a></li>'.
+            '</ul>'
+        ;
+
+        $document = new Document($html, false);
+
+        $list = $document->first('ul');
+
+        $item = $list->getNode()->childNodes->item(0);
+        $item = new Element($item);
+
+        $childNodes = $list->getNode()->childNodes;
+
+        $expectedResult = [
+            $childNodes->item(1),
+            $childNodes->item(2),
+        ];
+
+        $nextSiblings = $item->nextSiblings('li:has(a[href$=".com"])');
+
+        $this->assertCount(count($expectedResult), $nextSiblings);
+
+        foreach ($nextSiblings as $index => $nextSibling) {
+            $this->assertEquals($expectedResult[$index], $nextSibling->getNode());
+        }
+    }
+
+    public function testNextSiblingsElementsOnly()
+    {
+        $html = '<p>Foo <span>Bar</span> Baz <span>Qux</span></p>';
+
+        $document = new Document($html, false);
+
+        $paragraph = $document->first('p');
+        $span = $paragraph->find('span')[0];
+
+        $childNodes = $paragraph->getNode()->childNodes;
+
+        $expectedResult = [
+            $childNodes->item(3),
+        ];
+
+        $nextSiblings = $span->nextSiblings(null, true);
+
+        $this->assertCount(count($expectedResult), $nextSiblings);
+
+        foreach ($nextSiblings as $index => $nextSibling) {
+            $this->assertEquals($expectedResult[$index], $nextSibling->getNode());
+        }
     }
 
     public function testChild()

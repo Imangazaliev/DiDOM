@@ -664,6 +664,49 @@ class Element
      * @param string|null $selector
      * @param bool $elementsOnly
      *
+     * @return \DiDom\Element[]
+     */
+    public function previousSiblings($selector = null, $elementsOnly = false)
+    {
+        if ($this->node->previousSibling === null) {
+            return [];
+        }
+
+        if ($selector !== null) {
+            $elementsOnly = true;
+        }
+
+        $result = [];
+
+        $node = $this->node->previousSibling;
+
+        while ($node !== null) {
+            $element = new Element($node);
+
+            if ($elementsOnly) {
+                if (get_class($node) === 'DOMElement') {
+                    if ($element->matches($selector)) {
+                        $result[] = $element;
+                    }
+                }
+
+                $node = $node->previousSibling;
+
+                continue;
+            }
+
+            $result[] = $element;
+
+            $node = $node->previousSibling;
+        }
+
+        return array_reverse($result);
+    }
+
+    /**
+     * @param string|null $selector
+     * @param bool $elementsOnly
+     *
      * @return \DiDom\Element|null
      */
     public function nextSibling($selector = null, $elementsOnly = false)
@@ -699,6 +742,49 @@ class Element
         }
 
         return null;
+    }
+
+    /**
+     * @param string|null $selector
+     * @param bool $elementsOnly
+     *
+     * @return \DiDom\Element[]
+     */
+    public function nextSiblings($selector = null, $elementsOnly = false)
+    {
+        if ($this->node->nextSibling === null) {
+            return [];
+        }
+
+        if ($selector !== null) {
+            $elementsOnly = true;
+        }
+
+        $result = [];
+
+        $node = $this->node->nextSibling;
+
+        while ($node !== null) {
+            $element = new Element($node);
+
+            if ($elementsOnly) {
+                if (get_class($node) === 'DOMElement') {
+                    if ($element->matches($selector)) {
+                        $result[] = $element;
+                    }
+                }
+
+                $node = $node->nextSibling;
+
+                continue;
+            }
+
+            $result[] = $element;
+
+            $node = $node->nextSibling;
+        }
+
+        return $result;
     }
 
     /**
