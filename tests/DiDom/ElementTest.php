@@ -686,8 +686,10 @@ Tiếng Việt <br>
         $item = new Element($item);
 
         $this->assertNull($item->previousSibling());
+    }
 
-        // with text nodes
+    public function testPreviousSiblingWithTextNode()
+    {
         $html = '<p>Foo <span>Bar</span> Baz</p>';
 
         $document = new Document($html, false);
@@ -724,6 +726,20 @@ Tiếng Việt <br>
         $this->assertEquals($expectedNode, $item->previousSibling('li:has(a[href$=".com"])')->getNode());
     }
 
+    public function testPreviousSiblingElementsOnly()
+    {
+        $html = '<p>Foo <span>Bar</span> Baz <span>Qux</span></p>';
+
+        $document = new Document($html, false);
+
+        $paragraph = $document->first('p');
+        $span = $paragraph->find('span')[1];
+
+        $expectedNode = $paragraph->getNode()->childNodes->item(1);
+
+        $this->assertEquals($expectedNode, $span->previousSibling(null, true)->getNode());
+    }
+
     public function testNextSibling()
     {
         $html = '<ul><li>One</li><li>Two</li><li>Three</li></ul>';
@@ -743,8 +759,10 @@ Tiếng Việt <br>
         $item = new Element($item);
 
         $this->assertNull($item->nextSibling());
+    }
 
-        // with text nodes
+    public function testNextSiblingWithTextNode()
+    {
         $html = '<p>Foo <span>Bar</span> Baz</p>';
 
         $document = new Document($html, false);
@@ -779,6 +797,20 @@ Tiếng Việt <br>
         $expectedNode = $list->getNode()->childNodes->item(3);
 
         $this->assertEquals($expectedNode, $item->nextSibling('li:has(a[href$=".org"])')->getNode());
+    }
+
+    public function testNextSiblingElementsOnly()
+    {
+        $html = '<p>Foo <span>Bar</span> Baz <span>Qux</span></p>';
+
+        $document = new Document($html, false);
+
+        $paragraph = $document->first('p');
+        $span = $paragraph->first('span');
+
+        $expectedNode = $paragraph->getNode()->childNodes->item(3);
+
+        $this->assertEquals($expectedNode, $span->nextSibling(null, true)->getNode());
     }
 
     public function testChild()

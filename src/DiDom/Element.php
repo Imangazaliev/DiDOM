@@ -6,6 +6,7 @@ use DOMDocument;
 use DOMNode;
 use DOMElement;
 use InvalidArgumentException;
+use phpDocumentor\Reflection\DocBlock\Tags\Param;
 use RuntimeException;
 use LogicException;
 
@@ -620,16 +621,21 @@ class Element
 
     /**
      * @param string|null $selector
+     * @param bool $elementsOnly
      *
      * @return \DiDom\Element|null
      */
-    public function previousSibling($selector = null)
+    public function previousSibling($selector = null, $elementsOnly = false)
     {
         if ($this->node->previousSibling === null) {
             return null;
         }
 
-        if ($selector === null) {
+        if ($selector !== null) {
+            $elementsOnly = true;
+        }
+
+        if ($elementsOnly === false) {
             return new Element($this->node->previousSibling);
         }
 
@@ -656,16 +662,21 @@ class Element
 
     /**
      * @param string|null $selector
+     * @param bool $elementsOnly
      *
      * @return \DiDom\Element|null
      */
-    public function nextSibling($selector = null)
+    public function nextSibling($selector = null, $elementsOnly = false)
     {
         if ($this->node->nextSibling === null) {
             return null;
         }
 
-        if ($selector === null) {
+        if ($selector !== null) {
+            $elementsOnly = true;
+        }
+
+        if ($elementsOnly === false) {
             return new Element($this->node->nextSibling);
         }
 
