@@ -389,7 +389,6 @@ class ElementTest extends TestCase
         $this->assertFalse($element->hasAttribute('value'));
 
         $node->setAttribute('value', 'test');
-        $element = new Element($node);
 
         $this->assertTrue($element->hasAttribute('value'));
     }
@@ -409,14 +408,14 @@ class ElementTest extends TestCase
 
         $element = new Element($node);
 
-        $element->setAttribute('value', 'test');
-        $this->assertEquals('test', $element->getAttribute('value'));
+        $element->setAttribute('value', 'foo');
+        $this->assertEquals('foo', $element->getNode()->getAttribute('value'));
 
         $element->setAttribute('value', 10);
-        $this->assertEquals('10', $element->getAttribute('value'));
+        $this->assertEquals('10', $element->getNode()->getAttribute('value'));
 
         $element->setAttribute('value', 3.14);
-        $this->assertEquals('3.14', $element->getAttribute('value'));
+        $this->assertEquals('3.14', $element->getNode()->getAttribute('value'));
     }
 
     public function testGetAttribute()
@@ -430,20 +429,50 @@ class ElementTest extends TestCase
 
         $node->setAttribute('value', 'test');
 
-        $element = new Element($node);
-
         $this->assertEquals('test', $element->getAttribute('value'));
     }
 
     public function testRemoveAttribute()
     {
-        $element = new Element('input', null, ['name' => 'username']);
+        $domElement = $this->createNode('input', null, ['name' => 'username']);
 
-        $this->assertTrue($element->hasAttribute('name'));
+        $element = new Element($domElement);
 
-        $element->removeAttribute('name');
+        $this->assertTrue($element->getNode()->hasAttribute('name'));
 
-        $this->assertFalse($element->hasAttribute('name'));
+        $result = $element->removeAttribute('name');
+
+        $this->assertEquals(0, $element->getNode()->attributes->length);
+        $this->assertFalse($element->getNode()->hasAttribute('name'));
+        $this->assertEquals($result, $element);
+    }
+
+    public function testRemoveAllAttributes()
+    {
+        $attributes = ['type' => 'text', 'name' => 'username'];
+
+        $domElement = $this->createNode('input', null, $attributes);
+
+        $element = new Element($domElement);
+
+        $result = $element->removeAllAttributes();
+
+        $this->assertEquals(0, $element->getNode()->attributes->length);
+        $this->assertEquals($result, $element);
+    }
+
+    public function testRemoveAllAttributesWithExclusion()
+    {
+        $attributes = ['type' => 'text', 'name' => 'username'];
+
+        $domElement = $this->createNode('input', null, $attributes);
+
+        $element = new Element($domElement);
+
+        $element->removeAllAttributes(['name']);
+
+        $this->assertEquals(1, $element->getNode()->attributes->length);
+        $this->assertEquals('username', $element->getNode()->getAttribute('name'));
     }
 
     public function testAttrSet()
@@ -466,7 +495,9 @@ class ElementTest extends TestCase
     {
         $attributes = ['type' => 'text', 'name' => 'username'];
 
-        $element = new Element('input', null, $attributes);
+        $domElement = $this->createNode('input', null, $attributes);
+
+        $element = new Element($domElement);
 
         $this->assertEquals($attributes, $element->attributes());
     }

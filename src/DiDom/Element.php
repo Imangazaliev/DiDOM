@@ -15,14 +15,14 @@ class Element
     /**
      * The DOM element instance.
      *
-     * @var \DOMNode;
+     * @var \DOMElement|\DOMText|\DOMComment
      */
     protected $node;
 
     /**
      * Constructor.
      *
-     * @param \DOMNode|string $name The tag name of the element
+     * @param \DOMElement|\DOMText|\DOMComment|string $name The tag name of the element
      * @param string|null $value The value of the element
      * @param array  $attributes The attributes of the element
      *
@@ -392,6 +392,30 @@ class Element
     }
 
     /**
+     * Unset all attributes of the element.
+     *
+     * @param string[] $exclusions
+     *
+     * @return \DiDom\Element
+     */
+    public function removeAllAttributes($exclusions = [])
+    {
+        if (!$this->node instanceof DOMElement) {
+            return $this;
+        }
+
+        foreach ($this->attributes() as $name => $value) {
+            if (in_array($name, $exclusions)) {
+                continue;
+            }
+
+            $this->node->removeAttribute($name);
+        }
+
+        return $this;
+    }
+
+    /**
      * Alias for getAttribute and setAttribute methods.
      *
      * @param string $name The attribute name
@@ -419,13 +443,13 @@ class Element
             return null;
         }
 
-        $attributes = [];
+        $result = [];
 
-        foreach ($this->node->attributes as $name => $attr) {
-            $attributes[$name] = $attr->value;
+        foreach ($this->node->attributes as $name => $attribute) {
+            $result[$name] = $attribute->value;
         }
 
-        return $attributes;
+        return $result;
     }
 
     /**
@@ -936,7 +960,7 @@ class Element
     /**
      * Replaces a child.
      *
-     * @param \DOMNode|\DiDom\Element $newChild The new node
+     * @param \DOMNode|\DiDom\Element $newNode The new node
      * @param bool $clone Clone the node if true, otherwise move it
      *
      * @return \DiDom\Element The node that has been replaced
@@ -993,7 +1017,7 @@ class Element
     }
 
     /**
-     * Sets current \DOMNode instance.
+     * Sets current node instance.
      *
      * @param \DOMElement|\DOMText|\DOMComment $node
      *
@@ -1013,9 +1037,9 @@ class Element
     }
 
     /**
-     * Get current \DOMNode instance.
+     * Returns current node instance.
      *
-     * @return \DOMNode
+     * @return \DOMElement|\DOMText|\DOMComment
      */
     public function getNode()
     {
