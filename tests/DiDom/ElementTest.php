@@ -10,7 +10,7 @@ use DiDom\Query;
 class ElementTest extends TestCase
 {
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testConstructorWithInvalidName()
     {
@@ -18,7 +18,7 @@ class ElementTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testConstructorWithInvalidValue()
     {
@@ -26,7 +26,7 @@ class ElementTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testConstructorWithInvalidAttributes()
     {
@@ -79,7 +79,7 @@ class ElementTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testAppendChildWithInvalidArgument()
     {
@@ -89,7 +89,7 @@ class ElementTest extends TestCase
     }
 
     /**
-     * @expectedException LogicException
+     * @expectedException \LogicException
      */
     public function testAppendChildWithoutParentNode()
     {
@@ -164,7 +164,7 @@ class ElementTest extends TestCase
     }
 
     /**
-     * @expectedException LogicException
+     * @expectedException \LogicException
      */
     public function testFindInDocumentWithoutOwnerDocument()
     {
@@ -198,7 +198,7 @@ class ElementTest extends TestCase
     }
 
     /**
-     * @expectedException LogicException
+     * @expectedException \LogicException
      */
     public function testFirstInDocumentWithoutOwnerDocument()
     {
@@ -311,7 +311,17 @@ class ElementTest extends TestCase
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException \InvalidArgumentException
+     */
+    public function testMatchesWithInvalidSelectorType()
+    {
+        $element = new Element('p');
+
+        $element->matches(null);
+    }
+
+    /**
+     * @expectedException \RuntimeException
      */
     public function testMatchesStrictWithoutTagName()
     {
@@ -385,7 +395,7 @@ class ElementTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testSetAttributeWithInvalidValue()
     {
@@ -612,7 +622,7 @@ Tiếng Việt <br>
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testIsWithInvalidArgument()
     {
@@ -675,17 +685,17 @@ Tiếng Việt <br>
 
         $list = $document->first('ul');
 
+        $item = $list->getNode()->childNodes->item(0);
+        $item = new Element($item);
+
+        $this->assertNull($item->previousSibling());
+
         $item = $list->getNode()->childNodes->item(1);
         $item = new Element($item);
 
         $expectedNode = $list->getNode()->childNodes->item(0);
 
         $this->assertEquals($expectedNode, $item->previousSibling()->getNode());
-
-        $item = $list->getNode()->childNodes->item(0);
-        $item = new Element($item);
-
-        $this->assertNull($item->previousSibling());
     }
 
     public function testPreviousSiblingWithTextNode()
@@ -834,17 +844,17 @@ Tiếng Việt <br>
 
         $list = $document->first('ul');
 
+        $item = $list->getNode()->childNodes->item(2);
+        $item = new Element($item);
+
+        $this->assertNull($item->nextSibling());
+
         $item = $list->getNode()->childNodes->item(0);
         $item = new Element($item);
 
         $expectedNode = $list->getNode()->childNodes->item(1);
 
         $this->assertEquals($expectedNode, $item->nextSibling()->getNode());
-
-        $item = $list->getNode()->childNodes->item(2);
-        $item = new Element($item);
-
-        $this->assertNull($item->nextSibling());
     }
 
     public function testNextSiblingWithTextNode()
@@ -1151,7 +1161,7 @@ Tiếng Việt <br>
     }
 
     /**
-     * @expectedException LogicException
+     * @expectedException \LogicException
      */
     public function testRemoveWithoutParentNode()
     {
@@ -1224,7 +1234,7 @@ Tiếng Việt <br>
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testReplaceWithInvalidArgument()
     {
@@ -1236,7 +1246,7 @@ Tiếng Việt <br>
     }
 
     /**
-     * @expectedException LogicException
+     * @expectedException \LogicException
      */
     public function testReplaceElementWithoutParentNode()
     {

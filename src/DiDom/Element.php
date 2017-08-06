@@ -256,14 +256,19 @@ class Element
      */
     public function matches($selector, $strict = false)
     {
+        if (!is_string($selector)) {
+            throw new InvalidArgumentException(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, gettype($selector)));
+        }
+
         if (!$this->node instanceof \DOMElement) {
             return false;
         }
 
-        if (!$strict) {
-            // remove child nodes
-            $node = $this->node->cloneNode();
+        if ($selector === '*') {
+            return true;
+        }
 
+        if (!$strict) {
             $innerHtml = $this->html();
             $html = "<root>$innerHtml</root>";
 
@@ -436,7 +441,7 @@ class Element
     /**
      * Dumps the node descendants into a string using HTML formatting.
      *
-     * @param sting $delimiter
+     * @param string $delimiter
      *
      * @return string
      */
@@ -642,7 +647,7 @@ class Element
         $node = $this->node->previousSibling;
 
         while ($node !== null) {
-            if (get_class($node) !== 'DOMElement') {
+            if (!$node instanceof \DOMElement) {
                 $node = $node->previousSibling;
 
                 continue;
@@ -650,8 +655,12 @@ class Element
 
             $element = new Element($node);
 
-            if ($element->matches($selector)) {
+            if ($selector === null) {
                 return $element;
+            } else {
+                if ($element->matches($selector)) {
+                    return $element;
+                }
             }
 
             $node = $node->previousSibling;
@@ -684,9 +693,13 @@ class Element
             $element = new Element($node);
 
             if ($elementsOnly) {
-                if (get_class($node) === 'DOMElement') {
-                    if ($element->matches($selector)) {
+                if ($node instanceof \DOMElement) {
+                    if ($selector === null) {
                         $result[] = $element;
+                    } else {
+                        if ($element->matches($selector)) {
+                            $result[] = $element;
+                        }
                     }
                 }
 
@@ -726,7 +739,7 @@ class Element
         $node = $this->node->nextSibling;
 
         while ($node !== null) {
-            if (get_class($node) !== 'DOMElement') {
+            if (!$node instanceof \DOMElement) {
                 $node = $node->nextSibling;
 
                 continue;
@@ -734,8 +747,12 @@ class Element
 
             $element = new Element($node);
 
-            if ($element->matches($selector)) {
+            if ($selector === null) {
                 return $element;
+            } else {
+                if ($element->matches($selector)) {
+                    return $element;
+                }
             }
 
             $node = $node->nextSibling;
@@ -768,9 +785,13 @@ class Element
             $element = new Element($node);
 
             if ($elementsOnly) {
-                if (get_class($node) === 'DOMElement') {
-                    if ($element->matches($selector)) {
+                if ($node instanceof \DOMElement) {
+                    if ($selector === null) {
                         $result[] = $element;
+                    } else {
+                        if ($element->matches($selector)) {
+                            $result[] = $element;
+                        }
                     }
                 }
 
