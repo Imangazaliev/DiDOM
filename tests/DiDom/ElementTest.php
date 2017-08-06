@@ -386,7 +386,7 @@ class ElementTest extends TestCase
 
     public function testHasAttribute()
     {
-        $node = $this->createNode('input');
+        $node = $this->createDomElement('input');
         $element = new Element($node);
 
         $this->assertFalse($element->hasAttribute('value'));
@@ -407,7 +407,7 @@ class ElementTest extends TestCase
 
     public function testSetAttribute()
     {
-        $node = $this->createNode('input');
+        $node = $this->createDomElement('input');
 
         $element = new Element($node);
 
@@ -423,7 +423,7 @@ class ElementTest extends TestCase
 
     public function testGetAttribute()
     {
-        $node = $this->createNode('input');
+        $node = $this->createDomElement('input');
 
         $element = new Element($node);
 
@@ -437,7 +437,7 @@ class ElementTest extends TestCase
 
     public function testRemoveAttribute()
     {
-        $domElement = $this->createNode('input', null, ['name' => 'username']);
+        $domElement = $this->createDomElement('input', null, ['name' => 'username']);
 
         $element = new Element($domElement);
 
@@ -454,7 +454,7 @@ class ElementTest extends TestCase
     {
         $attributes = ['type' => 'text', 'name' => 'username'];
 
-        $domElement = $this->createNode('input', null, $attributes);
+        $domElement = $this->createDomElement('input', null, $attributes);
 
         $element = new Element($domElement);
 
@@ -468,7 +468,7 @@ class ElementTest extends TestCase
     {
         $attributes = ['type' => 'text', 'name' => 'username'];
 
-        $domElement = $this->createNode('input', null, $attributes);
+        $domElement = $this->createDomElement('input', null, $attributes);
 
         $element = new Element($domElement);
 
@@ -498,7 +498,7 @@ class ElementTest extends TestCase
     {
         $attributes = ['type' => 'text', 'name' => 'username', 'value' => 'John'];
 
-        $domElement = $this->createNode('input', null, $attributes);
+        $domElement = $this->createDomElement('input', null, $attributes);
 
         $element = new Element($domElement);
 
@@ -1334,7 +1334,7 @@ Tiếng Việt <br>
 
     public function testGetNode()
     {
-        $node = $this->createNode('input');
+        $node = $this->createDomElement('input');
         $element = new Element($node);
 
         $this->assertEquals($node, $element->getNode());
@@ -1366,7 +1366,7 @@ Tiếng Việt <br>
 
     public function testSetMagicMethod()
     {
-        $node = $this->createNode('input');
+        $node = $this->createDomElement('input');
 
         $element = new Element($node);
         $element->name = 'username';
@@ -1383,7 +1383,7 @@ Tiếng Việt <br>
 
     public function testIssetMagicMethod()
     {
-        $node = $this->createNode('input');
+        $node = $this->createDomElement('input');
         $element = new Element($node);
 
         $this->assertFalse(isset($element->value));
