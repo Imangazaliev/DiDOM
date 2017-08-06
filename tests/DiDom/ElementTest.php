@@ -496,13 +496,30 @@ class ElementTest extends TestCase
 
     public function testAttributes()
     {
-        $attributes = ['type' => 'text', 'name' => 'username'];
+        $attributes = ['type' => 'text', 'name' => 'username', 'value' => 'John'];
 
         $domElement = $this->createNode('input', null, $attributes);
 
         $element = new Element($domElement);
 
         $this->assertEquals($attributes, $element->attributes());
+        $this->assertEquals(['name' => 'username', 'value' => 'John'], $element->attributes(['name', 'value']));
+    }
+
+
+    public function testAttributesWithText()
+    {
+        $element = new Element(new \DOMText('Foo'));
+
+        $this->assertNull($element->attributes());
+    }
+
+
+    public function testAttributesWithComment()
+    {
+        $element = new Element(new \DOMComment('Foo'));
+
+        $this->assertNull($element->attributes());
     }
 
     public function testHtml()

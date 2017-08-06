@@ -431,18 +431,32 @@ class Element
     /**
      * Returns the node attributes or null, if it is not DOMElement.
      *
+     * @param string[] $names
+     *
      * @return array|null
      */
-    public function attributes()
+    public function attributes(array $names = null)
     {
         if (!$this->node instanceof DOMElement) {
             return null;
         }
 
+        if ($names === null) {
+            $result = [];
+
+            foreach ($this->node->attributes as $name => $attribute) {
+                $result[$name] = $attribute->value;
+            }
+
+            return $result;
+        }
+
         $result = [];
 
         foreach ($this->node->attributes as $name => $attribute) {
-            $result[$name] = $attribute->value;
+            if (in_array($name, $names)) {
+                $result[$name] = $attribute->value;
+            }
         }
 
         return $result;
