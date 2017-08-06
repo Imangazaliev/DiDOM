@@ -574,7 +574,17 @@ class Element
     }
 
     /**
-     * Returns true if current node is text.
+     * Returns true if current node is DOMElement.
+     *
+     * @return bool
+     */
+    public function isElementNode()
+    {
+        return $this->node instanceof \DOMElement;
+    }
+
+    /**
+     * Returns true if current node is DOMText.
      *
      * @return bool
      */
@@ -584,7 +594,7 @@ class Element
     }
 
     /**
-     * Returns true if current node is comment.
+     * Returns true if current node is DOMComment.
      *
      * @return bool
      */

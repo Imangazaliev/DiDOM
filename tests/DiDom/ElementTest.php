@@ -637,6 +637,19 @@ Tiếng Việt <br>
         $this->assertEquals('test', $element->text());
     }
 
+    public function testIsElementNode()
+    {
+        $element = new Element('div');
+
+        $element->setInnerHtml(' Foo <span>Bar</span><!-- Baz -->');
+
+        $children = $element->children();
+
+        $this->assertFalse($children[0]->isElementNode());
+        $this->assertTrue($children[1]->isElementNode());
+        $this->assertFalse($children[2]->isElementNode());
+    }
+
     public function testIsTextNode()
     {
         $element = new Element('div');
