@@ -81,7 +81,7 @@ class Document
      *
      * @return \DiDom\Element created element
      */
-    public function createElement($name, $value = null, $attributes = [])
+    public function createElement($name, $value = null, array $attributes = [])
     {
         $node = $this->document->createElement($name);
 
@@ -99,7 +99,7 @@ class Document
      *
      * @return \DiDom\Element
      */
-    public function createElementBySelector($selector, $value = null, $attributes = [])
+    public function createElementBySelector($selector, $value = null, array $attributes = [])
     {
         $segments = Query::getSegments($selector);
 
@@ -192,6 +192,8 @@ class Document
      * @param bool     $isFile Indicates that in first parameter was passed to the file path
      * @param string   $type Type of the document
      * @param int|null $options Additional parameters
+     *
+     * @return \DiDom\Document
      */
     public function load($string, $isFile = false, $type = 'html', $options = null)
     {
@@ -429,7 +431,7 @@ class Document
     }
 
     /**
-     * @param DOMElement|DOMText|DOMAttr $node
+     * @param \DOMElement|\DOMText|\DOMAttr $node
      *
      * @return \DiDom\Element|string
      *

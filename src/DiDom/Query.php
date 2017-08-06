@@ -18,7 +18,7 @@ class Query
     /**
      * @var array
      */
-    protected static $compiled = array();
+    protected static $compiled = [];
 
     /**
      * Converts a CSS selector into an XPath expression.
@@ -148,7 +148,7 @@ class Query
      *
      * @throws InvalidSelectorException if the passed property is unknown
      */
-    protected static function convertProperty($name, $args = [])
+    protected static function convertProperty($name, array $args = [])
     {
         if ($name === 'text') {
             return 'text()';
@@ -168,6 +168,58 @@ class Query
     }
 
     /**
+     * Converts a CSS pseudo-class into an XPath expression.
+     *
+     * @param string $pseudo Pseudo-class
+     * @param string $tagName
+     * @param array $parameters
+     *
+     * @return string
+     *
+     * @throws InvalidSelectorException if passed an unknown pseudo-class
+     */
+    protected static function convertPseudo($pseudo, &$tagName, array $parameters = [])
+    {
+        switch ($pseudo) {
+            case 'first-child':
+                return 'position() = 1';
+                break;
+            case 'last-child':
+                return 'position() = last()';
+                break;
+            case 'nth-child':
+                $xpath = sprintf('(name()="%s") and (%s)', $tagName, self::convertNthExpression($parameters[0]));
+                $tagName = '*';
+
+                return $xpath;
+                break;
+            case 'contains':
+                $string = trim($parameters[0], ' \'"');
+                $caseSensitive = isset($parameters[1]) and (trim($parameters[1]) === 'true');
+
+                return self::convertContains($string, $caseSensitive);
+                break;
+            case 'has':
+                return self::cssToXpath($parameters[0], './/');
+                break;
+            case 'not':
+                return sprintf('not(self::%s)', self::cssToXpath($parameters[0], ''));
+                break;
+            case 'nth-of-type':
+                return self::convertNthExpression($parameters[0]);
+                break;
+            case 'empty':
+                return 'count(descendant::*) = 0';
+                break;
+            case 'not-empty':
+                return 'count(descendant::*) > 0';
+                break;
+        }
+
+        throw new InvalidSelectorException(sprintf('Invalid selector: unknown pseudo-class "%s"', $pseudo));
+    }
+
+    /**
      * @param array  $segments
      * @param string $prefix Specifies the nesting of nodes
      *
@@ -175,7 +227,7 @@ class Query
      *
      * @throws InvalidArgumentException if you neither specify tag name nor attributes
      */
-    public static function buildXpath($segments, $prefix = '//')
+    public static function buildXpath(array $segments, $prefix = '//')
     {
         $tagName = isset($segments['tag']) ? $segments['tag'] : '*';
 
@@ -206,7 +258,7 @@ class Query
 
             $parameters = explode(',', $expression);
 
-            $attributes[] = self::convertPseudo($segments['pseudo'], $parameters, $tagName);
+            $attributes[] = self::convertPseudo($segments['pseudo'], $tagName, $parameters);
         }
 
         if (count($attributes) === 0 and !isset($segments['tag'])) {
@@ -281,66 +333,14 @@ class Query
     }
 
     /**
-     * Converts a CSS pseudo-class into an XPath expression.
-     *
-     * @param string $pseudo Pseudo-class
-     * @param string $parameters
-     * @param string $tagName
-     *
-     * @return string
-     *
-     * @throws \InvalidSelectorException if passed an unknown pseudo-class
-     */
-    protected static function convertPseudo($pseudo, $parameters = [], &$tagName)
-    {
-        switch ($pseudo) {
-            case 'first-child':
-                return 'position() = 1';
-                break;
-            case 'last-child':
-                return 'position() = last()';
-                break;
-            case 'nth-child':
-                $xpath = sprintf('(name()="%s") and (%s)', $tagName, self::convertNthExpression($parameters[0]));
-                $tagName = '*';
-
-                return $xpath;
-                break;
-            case 'contains':
-                $string = trim($parameters[0], ' \'"');
-                $caseSensetive = isset($parameters[1]) and (trim($parameters[1]) === 'true');
-
-                return self::convertContains($string, $caseSensetive);
-                break;
-            case 'has':
-                return self::cssToXpath($parameters[0], './/');
-                break;
-            case 'not':
-                return sprintf('not(self::%s)', self::cssToXpath($parameters[0], ''));
-                break;
-            case 'nth-of-type':
-                return self::convertNthExpression($parameters[0]);
-                break;
-            case 'empty':
-                return 'count(descendant::*) = 0';
-                break;
-            case 'not-empty':
-                return 'count(descendant::*) > 0';
-                break;
-        }
-
-        throw new InvalidSelectorException(sprintf('Invalid selector: unknown pseudo-class "%s"', $pseudo));
-    }
-
-    /**
      * Converts nth-expression into an XPath expression.
      *
      * @param string $expression nth-expression
      *
      * @return string
      *
-     * @throws \InvalidSelectorException if passed nth-child is empty
-     * @throws \InvalidSelectorException if passed an unknown nth-child expression
+     * @throws InvalidSelectorException if passed nth-child is empty
+     * @throws InvalidSelectorException if passed an unknown nth-child expression
      */
     protected static function convertNthExpression($expression)
     {
@@ -375,13 +375,13 @@ class Query
 
     /**
      * @param string $string
-     * @param bool   $caseSensetive
+     * @param bool   $caseSensitive
      *
      * @return string
      */
-    protected static function convertContains($string, $caseSensetive = false)
+    protected static function convertContains($string, $caseSensitive = false)
     {
-        if ($caseSensetive) {
+        if ($caseSensitive) {
             return sprintf('text() = "%s"', $string);
         }
 
@@ -399,7 +399,7 @@ class Query
      *
      * @return array
      *
-     * @throws \InvalidSelectorException if the selector is empty or not valid
+     * @throws InvalidSelectorException if the selector is empty or not valid
      */
     public static function getSegments($selector)
     {
@@ -500,12 +500,8 @@ class Query
      *
      * @throws \InvalidArgumentException if the attributes is not an array
      */
-    public static function setCompiled($compiled)
+    public static function setCompiled(array $compiled)
     {
-        if (!is_array($compiled)) {
-            throw new InvalidArgumentException(sprintf('%s expects parameter 1 to be array, %s given', __METHOD__, gettype($compiled)));
-        }
-
         static::$compiled = $compiled;
     }
 }

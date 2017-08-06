@@ -25,11 +25,14 @@ class ElementTest extends TestCase
         new Element('span', []);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testConstructorWithInvalidAttributes()
     {
+        if (PHP_VERSION_ID >= 70000) {
+            $this->setExpectedException('TypeError');
+        } else {
+            $this->setExpectedException('PHPUnit_Framework_Error');
+        }
+
         new Element('span', 'Foo', null);
     }
 

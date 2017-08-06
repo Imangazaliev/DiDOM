@@ -132,12 +132,15 @@ class QueryTest extends TestCase
         $this->assertEquals('//div', Query::compile('//div', Query::TYPE_XPATH));
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testSetCompiledInvalidArgument()
+    public function testSetCompiledInvalidArgumentType()
     {
-        Query::setCompiled('foo');
+        if (PHP_VERSION_ID >= 70000) {
+            $this->setExpectedException('TypeError');
+        } else {
+            $this->setExpectedException('PHPUnit_Framework_Error');
+        }
+
+        Query::setCompiled(null);
     }
 
     public function testSetCompiled()

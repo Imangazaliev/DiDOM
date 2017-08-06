@@ -24,11 +24,11 @@ class Element
      *
      * @param \DOMElement|\DOMText|\DOMComment|string $name The tag name of the element
      * @param string|null $value The value of the element
-     * @param array  $attributes The attributes of the element
+     * @param array $attributes The attributes of the element
      *
      * @throws \InvalidArgumentException if the attributes is not an array
      */
-    public function __construct($name, $value = null, $attributes = [])
+    public function __construct($name, $value = null, array $attributes = [])
     {
         if (is_string($name)) {
             $document = new DOMDocument('1.0', 'UTF-8');
@@ -42,10 +42,6 @@ class Element
 
         if ($value !== null) {
             $this->setValue($value);
-        }
-
-        if (!is_array($attributes)) {
-            throw new InvalidArgumentException(sprintf('%s expects parameter 3 to be array, %s given', __METHOD__, (is_object($attributes) ? get_class($attributes) : gettype($attributes))));
         }
 
         foreach ($attributes as $name => $value) {
@@ -64,7 +60,7 @@ class Element
      *
      * @throws \InvalidArgumentException if the attributes is not an array
      */
-    public static function create($name, $value = null, $attributes = [])
+    public static function create($name, $value = null, array $attributes = [])
     {
         return new Element($name, $value, $attributes);
     }
@@ -78,7 +74,7 @@ class Element
      *
      * @return \DiDom\Element
      */
-    public static function createBySelector($selector, $value = null, $attributes = [])
+    public static function createBySelector($selector, $value = null, array $attributes = [])
     {
         return Document::create()->createElementBySelector($selector, $value, $attributes);
     }
@@ -398,7 +394,7 @@ class Element
      *
      * @return \DiDom\Element
      */
-    public function removeAllAttributes($exclusions = [])
+    public function removeAllAttributes(array $exclusions = [])
     {
         if (!$this->node instanceof DOMElement) {
             return $this;
