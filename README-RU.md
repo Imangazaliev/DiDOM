@@ -371,8 +371,38 @@ $item = $document->find('ul.menu > li')[1];
 // предыдущий элемент
 var_dump($item->previousSibling());
 
+// предыдущий элемент, соответствующий селектору
+var_dump($item->previousSibling('span'));
+
+// предыдущий элемент типа DOMElement
+var_dump($item->previousSibling(null, true));
+
 // следующий элемент
 var_dump($item->nextSibling());
+
+// следующий элемент, соответствующий селектору
+var_dump($item->nextSibling('span'));
+
+// следующий элемент типа DOMElement
+var_dump($item->nextSibling(null, true));
+
+// все предыдущие элементы
+var_dump($item->previousSiblings());
+
+// все предыдущие элементы, соответствующие селектору
+var_dump($item->previousSiblings('span'));
+
+// все предыдущие элементы типа DOMElement
+var_dump($item->previousSiblings(null, true));
+
+// все последующие элементы
+var_dump($item->nextSiblings());
+
+// все последующие элементы, соответствующие селектору
+var_dump($item->nextSiblings('span'));
+
+// все последующие элементы типа DOMElement
+var_dump($item->nextSiblings(null, true));
 ```
 
 ## Получение дочерних элементов
@@ -490,6 +520,24 @@ unset($element->name);
 
 ```php
 var_dump($element->attributes());
+```
+
+#### Получение определенных атрибутов:
+
+```php
+var_dump($element->attributes(['name', 'type']));
+```
+
+#### Удаление всех атрибутов:
+
+```php
+$element->removeAllAttributes();
+```
+
+#### Удаление всех атрибутов, за исключением указанных:
+
+```php
+$element->removeAllAttributes(['name', 'type']);
 ```
 
 ## Сравнение элементов
@@ -617,6 +665,14 @@ $element->matches('div#content');
 // вернет true, если элемент это div с идентификатором content и ничего более
 // если у элемента будут какие-либо другие атрибуты, метод вернет false
 $element->matches('div#content', true);
+```
+
+#### `isElementNode`
+
+Проверяет, является ли элемент узлом типа DOMElement:
+
+```php
+$element->isElementNode();
 ```
 
 #### `isTextNode`
