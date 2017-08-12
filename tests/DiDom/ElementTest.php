@@ -747,17 +747,17 @@ Tiếng Việt <br>
 
         $document = new Document($html, false);
 
-        $list = $document->first('ul');
+        $list = $document->first('ul')->getNode();
 
-        $item = $list->getNode()->childNodes->item(0);
+        $item = $list->childNodes->item(0);
         $item = new Element($item);
 
         $this->assertNull($item->previousSibling());
 
-        $item = $list->getNode()->childNodes->item(1);
+        $item = $list->childNodes->item(1);
         $item = new Element($item);
 
-        $expectedNode = $list->getNode()->childNodes->item(0);
+        $expectedNode = $list->childNodes->item(0);
 
         $this->assertEquals($expectedNode, $item->previousSibling()->getNode());
     }
@@ -768,8 +768,20 @@ Tiếng Việt <br>
 
         $document = new Document($html, false);
 
-        $paragraph = $document->first('p');
-        $span = $paragraph->first('span');
+        $span = $document->first('span');
+
+        $expectedNode = $span->getNode()->previousSibling;
+
+        $this->assertEquals($expectedNode, $span->previousSibling()->getNode());
+    }
+
+    public function testPreviousSiblingWithCommentNode()
+    {
+        $html = '<p><!-- Foo --><span>Bar</span> Baz</p>';
+
+        $document = new Document($html, false);
+
+        $span = $document->first('span');
 
         $expectedNode = $span->getNode()->previousSibling;
 
@@ -800,18 +812,80 @@ Tiếng Việt <br>
         $this->assertEquals($expectedNode, $item->previousSibling('li:has(a[href$=".com"])')->getNode());
     }
 
-    public function testPreviousSiblingElementsOnly()
+    public function testPreviousSiblingWithNodeType()
     {
-        $html = '<p>Foo <span>Bar</span> Baz <span>Qux</span></p>';
+        $html = '<p>Foo <span>Bar</span><!--qwe--> Baz <span>Qux</span></p>';
 
         $document = new Document($html, false);
 
         $paragraph = $document->first('p');
-        $span = $paragraph->find('span')[1];
+        $span = $document->find('span')[1];
 
         $expectedNode = $paragraph->getNode()->childNodes->item(1);
+        $this->assertEquals($expectedNode, $span->previousSibling(null, 'DOMElement')->getNode());
 
-        $this->assertEquals($expectedNode, $span->previousSibling(null, true)->getNode());
+        $expectedNode = $paragraph->getNode()->childNodes->item(2);
+        $this->assertEquals($expectedNode, $span->previousSibling(null, 'DOMComment')->getNode());
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testPreviousSiblingWithInvalidTypeOfNodeTypeArgument()
+    {
+        $html = '<p>Foo <span>Bar</span><!--qwe--> Baz <span>Qux</span></p>';
+
+        $document = new Document($html, false);
+
+        $span = $document->find('span')[1];
+
+        $span->previousSibling(null, []);
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testPreviousSiblingWithInvalidNodeType()
+    {
+        $html = '<p>Foo <span>Bar</span><!--qwe--> Baz <span>Qux</span></p>';
+
+        $document = new Document($html, false);
+
+        $span = $document->find('span')[1];
+
+        $span->previousSibling(null, 'foo');
+    }
+
+    /**
+     * @dataProvider previousSiblingWithSelectorAndNotDomElementNodeTypeDataProvider
+     *
+     * @expectedException \LogicException
+     */
+    public function testPreviousSiblingWithSelectorAndNotDomElement($nodeType)
+    {
+        $html =
+            '<ul>'.
+                '<li><a href="https://amazon.com">Amazon</a></li>'.
+                '<li><a href="https://facebook.com">Facebook</a></li>'.
+                '<li><a href="https://google.com">Google</a></li>'.
+                '<li><a href="https://www.w3.org">W3C</a></li>'.
+                '<li><a href="https://wikipedia.org">Wikipedia</a></li>'.
+            '</ul>'
+        ;
+
+        $document = new Document($html, false);
+
+        $list = $document->first('ul');
+
+        $item = $list->getNode()->childNodes->item(4);
+        $item = new Element($item);
+
+        $item->previousSibling('li:has(a[href$=".com"])', $nodeType);
+    }
+
+    public function previousSiblingWithSelectorAndNotDomElementNodeTypeDataProvider()
+    {
+        return [['DOMText'], ['DOMComment']];
     }
 
     public function testPreviousSiblings()
