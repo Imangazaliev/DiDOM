@@ -776,28 +776,42 @@ class Element
 
     /**
      * @param string|null $selector
-     * @param bool $elementsOnly
+     * @param string|null $nodeType
      *
      * @return \DiDom\Element|null
      */
-    public function nextSibling($selector = null, $elementsOnly = false)
+    public function nextSibling($selector = null, $nodeType = null)
     {
         if ($this->node->nextSibling === null) {
             return null;
         }
 
-        if ($selector !== null) {
-            $elementsOnly = true;
+        if ($selector === null and $nodeType === null) {
+            return new Element($this->node->nextSibling);
         }
 
-        if ($elementsOnly === false) {
-            return new Element($this->node->nextSibling);
+        if ($selector !== null and $nodeType === null) {
+            $nodeType = 'DOMElement';
+        }
+
+        if (!is_string($nodeType)) {
+            throw new InvalidArgumentException(sprintf('%s expects parameter 2 to be string, %s given', __METHOD__, gettype($nodeType)));
+        }
+
+        $allowedTypes = ['DOMElement', 'DOMText', 'DOMComment'];
+
+        if (!in_array($nodeType, $allowedTypes)) {
+            throw new RuntimeException(sprintf('Unknown node type "%s". Allowed types: %s', $nodeType, implode(', ', $allowedTypes)));
+        }
+
+        if ($selector !== null and $nodeType !== 'DOMElement') {
+            throw new LogicException(sprintf('Selector can be used only with DOMElement node type, %s given', $nodeType));
         }
 
         $node = $this->node->nextSibling;
 
         while ($node !== null) {
-            if (!$node instanceof \DOMElement) {
+            if (get_class($node) !== $nodeType) {
                 $node = $node->nextSibling;
 
                 continue;
@@ -807,10 +821,10 @@ class Element
 
             if ($selector === null) {
                 return $element;
-            } else {
-                if ($element->matches($selector)) {
-                    return $element;
-                }
+            }
+
+            if ($element->matches($selector)) {
+                return $element;
             }
 
             $node = $node->nextSibling;

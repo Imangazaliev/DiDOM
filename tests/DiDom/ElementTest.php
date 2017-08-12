@@ -1009,6 +1009,20 @@ Tiếng Việt <br>
         $this->assertEquals($expectedNode, $span->nextSibling()->getNode());
     }
 
+    public function testNextSiblingWithCommentNode()
+    {
+        $html = '<p>Foo <span>Bar</span><!-- Baz --></p>';
+
+        $document = new Document($html, false);
+
+        $paragraph = $document->first('p');
+        $span = $paragraph->first('span');
+
+        $expectedNode = $span->getNode()->nextSibling;
+
+        $this->assertEquals($expectedNode, $span->nextSibling()->getNode());
+    }
+
     public function testNextSiblingWithSelector()
     {
         $html =
@@ -1033,18 +1047,80 @@ Tiếng Việt <br>
         $this->assertEquals($expectedNode, $item->nextSibling('li:has(a[href$=".org"])')->getNode());
     }
 
-    public function testNextSiblingElementsOnly()
+    public function testNextSiblingWithNodeType()
     {
-        $html = '<p>Foo <span>Bar</span> Baz <span>Qux</span></p>';
+        $html = '<p>Foo <span>Bar</span> Baz <!--qwe--><span>Qux</span></p>';
 
         $document = new Document($html, false);
 
         $paragraph = $document->first('p');
-        $span = $paragraph->first('span');
+        $span = $document->find('span')[0];
+
+        $expectedNode = $paragraph->getNode()->childNodes->item(4);
+        $this->assertEquals($expectedNode, $span->nextSibling(null, 'DOMElement')->getNode());
 
         $expectedNode = $paragraph->getNode()->childNodes->item(3);
+        $this->assertEquals($expectedNode, $span->nextSibling(null, 'DOMComment')->getNode());
+    }
 
-        $this->assertEquals($expectedNode, $span->nextSibling(null, true)->getNode());
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testNextSiblingWithInvalidTypeOfNodeTypeArgument()
+    {
+        $html = '<p>Foo <span>Bar</span> Baz <!--qwe--><span>Qux</span></p>';
+
+        $document = new Document($html, false);
+
+        $span = $document->find('span')[0];
+
+        $span->nextSibling(null, []);
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testNextSiblingWithInvalidNodeType()
+    {
+        $html = '<p>Foo <span>Bar</span> Baz <!--qwe--><span>Qux</span></p>';
+
+        $document = new Document($html, false);
+
+        $span = $document->find('span')[0];
+
+        $span->nextSibling(null, 'foo');
+    }
+
+    /**
+     * @dataProvider nextSiblingWithSelectorAndNotDomElementNodeTypeDataProvider
+     *
+     * @expectedException \LogicException
+     */
+    public function testNextSiblingWithSelectorAndNotDomElement($nodeType)
+    {
+        $html =
+            '<ul>'.
+            '<li><a href="https://amazon.com">Amazon</a></li>'.
+            '<li><a href="https://facebook.com">Facebook</a></li>'.
+            '<li><a href="https://google.com">Google</a></li>'.
+            '<li><a href="https://www.w3.org">W3C</a></li>'.
+            '<li><a href="https://wikipedia.org">Wikipedia</a></li>'.
+            '</ul>'
+        ;
+
+        $document = new Document($html, false);
+
+        $list = $document->first('ul');
+
+        $item = $list->getNode()->childNodes->item(0);
+        $item = new Element($item);
+
+        $item->nextSibling('li:has(a[href$=".com"])', $nodeType);
+    }
+
+    public function nextSiblingWithSelectorAndNotDomElementNodeTypeDataProvider()
+    {
+        return [['DOMText'], ['DOMComment']];
     }
 
     public function testNextSiblings()
