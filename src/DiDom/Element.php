@@ -871,18 +871,38 @@ class Element
 
     /**
      * @param string|null $selector
-     * @param bool $elementsOnly
+     * @param string $nodeType
      *
      * @return \DiDom\Element[]
+     *
+     * @throws \InvalidArgumentException if node type is not string
+     * @throws \RuntimeException if node type is invalid
+     * @throws \LogicException if selector used with non DOMElement node type
      */
-    public function nextSiblings($selector = null, $elementsOnly = false)
+    public function nextSiblings($selector = null, $nodeType = null)
     {
         if ($this->node->nextSibling === null) {
             return [];
         }
 
-        if ($selector !== null) {
-            $elementsOnly = true;
+        if ($selector !== null and $nodeType === null) {
+            $nodeType = 'DOMElement';
+        }
+
+        if ($nodeType !== null) {
+            if (!is_string($nodeType)) {
+                throw new InvalidArgumentException(sprintf('%s expects parameter 2 to be string, %s given', __METHOD__, gettype($nodeType)));
+            }
+
+            $allowedTypes = ['DOMElement', 'DOMText', 'DOMComment'];
+
+            if (!in_array($nodeType, $allowedTypes)) {
+                throw new RuntimeException(sprintf('Unknown node type "%s". Allowed types: %s', $nodeType, implode(', ', $allowedTypes)));
+            }
+        }
+
+        if ($selector !== null and $nodeType !== 'DOMElement') {
+            throw new LogicException(sprintf('Selector can be used only with DOMElement node type, %s given', $nodeType));
         }
 
         $result = [];
@@ -892,23 +912,31 @@ class Element
         while ($node !== null) {
             $element = new Element($node);
 
-            if ($elementsOnly) {
-                if ($node instanceof \DOMElement) {
-                    if ($selector === null) {
-                        $result[] = $element;
-                    } else {
-                        if ($element->matches($selector)) {
-                            $result[] = $element;
-                        }
-                    }
-                }
+            if ($nodeType === null) {
+                $result[] = $element;
 
                 $node = $node->nextSibling;
 
                 continue;
             }
 
-            $result[] = $element;
+            if (get_class($node) !== $nodeType) {
+                $node = $node->nextSibling;
+
+                continue;
+            }
+
+            if ($selector === null) {
+                $result[] = $element;
+
+                $node = $node->nextSibling;
+
+                continue;
+            }
+
+            if ($element->matches($selector)) {
+                $result[] = $element;
+            }
 
             $node = $node->nextSibling;
         }

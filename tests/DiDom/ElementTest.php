@@ -1184,11 +1184,11 @@ Tiếng Việt <br>
     {
         $html =
             '<ul>'.
-            '<li><a href="https://amazon.com">Amazon</a></li>'.
-            '<li><a href="https://facebook.com">Facebook</a></li>'.
-            '<li><a href="https://google.com">Google</a></li>'.
-            '<li><a href="https://www.w3.org">W3C</a></li>'.
-            '<li><a href="https://wikipedia.org">Wikipedia</a></li>'.
+                '<li><a href="https://amazon.com">Amazon</a></li>'.
+                '<li><a href="https://facebook.com">Facebook</a></li>'.
+                '<li><a href="https://google.com">Google</a></li>'.
+                '<li><a href="https://www.w3.org">W3C</a></li>'.
+                '<li><a href="https://wikipedia.org">Wikipedia</a></li>'.
             '</ul>'
         ;
 
@@ -1240,11 +1240,11 @@ Tiếng Việt <br>
     {
         $html =
             '<ul>'.
-            '<li><a href="https://amazon.com">Amazon</a></li>'.
-            '<li><a href="https://facebook.com">Facebook</a></li>'.
-            '<li><a href="https://google.com">Google</a></li>'.
-            '<li><a href="https://www.w3.org">W3C</a></li>'.
-            '<li><a href="https://wikipedia.org">Wikipedia</a></li>'.
+                '<li><a href="https://amazon.com">Amazon</a></li>'.
+                '<li><a href="https://facebook.com">Facebook</a></li>'.
+                '<li><a href="https://google.com">Google</a></li>'.
+                '<li><a href="https://www.w3.org">W3C</a></li>'.
+                '<li><a href="https://wikipedia.org">Wikipedia</a></li>'.
             '</ul>'
         ;
 
@@ -1271,28 +1271,100 @@ Tiếng Việt <br>
         }
     }
 
-    public function testNextSiblingsElementsOnly()
+    public function testNextSiblingsWithNodeType()
     {
-        $html = '<p>Foo <span>Bar</span> Baz <span>Qux</span></p>';
+        $html = '<p>Foo <span>Bar</span><!--qwe--> Baz <span>Qux</span></p>';
 
         $document = new Document($html, false);
 
         $paragraph = $document->first('p');
-        $span = $paragraph->find('span')[0];
+        $span = $document->find('span')[0];
 
         $childNodes = $paragraph->getNode()->childNodes;
 
         $expectedResult = [
-            $childNodes->item(3),
+            $childNodes->item(4),
         ];
 
-        $nextSiblings = $span->nextSiblings(null, true);
+        $previousSiblings = $span->nextSiblings(null, 'DOMElement');
 
-        $this->assertCount(count($expectedResult), $nextSiblings);
+        $this->assertCount(count($expectedResult), $previousSiblings);
 
-        foreach ($nextSiblings as $index => $nextSibling) {
-            $this->assertEquals($expectedResult[$index], $nextSibling->getNode());
+        foreach ($previousSiblings as $index => $previousSibling) {
+            $this->assertEquals($expectedResult[$index], $previousSibling->getNode());
         }
+
+        $expectedResult = [
+            $childNodes->item(2),
+        ];
+
+        $previousSiblings = $span->nextSiblings(null, 'DOMComment');
+
+        $this->assertCount(count($expectedResult), $previousSiblings);
+
+        foreach ($previousSiblings as $index => $previousSibling) {
+            $this->assertEquals($expectedResult[$index], $previousSibling->getNode());
+        }
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testNextSiblingsWithInvalidTypeOfNodeTypeArgument()
+    {
+        $html = '<p>Foo <span>Bar</span><!--qwe--> Baz <span>Qux</span></p>';
+
+        $document = new Document($html, false);
+
+        $span = $document->find('span')[0];
+
+        $span->nextSiblings(null, []);
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testNextSiblingsWithInvalidNodeType()
+    {
+        $html = '<p>Foo <span>Bar</span><!--qwe--> Baz <span>Qux</span></p>';
+
+        $document = new Document($html, false);
+
+        $span = $document->find('span')[0];
+
+        $span->nextSiblings(null, 'foo');
+    }
+
+    /**
+     * @dataProvider nextSiblingsWithSelectorAndNotDomElementNodeTypeDataProvider
+     *
+     * @expectedException \LogicException
+     */
+    public function testNextSiblingsWithSelectorAndNotDomElement($nodeType)
+    {
+        $html =
+            '<ul>'.
+                '<li><a href="https://amazon.com">Amazon</a></li>'.
+                '<li><a href="https://facebook.com">Facebook</a></li>'.
+                '<li><a href="https://google.com">Google</a></li>'.
+                '<li><a href="https://www.w3.org">W3C</a></li>'.
+                '<li><a href="https://wikipedia.org">Wikipedia</a></li>'.
+            '</ul>'
+        ;
+
+        $document = new Document($html, false);
+
+        $list = $document->first('ul');
+
+        $item = $list->getNode()->childNodes->item(0);
+        $item = new Element($item);
+
+        $item->nextSiblings('li:has(a[href$=".com"])', $nodeType);
+    }
+
+    public function nextSiblingsWithSelectorAndNotDomElementNodeTypeDataProvider()
+    {
+        return [['DOMText'], ['DOMComment']];
     }
 
     public function testChild()
