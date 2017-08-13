@@ -364,45 +364,69 @@ $element->closest('.foo');
 
 ## Получение соседних элементов
 
-```php
-$document = new Document($html);
-$item = $document->find('ul.menu > li')[1];
+Первый аргумент - CSS-селектор, второй - тип узла (`DOMElement`, `DOMText` или `DOMComment`).
 
+Если оба аргумента опущены, будет осуществлен поиск узлов любого типа.
+
+Если селектор указан, а тип узла нет, будет использован тип `DOMElement`.
+
+**Внимание:** Селектор можно использовать только с типом `DOMElement`.
+
+
+```php
 // предыдущий элемент
-var_dump($item->previousSibling());
+$item->previousSibling();
 
 // предыдущий элемент, соответствующий селектору
-var_dump($item->previousSibling('span'));
+$item->previousSibling('span');
 
 // предыдущий элемент типа DOMElement
-var_dump($item->previousSibling(null, true));
+$item->previousSibling(null, 'DOMElement');
 
-// следующий элемент
-var_dump($item->nextSibling());
+// предыдущий элемент типа DOMComment
+$item->previousSibling(null, 'DOMComment');
+```
 
-// следующий элемент, соответствующий селектору
-var_dump($item->nextSibling('span'));
-
-// следующий элемент типа DOMElement
-var_dump($item->nextSibling(null, true));
-
+```php
 // все предыдущие элементы
-var_dump($item->previousSiblings());
+$item->previousSiblings();
 
 // все предыдущие элементы, соответствующие селектору
-var_dump($item->previousSiblings('span'));
+$item->previousSiblings('span');
 
 // все предыдущие элементы типа DOMElement
-var_dump($item->previousSiblings(null, true));
+$item->previousSiblings(null, 'DOMElement');
 
+// все предыдущие элементы типа DOMComment
+$item->previousSiblings(null, 'DOMComment');
+```
+
+```php
+// следующий элемент
+$item->nextSibling();
+
+// следующий элемент, соответствующий селектору
+$item->nextSibling('span');
+
+// следующий элемент типа DOMElement
+$item->nextSibling(null, 'DOMElement');
+
+// следующий элемент типа DOMComment
+$item->nextSibling(null, 'DOMComment');
+```
+
+```php
 // все последующие элементы
-var_dump($item->nextSiblings());
+$item->nextSiblings();
 
 // все последующие элементы, соответствующие селектору
-var_dump($item->nextSiblings('span'));
+$item->nextSiblings('span');
 
 // все последующие элементы типа DOMElement
-var_dump($item->nextSiblings(null, true));
+$item->nextSiblings(null, 'DOMElement');
+
+// все последующие элементы типа DOMComment
+$item->nextSiblings(null, 'DOMComment');
 ```
 
 ## Получение дочерних элементов
