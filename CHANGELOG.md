@@ -1,11 +1,10 @@
 ### 1.11
 
-- Add Element::isElementNode() method
-- Add ability to retrieve only specific attributes in Element::attributes() method
-- Add Element::removeAllAttributes() method
-- Ability to specify selector in Element::previousSibling() and Element::nextSibling() methods
-- Add ability to find only elements in Element::previousSibling() and Element::nextSibling() methods
-- Add Element::previousSiblings() and Element::nextSiblings() methods
+- Add `Element::isElementNode()` method
+- Add ability to retrieve only specific attributes in `Element::attributes()` method
+- Add `Element::removeAllAttributes()` method
+- Add ability to specify selector and node type in `Element::previousSibling()` and `Element::nextSibling()` methods
+- Add `Element::previousSiblings()` and `Element::nextSiblings()` methods
 - Many minor fixes and improvements
 
 ### 1.10.6
@@ -18,29 +17,29 @@
 
 ### 1.10.4
 
-- Use mb_convert_encoding in the Encoder if it is available
+- Use `mb_convert_encoding()` in the Encoder if it is available
 
 ### v1.10.3
 
-- Add Element::removeChild() and Element::removeChildren() methods
-- Fix bug in Element::matches() method
-- Element::matches() method now returns false if node is not DOMElement
-- Add Element::hasChildren() method
+- Add `Element::removeChild()` and `Element::removeChildren()` methods
+- Fix bug in `Element::matches()` method
+- `Element::matches()` method now returns false if node is not `DOMElement`
+- Add `Element::hasChildren()` method
 
 ### 1.10.2
 
 - Fix bug in setInnerHtml: can't rewrite existing content
-- Throw InvalidSelectorException instead of InvalidArgumentException when selector is empty
+- Throw `InvalidSelectorException` instead of `InvalidArgumentException` when selector is empty
 
 ### 1.10.1
 
 - Fix attributes `ends-with` XPath
-- Method Element::matches() now can check children nodes
+- Method `Element::matches()` now can check children nodes
 
 ### 1.10
 
 - Fix HTML saving mechanism
-- Throw InvalidSelectorException instead of RuntimeException in Query class
+- Throw `InvalidSelectorException` instead of `RuntimeException` in Query class
 
 ### 1.9.1
 
@@ -49,7 +48,7 @@
 
 ### 1.9.0
 
-- Method appendChild() now returns appended node(s)
+- Methods `Document::appendChild()` and `Element::appendChild()` now return appended node(s)
 - Add ability to search elements in context
 
 ### 1.8.8
@@ -58,7 +57,7 @@
 
 ### 1.8.7
 
-- Add getLineNo method to Element
+- Add `Element::getLineNo()` method
 
 ### 1.8.6
 
@@ -66,7 +65,7 @@
 
 ### 1.8.5
 
-- Add support of DOMComment
+- Add support of `DOMComment`
 
 ### 1.8.4
 
@@ -75,7 +74,7 @@
 
 ### 1.8.3
 
-- Add method Element::isTextNode()
+- Add method `Element::isTextNode()`
 - Many minor fixes
 
 ### 1.8.2
@@ -129,7 +128,7 @@
 
 ### 1.6.4
 
-- Added handling of DOMText and DOMAttr in Document::find()
+- Added handling of `DOMText` and `DOMAttr` in `Document::find()`
 
 ### 1.6.3
 
@@ -165,7 +164,7 @@
 
 ### 1.4
 
-- Added the ability to specify the return type element (DiDom\Element or DOMElement)
+- Added the ability to specify the return type element (`DiDom\Element` or `DOMElement`)
 
 ### 1.3.2
 
