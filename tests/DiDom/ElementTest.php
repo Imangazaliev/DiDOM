@@ -741,6 +741,10 @@ Tiếng Việt <br>
         $this->assertNull($document->first('ul.menu')->closest('nav'));
     }
 
+    // =========================
+    // previousSibling
+    // =========================
+
     public function testPreviousSibling()
     {
         $html = '<ul><li>One</li><li>Two</li><li>Three</li></ul>';
@@ -888,6 +892,10 @@ Tiếng Việt <br>
         return [['DOMText'], ['DOMComment']];
     }
 
+    // =========================
+    // previousSiblings
+    // =========================
+
     public function testPreviousSiblings()
     {
         $html = '<p>Foo <span>Bar</span> Baz <span>Qux</span></p>';
@@ -950,14 +958,14 @@ Tiếng Việt <br>
         }
     }
 
-    public function testPreviousSiblingsElementsOnly()
+    public function testPreviousSiblingsWithNodeType()
     {
-        $html = '<p>Foo <span>Bar</span> Baz <span>Qux</span></p>';
+        $html = '<p>Foo <span>Bar</span><!--qwe--> Baz <span>Qux</span></p>';
 
         $document = new Document($html, false);
 
         $paragraph = $document->first('p');
-        $span = $paragraph->find('span')[1];
+        $span = $document->find('span')[1];
 
         $childNodes = $paragraph->getNode()->childNodes;
 
@@ -965,7 +973,19 @@ Tiếng Việt <br>
             $childNodes->item(1),
         ];
 
-        $previousSiblings = $span->previousSiblings(null, true);
+        $previousSiblings = $span->previousSiblings(null, 'DOMElement');
+
+        $this->assertCount(count($expectedResult), $previousSiblings);
+
+        foreach ($previousSiblings as $index => $previousSibling) {
+            $this->assertEquals($expectedResult[$index], $previousSibling->getNode());
+        }
+
+        $expectedResult = [
+            $childNodes->item(2),
+        ];
+
+        $previousSiblings = $span->previousSiblings(null, 'DOMComment');
 
         $this->assertCount(count($expectedResult), $previousSiblings);
 
@@ -973,6 +993,70 @@ Tiếng Việt <br>
             $this->assertEquals($expectedResult[$index], $previousSibling->getNode());
         }
     }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testPreviousSiblingsWithInvalidTypeOfNodeTypeArgument()
+    {
+        $html = '<p>Foo <span>Bar</span><!--qwe--> Baz <span>Qux</span></p>';
+
+        $document = new Document($html, false);
+
+        $span = $document->find('span')[1];
+
+        $span->previousSiblings(null, []);
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testPreviousSiblingsWithInvalidNodeType()
+    {
+        $html = '<p>Foo <span>Bar</span><!--qwe--> Baz <span>Qux</span></p>';
+
+        $document = new Document($html, false);
+
+        $span = $document->find('span')[1];
+
+        $span->previousSibling(null, 'foo');
+    }
+
+    /**
+     * @dataProvider previousSiblingsWithSelectorAndNotDomElementNodeTypeDataProvider
+     *
+     * @expectedException \LogicException
+     */
+    public function testPreviousSiblingsWithSelectorAndNotDomElement($nodeType)
+    {
+        $html =
+            '<ul>'.
+            '<li><a href="https://amazon.com">Amazon</a></li>'.
+            '<li><a href="https://facebook.com">Facebook</a></li>'.
+            '<li><a href="https://google.com">Google</a></li>'.
+            '<li><a href="https://www.w3.org">W3C</a></li>'.
+            '<li><a href="https://wikipedia.org">Wikipedia</a></li>'.
+            '</ul>'
+        ;
+
+        $document = new Document($html, false);
+
+        $list = $document->first('ul');
+
+        $item = $list->getNode()->childNodes->item(4);
+        $item = new Element($item);
+
+        $item->previousSiblings('li:has(a[href$=".com"])', $nodeType);
+    }
+
+    public function previousSiblingsWithSelectorAndNotDomElementNodeTypeDataProvider()
+    {
+        return [['DOMText'], ['DOMComment']];
+    }
+
+    // =========================
+    // nextSibling
+    // =========================
 
     public function testNextSibling()
     {
@@ -1122,6 +1206,10 @@ Tiếng Việt <br>
     {
         return [['DOMText'], ['DOMComment']];
     }
+
+    // =========================
+    // nextSiblings
+    // =========================
 
     public function testNextSiblings()
     {
