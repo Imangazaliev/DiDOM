@@ -211,6 +211,8 @@ class SelectorTest extends TestCase
             $result[] = $element->text();
         }
 
+        $this->assertEquals($expected, $result);
+
         // ends with
 
         $expected = ['Baz', 'Qux'];
@@ -259,5 +261,24 @@ class SelectorTest extends TestCase
         }
 
         $this->assertEquals($expected, $result);
+    }
+
+    public function testUnicodeSupport()
+    {
+        $html = '
+            <ul class="links">
+                <li>
+                    <a href="http://foo.com" title="Foo">Foo</a>
+                    <a href="http://example.com" title="Пример">Example</a>
+                    <a href="http://bar.com" title="Foo">Bar</a>
+                    <a href="http://example.ru" title="Example">Пример</a>
+                </li>
+            </ul>
+        ';
+
+        $document = new Document($html);
+
+        $this->assertEquals('Example', $document->first('a[title=Пример]')->text());
+        $this->assertEquals('Example', $document->first('a:contains(Пример)')->attr('title'));
     }
 }
