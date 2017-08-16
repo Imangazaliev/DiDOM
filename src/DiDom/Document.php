@@ -343,6 +343,9 @@ class Document
     {
         $xpath = new DOMXPath($this->document);
 
+        $xpath->registerNamespace("php", "http://php.net/xpath");
+        $xpath->registerPhpFunctions();
+
         $expression = Query::compile($expression, $type);
         $expression = sprintf('count(%s) > 0', $expression);
 
@@ -478,6 +481,9 @@ class Document
     public function count($expression, $type = Query::TYPE_CSS)
     {
         $xpath = new DOMXPath($this->document);
+
+        $xpath->registerNamespace("php", "http://php.net/xpath");
+        $xpath->registerPhpFunctions();
 
         $expression = Query::compile($expression, $type);
         $expression = sprintf('count(%s)', $expression);
