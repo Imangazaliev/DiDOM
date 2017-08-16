@@ -1,3 +1,7 @@
+### 1.11.1
+
+- Fix bug with unregistered PHP functions in XPath in `Document::has()` and `Document::count()` methods
+
 ### 1.11
 
 - Add `Element::isElementNode()` method
