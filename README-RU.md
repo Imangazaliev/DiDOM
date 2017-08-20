@@ -432,29 +432,27 @@ $item->nextSiblings(null, 'DOMComment');
 ## Получение дочерних элементов
 
 ```php
-$html = '
-<ul>
-    <li>Foo</li>
-    <li>Bar</li>
-    <li>Baz</li>
-</ul>
-';
+$html = '<div>Foo<span>Bar</span><!--Baz--></div>';
 
 $document = new Document($html);
-$list = $document->first('ul');
 
-// string(3) "Baz"
-var_dump($item->child(2)->text());
+$div = $document->first('div');
 
+// элемент (DOMElement)
+// string(3) "Bar"
+var_dump($div->child(1)->text());
+
+// текстовый узел (DOMText)
 // string(3) "Foo"
-var_dump($item->firstChild()->text());
+var_dump($div->firstChild()->text());
 
+// комментарий (DOMComment)
 // string(3) "Baz"
-var_dump($item->lastChild()->text());
+var_dump($div->lastChild()->text());
 
 // array(3) { ... }
-var_dump($item->children());
-```
+var_dump($div->children());
+``
 
 ## Получение документа
 
