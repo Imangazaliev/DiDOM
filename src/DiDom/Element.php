@@ -147,8 +147,8 @@ class Element
     /**
      * Searches for an node in the DOM tree for a given XPath expression or a CSS selector.
      *
-     * @param string $expression XPath expression or a CSS selector
-     * @param string $type The type of the expression
+     * @param string $expression  XPath expression or a CSS selector
+     * @param string $type        The type of the expression
      * @param bool   $wrapElement Returns array of \DiDom\Element if true, otherwise array of \DOMElement
      *
      * @return \DiDom\Element[]|\DOMElement[]
@@ -162,14 +162,14 @@ class Element
      * Searches for an node in the owner document using current node as context.
      *
      * @param string $expression XPath expression or a CSS selector
-     * @param string $type The type of the expression
-     * @param bool   $wrapElement Returns array of \DiDom\Element if true, otherwise array of \DOMElement
+     * @param string $type       The type of the expression
+     * @param bool   $wrapNode   Returns array of \DiDom\Element if true, otherwise array of \DOMElement
      *
      * @return \DiDom\Element[]|\DOMElement[]
      *
      * @throws \LogicException if current node has no owner document
      */
-    public function findInDocument($expression, $type = Query::TYPE_CSS, $wrapElement = true)
+    public function findInDocument($expression, $type = Query::TYPE_CSS, $wrapNode = true)
     {
         $ownerDocument = $this->getDocument();
 
@@ -177,33 +177,33 @@ class Element
             throw new LogicException('Can not search in context without owner document');
         }
 
-        return $ownerDocument->find($expression, $type, $wrapElement, $this->node);
+        return $ownerDocument->find($expression, $type, $wrapNode, $this->node);
     }
 
     /**
      * Searches for an node in the DOM tree and returns first element or null.
      *
      * @param string $expression XPath expression or a CSS selector
-     * @param string $type The type of the expression
-     * @param bool   $wrapElement Returns \DiDom\Element if true, otherwise \DOMElement
+     * @param string $type       The type of the expression
+     * @param bool   $wrapNode   Returns \DiDom\Element if true, otherwise \DOMElement
      *
      * @return \DiDom\Element|\DOMElement|null
      */
-    public function first($expression, $type = Query::TYPE_CSS, $wrapElement = true)
+    public function first($expression, $type = Query::TYPE_CSS, $wrapNode = true)
     {
-        return $this->toDocument()->first($expression, $type, $wrapElement);
+        return $this->toDocument()->first($expression, $type, $wrapNode);
     }
 
     /**
      * Searches for an node in the owner document using current node as context and returns first element or null.
      *
      * @param string $expression XPath expression or a CSS selector
-     * @param string $type The type of the expression
-     * @param bool   $wrapElement Returns \DiDom\Element if true, otherwise \DOMElement
+     * @param string $type       The type of the expression
+     * @param bool   $wrapNode   Returns \DiDom\Element if true, otherwise \DOMElement
      *
      * @return \DiDom\Element|\DOMElement|null
      */
-    public function firstInDocument($expression, $type = Query::TYPE_CSS, $wrapElement = true)
+    public function firstInDocument($expression, $type = Query::TYPE_CSS, $wrapNode = true)
     {
         $ownerDocument = $this->getDocument();
 
@@ -211,20 +211,20 @@ class Element
             throw new LogicException('Can not search in context without owner document');
         }
 
-        return $ownerDocument->first($expression, $type, $wrapElement, $this->node);
+        return $ownerDocument->first($expression, $type, $wrapNode, $this->node);
     }
 
     /**
      * Searches for an node in the DOM tree for a given XPath expression.
      *
      * @param string $expression XPath expression
-     * @param bool   $wrapElement Returns array of \DiDom\Element if true, otherwise array of \DOMElement
+     * @param bool   $wrapNode Returns array of \DiDom\Element if true, otherwise array of \DOMElement
      *
      * @return \DiDom\Element[]|\DOMElement[]
      */
-    public function xpath($expression, $wrapElement = true)
+    public function xpath($expression, $wrapNode = true)
     {
-        return $this->find($expression, Query::TYPE_XPATH, $wrapElement);
+        return $this->find($expression, Query::TYPE_XPATH, $wrapNode);
     }
 
     /**
@@ -1182,6 +1182,7 @@ class Element
     public function toDocument($encoding = 'UTF-8')
     {
         $document = new Document(null, false, $encoding);
+
         $document->appendChild($this->node);
 
         return $document;
@@ -1254,13 +1255,13 @@ class Element
      * Searches for an node in the DOM tree for a given XPath expression or a CSS selector.
      *
      * @param string $expression XPath expression or a CSS selector
-     * @param string $type The type of the expression
-     * @param bool   $wrapElement Returns array of \DiDom\Element if true, otherwise array of \DOMElement
+     * @param string $type       The type of the expression
+     * @param bool   $wrapNode   Returns array of \DiDom\Element if true, otherwise array of \DOMElement
      *
      * @return \DiDom\Element[]|\DOMElement[]
      */
-    public function __invoke($expression, $type = Query::TYPE_CSS, $wrapElement = true)
+    public function __invoke($expression, $type = Query::TYPE_CSS, $wrapNode = true)
     {
-        return $this->find($expression, $type, $wrapElement);
+        return $this->find($expression, $type, $wrapNode);
     }
 }

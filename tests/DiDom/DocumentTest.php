@@ -456,10 +456,12 @@ class DocumentTest extends TestCase
 
         $document = new Document($html, false);
 
+        $this->assertInternalType('int', $document->count('li'));
         $this->assertEquals(3, $document->count('li'));
 
         $document = new Document();
 
+        $this->assertInternalType('int', $document->count('li'));
         $this->assertEquals(0, $document->count('li'));
     }
 

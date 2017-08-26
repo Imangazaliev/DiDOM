@@ -27,10 +27,10 @@ class Document
     /**
      * Constructor.
      *
-     * @param string|null $string HTML or XML string or file path
-     * @param bool   $isFile Indicates that in first parameter was passed to the file path
-     * @param string $encoding The document encoding
-     * @param string $type The document type
+     * @param string|null $string   HTML or XML string or file path
+     * @param bool        $isFile   Indicates that in first parameter was passed to the file path
+     * @param string      $encoding The document encoding
+     * @param string      $type     The document type
      *
      * @throws \InvalidArgumentException if the passed encoding is not a string
      */
@@ -60,10 +60,10 @@ class Document
     /**
      * Create new document.
      *
-     * @param string|null $string HTML or XML string or file path
-     * @param bool   $isFile Indicates that in first parameter was passed to the file path
-     * @param string $encoding The document encoding
-     * @param string $type The document type
+     * @param string|null $string   HTML or XML string or file path
+     * @param bool        $isFile   Indicates that in first parameter was passed to the file path
+     * @param string      $encoding The document encoding
+     * @param string      $type     The document type
      *
      * @return \DiDom\Document
      */
@@ -75,9 +75,9 @@ class Document
     /**
      * Create new element node.
      *
-     * @param string $name The tag name of the element
-     * @param string|null $value The value of the element
-     * @param array  $attributes The attributes of the element
+     * @param string      $name       The tag name of the element
+     * @param string|null $value      The value of the element
+     * @param array       $attributes The attributes of the element
      *
      * @return \DiDom\Element created element
      */
@@ -188,9 +188,9 @@ class Document
     /**
      * Load HTML or XML.
      *
-     * @param string   $string HTML or XML string or file path
-     * @param bool     $isFile Indicates that in first parameter was passed to the file path
-     * @param string   $type Type of the document
+     * @param string   $string  HTML or XML string or file path
+     * @param bool     $isFile  Indicates that in first parameter was passed to the file path
+     * @param string   $type    Type of the document
      * @param int|null $options Additional parameters
      *
      * @return \DiDom\Document
@@ -238,7 +238,7 @@ class Document
     /**
      * Load HTML from a string.
      *
-     * @param string   $html The HTML string
+     * @param string   $html    The HTML string
      * @param int|null $options Additional parameters
      *
      * @return \DiDom\Document
@@ -253,7 +253,7 @@ class Document
     /**
      * Load HTML from a file.
      *
-     * @param string   $filepath The path to the HTML file
+     * @param string   $filename The path to the HTML file
      * @param int|null $options  Additional parameters
      *
      * @return \DiDom\Document
@@ -262,15 +262,15 @@ class Document
      * @throws \RuntimeException if the file does not exist
      * @throws \RuntimeException if you are unable to load the file
      */
-    public function loadHtmlFile($filepath, $options = null)
+    public function loadHtmlFile($filename, $options = null)
     {
-        return $this->load($filepath, true, 'html', $options);
+        return $this->load($filename, true, 'html', $options);
     }
 
     /**
      * Load XML from a string.
      *
-     * @param string   $xml The XML string
+     * @param string   $xml     The XML string
      * @param int|null $options Additional parameters
      *
      * @return \DiDom\Document
@@ -285,8 +285,8 @@ class Document
     /**
      * Load XML from a file.
      *
-     * @param string   $filepath The path to the XML file
-     * @param int|null $options Additional parameters
+     * @param string   $filename The path to the XML file
+     * @param int|null $options  Additional parameters
      *
      * @return \DiDom\Document
      *
@@ -294,38 +294,31 @@ class Document
      * @throws \RuntimeException if the file does not exist
      * @throws \RuntimeException if you are unable to load the file
      */
-    public function loadXmlFile($filepath, $options = null)
+    public function loadXmlFile($filename, $options = null)
     {
-        return $this->load($filepath, true, 'xml', $options);
+        return $this->load($filename, true, 'xml', $options);
     }
 
     /**
      * Reads entire file into a string.
      *
-     * @param string $filepath The path to the file
+     * @param string $filename The path to the file
      *
      * @return string
      *
      * @throws \InvalidArgumentException if the file path is not a string
-     * @throws \RuntimeException if the file does not exist
-     * @throws \RuntimeException if you are unable to load the file
+     * @throws \RuntimeException if an error occurred
      */
-    protected function loadFile($filepath)
+    protected function loadFile($filename)
     {
-        if (!is_string($filepath)) {
-            throw new InvalidArgumentException(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, gettype($filepath)));
+        if (!is_string($filename)) {
+            throw new InvalidArgumentException(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, gettype($filename)));
         }
 
-        if (filter_var($filepath, FILTER_VALIDATE_URL) === false) {
-            if (!file_exists($filepath)) {
-                throw new RuntimeException(sprintf('File %s not found', $filepath));
-            }
-        }
-
-        $content = file_get_contents($filepath);
+        $content = file_get_contents($filename);
 
         if ($content === false) {
-            throw new RuntimeException(sprintf('Could not load file %s', $filepath));
+            throw new RuntimeException(sprintf('Could not load file %s', $filename));
         }
 
         return $content;
@@ -355,16 +348,16 @@ class Document
     /**
      * Searches for an node in the DOM tree for a given XPath expression or a CSS selector.
      *
-     * @param string $expression XPath expression or a CSS selector
-     * @param string $type The type of the expression
-     * @param bool   $wrapElement Returns array of \DiDom\Element if true, otherwise array of \DOMElement
-     * @param \DOMElement|null $contextNode
+     * @param string           $expression  XPath expression or a CSS selector
+     * @param string           $type        The type of the expression
+     * @param bool             $wrapNode    Returns array of \DiDom\Element if true, otherwise array of \DOMElement
+     * @param \DOMElement|null $contextNode The node in which the search will be performed
      *
      * @return \DiDom\Element[]|\DOMElement[]
      *
      * @throws InvalidArgumentException if context node is not \DOMElement
      */
-    public function find($expression, $type = Query::TYPE_CSS, $wrapElement = true, $contextNode = null)
+    public function find($expression, $type = Query::TYPE_CSS, $wrapNode = true, $contextNode = null)
     {
         $expression = Query::compile($expression, $type);
 
@@ -391,7 +384,7 @@ class Document
 
         $result = [];
 
-        if ($wrapElement) {
+        if ($wrapNode) {
             foreach ($nodeList as $node) {
                 $result[] = $this->wrapNode($node);
             }
@@ -407,14 +400,14 @@ class Document
     /**
      * Searches for an node in the DOM tree and returns first element or null.
      *
-     * @param string $expression XPath expression or a CSS selector
-     * @param string $type The type of the expression
-     * @param bool   $wrapElement Returns \DiDom\Element if true, otherwise \DOMElement
-     * @param \DOMElement|null $contextNode
+     * @param string           $expression  XPath expression or a CSS selector
+     * @param string           $type        The type of the expression
+     * @param bool             $wrapNode    Returns array of \DiDom\Element if true, otherwise array of \DOMElement
+     * @param \DOMElement|null $contextNode The node in which the search will be performed
      *
      * @return \DiDom\Element|\DOMElement|null
      */
-    public function first($expression, $type = Query::TYPE_CSS, $wrapElement = true, $contextNode = null)
+    public function first($expression, $type = Query::TYPE_CSS, $wrapNode = true, $contextNode = null)
     {
         $expression = Query::compile($expression, $type);
 
@@ -430,7 +423,7 @@ class Document
             return null;
         }
 
-        return $wrapElement ? $this->wrapNode($nodes[0]) : $nodes[0];
+        return $wrapNode ? $this->wrapNode($nodes[0]) : $nodes[0];
     }
 
     /**
@@ -459,15 +452,15 @@ class Document
     /**
      * Searches for an node in the DOM tree for a given XPath expression.
      *
-     * @param string $expression XPath expression
-     * @param bool   $wrapElement Returns array of \DiDom\Element if true, otherwise array of \DOMElement
-     * @param \DOMElement $contextNode
+     * @param string      $expression  XPath expression
+     * @param bool        $wrapNode    Returns array of \DiDom\Element if true, otherwise array of \DOMElement
+     * @param \DOMElement $contextNode The node in which the search will be performed
      *
      * @return \DiDom\Element[]|\DOMElement[]
      */
-    public function xpath($expression, $wrapElement = true, $contextNode = null)
+    public function xpath($expression, $wrapNode = true, $contextNode = null)
     {
-        return $this->find($expression, Query::TYPE_XPATH, $wrapElement, $contextNode);
+        return $this->find($expression, Query::TYPE_XPATH, $wrapNode, $contextNode);
     }
 
     /**
@@ -488,7 +481,7 @@ class Document
         $expression = Query::compile($expression, $type);
         $expression = sprintf('count(%s)', $expression);
 
-        return $xpath->evaluate($expression);
+        return (int) $xpath->evaluate($expression);
     }
 
     /**
@@ -630,14 +623,15 @@ class Document
     /**
      * Searches for an node in the DOM tree for a given XPath expression or a CSS selector.
      *
-     * @param string $expression XPath expression or a CSS selector
-     * @param string $type The type of the expression
-     * @param bool   $wrapElement Returns array of \DiDom\Element if true, otherwise array of \DOMElement
+     * @param string           $expression  XPath expression or a CSS selector
+     * @param string           $type        The type of the expression
+     * @param bool             $wrapNode    Returns array of \DiDom\Element if true, otherwise array of \DOMElement
+     * @param \DOMElement|null $contextNode The node in which the search will be performed
      *
      * @return \DiDom\Element[]|\DOMElement[]
      */
-    public function __invoke($expression, $type = Query::TYPE_CSS, $wrapElement = true)
+    public function __invoke($expression, $type = Query::TYPE_CSS, $wrapNode = true, $contextNode = null)
     {
-        return $this->find($expression, $type, $wrapElement);
+        return $this->find($expression, $type, $wrapNode, $contextNode);
     }
 }

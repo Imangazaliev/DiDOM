@@ -56,7 +56,7 @@ class QueryTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testBuildXpathWithEmptyArray()
     {
@@ -64,23 +64,31 @@ class QueryTest extends TestCase
     }
 
     /**
-     * @expectedException DiDom\Exceptions\InvalidSelectorException
+     * @expectedException \DiDom\Exceptions\InvalidSelectorException
      */
-    public function testCompileWithEmptySelector()
+    public function testCompileWithEmptyXpathExpression()
     {
-        Query::compile('');
+        Query::compile('', Query::TYPE_XPATH);
     }
 
     /**
-     * @expectedException DiDom\Exceptions\InvalidSelectorException
+     * @expectedException \DiDom\Exceptions\InvalidSelectorException
+     */
+    public function testCompileWithEmptyCssExpression()
+    {
+        Query::compile('', Query::TYPE_CSS);
+    }
+
+    /**
+     * @expectedException \DiDom\Exceptions\InvalidSelectorException
      */
     public function testGetSegmentsWithEmptySelector()
     {
-        Query::compile('');
+        Query::getSegments('');
     }
 
     /**
-     * @expectedException DiDom\Exceptions\InvalidSelectorException
+     * @expectedException \DiDom\Exceptions\InvalidSelectorException
      */
     public function testEmptyAttributeName()
     {
@@ -88,7 +96,7 @@ class QueryTest extends TestCase
     }
 
     /**
-     * @expectedException DiDom\Exceptions\InvalidSelectorException
+     * @expectedException \DiDom\Exceptions\InvalidSelectorException
      */
     public function testUnknownPseudoClass()
     {
@@ -96,7 +104,28 @@ class QueryTest extends TestCase
     }
 
     /**
-     * @expectedException DiDom\Exceptions\InvalidSelectorException
+     * @dataProvider containsInvalidCaseSensitiveParameterDataProvider
+     * @expectedException \DiDom\Exceptions\InvalidSelectorException
+     */
+    public function testContainsInvalidCaseSensitiveParameter($caseSensitive)
+    {
+        Query::compile("a:contains('Log in', {$caseSensitive})");
+    }
+
+    /**
+     * @expectedException \DiDom\Exceptions\InvalidSelectorException
+     */
+    public function containsInvalidCaseSensitiveParameterDataProvider()
+    {
+        return [
+            ['foo'],
+            ['TRUE'],
+            ['FALSE'],
+        ];
+    }
+
+    /**
+     * @expectedException \DiDom\Exceptions\InvalidSelectorException
      */
     public function testEmptyNthExpression()
     {
@@ -104,7 +133,23 @@ class QueryTest extends TestCase
     }
 
     /**
-     * @expectedException DiDom\Exceptions\InvalidSelectorException
+     * @expectedException \DiDom\Exceptions\InvalidSelectorException
+     */
+    public function testEmptyProperty()
+    {
+        Query::compile('li::');
+    }
+
+    /**
+     * @expectedException \DiDom\Exceptions\InvalidSelectorException
+     */
+    public function testInvalidProperty()
+    {
+        Query::compile('li::foo');
+    }
+
+    /**
+     * @expectedException \DiDom\Exceptions\InvalidSelectorException
      */
     public function testUnknownNthExpression()
     {
@@ -112,7 +157,7 @@ class QueryTest extends TestCase
     }
 
     /**
-     * @expectedException DiDom\Exceptions\InvalidSelectorException
+     * @expectedException \DiDom\Exceptions\InvalidSelectorException
      */
     public function testGetSegmentsWithEmptyClass()
     {
@@ -120,7 +165,7 @@ class QueryTest extends TestCase
     }
 
     /**
-     * @expectedException DiDom\Exceptions\InvalidSelectorException
+     * @expectedException \DiDom\Exceptions\InvalidSelectorException
      */
     public function testCompilehWithEmptyClass()
     {
@@ -187,8 +232,10 @@ class QueryTest extends TestCase
             ['a[href!="http://foo.com/"]', '//a[not(@href="http://foo.com/")]'],
             ['a[foo~="bar"]', '//a[contains(concat(" ", normalize-space(@foo), " "), " bar ")]'],
             ['input, textarea, select', '//input|//textarea|//select'],
+            ['input[name="name"], textarea[name="description"], select[name="type"]', '//input[@name="name"]|//textarea[@name="description"]|//select[@name="type"]'],
             ['li:first-child', '//li[position() = 1]'],
             ['li:last-child', '//li[position() = last()]'],
+            ['*:not(a[href*="example.com"])', '//*[not(self::a[contains(@href, "example.com")])]'],
             ['ul:empty', '//ul[count(descendant::*) = 0]'],
             ['ul:not-empty', '//ul[count(descendant::*) > 0]'],
             ['li:nth-child(odd)', '//*[(name()="li") and (position() mod 2 = 1 and position() >= 1)]'],
@@ -214,25 +261,75 @@ class QueryTest extends TestCase
             ['ul li a::text', '//ul//li//a/text()'],
             ['ul li a::text()', '//ul//li//a/text()'],
             ['ul li a::attr(href)', '//ul//li//a/@*[name() = "href"]'],
-            ['ul li a::attr(href|title)', '//ul//li//a/@*[name() = "href" or name() = "title"]'],
+            ['ul li a::attr(href, title)', '//ul//li//a/@*[name() = "href" or name() = "title"]'],
             ['> ul li a', '/ul//li//a'],
         ];
 
-        if (function_exists('mb_strtolower')) {
-            $containsXpath = [
-                ['li:contains(foo)', '//li[php:functionString("mb_strtolower", .) = php:functionString("mb_strtolower", "foo")]'],
-                ['li:contains("foo")', '//li[php:functionString("mb_strtolower", .) = php:functionString("mb_strtolower", "foo")]'],
-                ['li:contains(\'foo\')', '//li[php:functionString("mb_strtolower", .) = php:functionString("mb_strtolower", "foo")]'],
-            ];
-        } else {
-            $containsXpath = [
-                ['li:contains(foo)', '//li[php:functionString("strtolower", .) = php:functionString("mb_strtolower", "foo")]'],
-                ['li:contains("foo")', '//li[php:functionString("strtolower", .) = php:functionString("mb_strtolower", "foo")]'],
-                ['li:contains(\'foo\')', '//li[php:functionString("strtolower", .) = php:functionString("mb_strtolower", "foo")]'],
-            ];
-        }
+        $compiled = array_merge($compiled, $this->getContainsPseudoClassTests());
+        $compiled = array_merge($compiled, $this->getPropertiesTests());
+
+        $compiled = array_merge($compiled, [
+            ['a[title="foo, bar::baz"]', '//a[@title="foo, bar::baz"]'],
+        ]);
 
         return $compiled;
+    }
+
+    private function getContainsPseudoClassTests()
+    {
+        $strToLowerFunction = function_exists('mb_strtolower') ? 'mb_strtolower' : 'strtolower';
+
+        $containsXpath = [
+            // caseSensitive = true, fullMatch = false
+            ['li:contains(foo)', '//li[contains(text(), "foo")]'],
+            ['li:contains("foo")', '//li[contains(text(), "foo")]'],
+            ['li:contains(\'foo\')', '//li[contains(text(), "foo")]'],
+
+            // caseSensitive = true, fullMatch = false
+            ['li:contains(foo, true)', '//li[contains(text(), "foo")]'],
+            ['li:contains("foo", true)', '//li[contains(text(), "foo")]'],
+            ['li:contains(\'foo\', true)', '//li[contains(text(), "foo")]'],
+
+            // caseSensitive = true, fullMatch = false
+            ['li:contains(foo, true, false)', '//li[contains(text(), "foo")]'],
+            ['li:contains("foo", true, false)', '//li[contains(text(), "foo")]'],
+            ['li:contains(\'foo\', true, false)', '//li[contains(text(), "foo")]'],
+
+            // caseSensitive = true, fullMatch = true
+            ['li:contains(foo, true, true)', '//li[text() = "foo"]'],
+            ['li:contains("foo", true, true)', '//li[text() = "foo"]'],
+            ['li:contains(\'foo\', true, true)', '//li[text() = "foo"]'],
+
+            // caseSensitive = false, fullMatch = false
+            ['li:contains(foo, false)', "//li[contains(php:functionString(\"{$strToLowerFunction}\", .), php:functionString(\"{$strToLowerFunction}\", \"foo\"))]"],
+            ['li:contains("foo", false)', "//li[contains(php:functionString(\"{$strToLowerFunction}\", .), php:functionString(\"{$strToLowerFunction}\", \"foo\"))]"],
+            ['li:contains(\'foo\', false)', "//li[contains(php:functionString(\"{$strToLowerFunction}\", .), php:functionString(\"{$strToLowerFunction}\", \"foo\"))]"],
+
+            // caseSensitive = false, fullMatch = false
+            ['li:contains(foo, false, false)', "//li[contains(php:functionString(\"{$strToLowerFunction}\", .), php:functionString(\"{$strToLowerFunction}\", \"foo\"))]"],
+            ['li:contains("foo", false, false)', "//li[contains(php:functionString(\"{$strToLowerFunction}\", .), php:functionString(\"{$strToLowerFunction}\", \"foo\"))]"],
+            ['li:contains(\'foo\', false, false)', "//li[contains(php:functionString(\"{$strToLowerFunction}\", .), php:functionString(\"{$strToLowerFunction}\", \"foo\"))]"],
+
+            // caseSensitive = false, fullMatch = true
+            ['li:contains(foo, false, true)', "//li[php:functionString(\"{$strToLowerFunction}\", .) = php:functionString(\"{$strToLowerFunction}\", \"foo\")]"],
+            ['li:contains("foo", false, true)', "//li[php:functionString(\"{$strToLowerFunction}\", .) = php:functionString(\"{$strToLowerFunction}\", \"foo\")]"],
+            ['li:contains(\'foo\', false, true)', "//li[php:functionString(\"{$strToLowerFunction}\", .) = php:functionString(\"{$strToLowerFunction}\", \"foo\")]"],
+        ];
+
+        return $containsXpath;
+    }
+
+    private function getPropertiesTests()
+    {
+        return [
+            ['a::text', '//a/text()'],
+            ['a::text()', '//a/text()'],
+            ['a::attr', '//a/@*'],
+            ['a::attr()', '//a/@*'],
+            ['a::attr(href)', '//a/@*[name() = "href"]'],
+            ['a::attr(href,title)', '//a/@*[name() = "href" or name() = "title"]'],
+            ['a::attr(href, title)', '//a/@*[name() = "href" or name() = "title"]'],
+        ];
     }
 
     public function buildXpathTests()

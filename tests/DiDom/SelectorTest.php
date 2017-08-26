@@ -263,6 +263,50 @@ class SelectorTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
+    /**
+     * @param $selector
+     * @param $expectedResult
+     *
+     * @dataProvider containsPseudoClassTests
+     */
+    public function testContainsPseudoClass($selector, $expectedResult)
+    {
+        $html = '
+            <ul class="links">
+                <li>
+                    <a href="https://foo.com" title="Foo" target="_blank">Foo</a>
+                    <a href="http://bar.com" title="Bar" rel="noreferrer">Bar</a>
+                    <a href="https://baz.org" title="Baz" rel="nofollow noreferrer">Baz</a>
+                    <a href="http://qux.org" title="Qux" target="_blank" rel="nofollow">Qux</a>
+                    <a href="https://foobar.com" title="FooBar" target="_blank">FooBar</a>
+                </li>
+            </ul>
+        ';
+
+        $document = new Document($html);
+
+        $result = [];
+
+        foreach ($document->find($selector) as $element) {
+            $result[] = $element->text();
+        }
+
+        $this->assertEquals($expectedResult, $result);
+    }
+
+    public function containsPseudoClassTests()
+    {
+        return [
+            ['a:contains(Baz)', ['Baz']],
+            ['a:contains(a)', ['Bar', 'Baz', 'FooBar']],
+            ['a:contains(Bar)', ['Bar', 'FooBar']],
+            ['a:contains(Bar, true, true)', ['Bar']],
+            ['a:contains(bar)', []],
+            ['a:contains(bar, false)', ['Bar', 'FooBar']],
+            ['a:contains(bar, false, true)', ['Bar']],
+        ];
+    }
+
     public function testUnicodeSupport()
     {
         $html = '
