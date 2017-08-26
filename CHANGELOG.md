@@ -1,3 +1,7 @@
+### 1.12
+
+- Many fixes and improvements
+
 ### 1.11.1
 
 - Fix bug with unregistered PHP functions in XPath in `Document::has()` and `Document::count()` methods
