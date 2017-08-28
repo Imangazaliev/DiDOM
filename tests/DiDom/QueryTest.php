@@ -9,6 +9,7 @@ class QueryTest extends TestCase
 {
     /**
      * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage DiDom\Query::compile expects parameter 1 to be string, NULL given
      */
     public function testCompileWithNonStringExpression()
     {
@@ -17,6 +18,7 @@ class QueryTest extends TestCase
 
     /**
      * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage DiDom\Query::compile expects parameter 2 to be string, NULL given
      */
     public function testCompileWithNonStringExpressionType()
     {
@@ -24,7 +26,8 @@ class QueryTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage Unknown expression type "foo"
      */
     public function testCompileWithUnknownExpressionType()
     {
@@ -65,6 +68,7 @@ class QueryTest extends TestCase
 
     /**
      * @expectedException \DiDom\Exceptions\InvalidSelectorException
+     * @expectedExceptionMessage The expression must not be empty
      */
     public function testCompileWithEmptyXpathExpression()
     {
@@ -73,6 +77,7 @@ class QueryTest extends TestCase
 
     /**
      * @expectedException \DiDom\Exceptions\InvalidSelectorException
+     * @expectedExceptionMessage The expression must not be empty
      */
     public function testCompileWithEmptyCssExpression()
     {
@@ -81,6 +86,7 @@ class QueryTest extends TestCase
 
     /**
      * @expectedException \DiDom\Exceptions\InvalidSelectorException
+     * @expectedExceptionMessage The selector must not be empty
      */
     public function testGetSegmentsWithEmptySelector()
     {
@@ -89,6 +95,7 @@ class QueryTest extends TestCase
 
     /**
      * @expectedException \DiDom\Exceptions\InvalidSelectorException
+     * @expectedExceptionMessage Invalid selector "input[=foo]": attribute name must not be empty
      */
     public function testEmptyAttributeName()
     {
@@ -97,6 +104,7 @@ class QueryTest extends TestCase
 
     /**
      * @expectedException \DiDom\Exceptions\InvalidSelectorException
+     * @expectedExceptionMessage Unknown pseudo-class "unknown-pseudo-class"
      */
     public function testUnknownPseudoClass()
     {
@@ -105,16 +113,16 @@ class QueryTest extends TestCase
 
     /**
      * @dataProvider containsInvalidCaseSensitiveParameterDataProvider
-     * @expectedException \DiDom\Exceptions\InvalidSelectorException
      */
     public function testContainsInvalidCaseSensitiveParameter($caseSensitive)
     {
+        $message = sprintf('Parameter 2 of "contains" pseudo-class should be equal true or false, "%s" given', $caseSensitive);
+
+        $this->setExpectedException('DiDom\Exceptions\InvalidSelectorException', $message);
+
         Query::compile("a:contains('Log in', {$caseSensitive})");
     }
 
-    /**
-     * @expectedException \DiDom\Exceptions\InvalidSelectorException
-     */
     public function containsInvalidCaseSensitiveParameterDataProvider()
     {
         return [
@@ -126,6 +134,7 @@ class QueryTest extends TestCase
 
     /**
      * @expectedException \DiDom\Exceptions\InvalidSelectorException
+     * @expectedExceptionMessage nth-child (or nth-last-child) expression must not be empty
      */
     public function testEmptyNthExpression()
     {
@@ -134,6 +143,7 @@ class QueryTest extends TestCase
 
     /**
      * @expectedException \DiDom\Exceptions\InvalidSelectorException
+     * @expectedExceptionMessage Invalid property "::"
      */
     public function testEmptyProperty()
     {
@@ -142,6 +152,7 @@ class QueryTest extends TestCase
 
     /**
      * @expectedException \DiDom\Exceptions\InvalidSelectorException
+     * @expectedExceptionMessage Unknown property "foo"
      */
     public function testInvalidProperty()
     {
@@ -150,6 +161,7 @@ class QueryTest extends TestCase
 
     /**
      * @expectedException \DiDom\Exceptions\InvalidSelectorException
+     * @expectedExceptionMessage Invalid nth-child expression "foo"
      */
     public function testUnknownNthExpression()
     {
@@ -158,16 +170,18 @@ class QueryTest extends TestCase
 
     /**
      * @expectedException \DiDom\Exceptions\InvalidSelectorException
+     * @expectedExceptionMessage Invalid selector "."
      */
-    public function testGetSegmentsWithEmptyClass()
+    public function testGetSegmentsWithEmptyClassName()
     {
         Query::getSegments('.');
     }
 
     /**
      * @expectedException \DiDom\Exceptions\InvalidSelectorException
+     * @expectedExceptionMessage Invalid selector "."
      */
-    public function testCompilehWithEmptyClass()
+    public function testCompilehWithEmptyClassName()
     {
         Query::compile('span.');
     }

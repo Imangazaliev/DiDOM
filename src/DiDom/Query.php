@@ -4,6 +4,7 @@ namespace DiDom;
 
 use DiDom\Exceptions\InvalidSelectorException;
 use InvalidArgumentException;
+use RuntimeException;
 
 class Query
 {
@@ -41,7 +42,7 @@ class Query
         }
 
         if (strcasecmp($type, self::TYPE_XPATH) !== 0 and strcasecmp($type, self::TYPE_CSS) !== 0) {
-            throw new InvalidArgumentException(sprintf('Unknown expression type "%s"', $type));
+            throw new RuntimeException(sprintf('Unknown expression type "%s"', $type));
         }
 
         $expression = trim($expression);
@@ -145,7 +146,7 @@ class Query
         $regexp = '/^::'.$name.$args.'/is';
 
         if (preg_match($regexp, $selector, $matches) !== 1) {
-            throw new InvalidSelectorException(sprintf('Invalid property: %s', $selector));
+            throw new InvalidSelectorException(sprintf('Invalid property "%s"', $selector));
         }
 
         $result = [];
@@ -187,7 +188,7 @@ class Query
             return sprintf('@*[%s]', implode(' or ', $attributes));
         }
 
-        throw new InvalidSelectorException(sprintf('Invalid selector: unknown property type "%s"', $name));
+        throw new InvalidSelectorException(sprintf('Unknown property "%s"', $name));
     }
 
     /**
@@ -234,7 +235,7 @@ class Query
                 }
 
                 if ($parameters[2] !== 'true' and $parameters[2] !== 'false') {
-                    throw new InvalidSelectorException(sprintf('Parameter 2 of "contains" pseudo-class should be equal true or false, "%s" given', $parameters[2]));
+                    throw new InvalidSelectorException(sprintf('Parameter 3 of "contains" pseudo-class should be equal true or false, "%s" given', $parameters[2]));
                 }
 
                 $fullMatch = $parameters[2] === 'true';
@@ -258,7 +259,7 @@ class Query
                 break;
         }
 
-        throw new InvalidSelectorException(sprintf('Invalid selector: unknown pseudo-class "%s"', $pseudo));
+        throw new InvalidSelectorException(sprintf('Unknown pseudo-class "%s"', $pseudo));
     }
 
     /**
@@ -388,7 +389,7 @@ class Query
     protected static function convertNthExpression($expression)
     {
         if ($expression === '') {
-            throw new InvalidSelectorException('Invalid selector: nth-child (or nth-last-child) expression must not be empty');
+            throw new InvalidSelectorException('nth-child (or nth-last-child) expression must not be empty');
         }
 
         if ($expression === 'odd') {
@@ -413,7 +414,7 @@ class Query
             }
         }
 
-        throw new InvalidSelectorException(sprintf('Invalid selector: invalid nth-child expression "%s"', $expression));
+        throw new InvalidSelectorException(sprintf('Invalid nth-child expression "%s"', $expression));
     }
 
     /**
@@ -535,7 +536,7 @@ class Query
             return $result;
         }
 
-        throw new InvalidSelectorException(sprintf('Invalid selector: %s', $selector));
+        throw new InvalidSelectorException(sprintf('Invalid selector "%s"', $selector));
     }
 
     /**

@@ -194,6 +194,10 @@ class Document
      * @param int|null $options Additional parameters
      *
      * @return \DiDom\Document
+     *
+     * @throws \InvalidArgumentException if first parameter is not a string
+     * @throws \InvalidArgumentException if document type parameter is not a string
+     * @throws \RuntimeException if document type is not HTML or XML
      */
     public function load($string, $isFile = false, $type = 'html', $options = null)
     {
@@ -201,8 +205,12 @@ class Document
             throw new InvalidArgumentException(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, (is_object($string) ? get_class($string) : gettype($string))));
         }
 
+        if (!is_string($type)) {
+            throw new InvalidArgumentException(sprintf('%s expects parameter 3 to be string, %s given', __METHOD__, (is_object($type) ? get_class($type) : gettype($type))));
+        }
+
         if (!in_array(strtolower($type), ['xml', 'html'])) {
-            throw new InvalidArgumentException(sprintf('Document type must be "xml" or "html", %s given', __METHOD__, (is_object($type) ? get_class($type) : gettype($type))));
+            throw new RuntimeException(sprintf('Document type must be "xml" or "html", %s given', $type));
         }
 
         if ($options === null) {
@@ -315,7 +323,11 @@ class Document
             throw new InvalidArgumentException(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, gettype($filename)));
         }
 
-        $content = file_get_contents($filename);
+        try {
+            $content = file_get_contents($filename);
+        } catch (\Exception $exception) {
+            throw new RuntimeException(sprintf('Could not load file %s', $filename));
+        }
 
         if ($content === false) {
             throw new RuntimeException(sprintf('Could not load file %s', $filename));
