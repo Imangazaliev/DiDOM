@@ -19,6 +19,7 @@ DiDOM - simple and fast HTML parser.
 - [Supported selectors](#supported-selectors)
 - [Output](#output)
 - [Creating a new element](#creating-a-new-element)
+- [Getting the name of an element](#getting-the-name-of-an-element)
 - [Getting parent element](#getting-parent-element)
 - [Getting sibling elements](#getting-sibling-elements)
 - [Getting the child elements](#getting-the-child-elements)
@@ -308,6 +309,12 @@ $document = new Document($html);
 $element = $document->createElement('span', 'Hello');
 ```
 
+## Getting the name of an element
+
+```php
+$element->tag;
+```
+
 ## Getting parent element
 
 ```php
@@ -370,11 +377,6 @@ var_dump($document->is($document2));
 
 ## Working with element attributes
 
-#### Getting attribute name
-```php
-$name = $element->tag;
-```
-
 #### Creating/updating an attribute
 
 ##### With method `setAttribute`:
@@ -395,16 +397,19 @@ $element->name = 'username';
 #### Getting value of an attribute
 
 ##### With method `getAttribute`:
+
 ```php
 $username = $element->getAttribute('value');
 ```
 
 ##### With method `attr`:
+
 ```php
 $username = $element->attr('value');
 ```
 
 ##### With magic method `__get`:
+
 ```php
 $username = $element->name;
 ```
@@ -414,6 +419,7 @@ Returns `null` if attribute is not found.
 #### Verify if attribute exists
 
 ##### With method `hasAttribute`:
+
 ```php
 if ($element->hasAttribute('name')) {
     // code
@@ -421,6 +427,7 @@ if ($element->hasAttribute('name')) {
 ```
 
 ##### With magic method `__isset`:
+
 ```php
 if (isset($element->name)) {
     // code
@@ -430,11 +437,13 @@ if (isset($element->name)) {
 #### Removing attribute:
 
 ##### With method `removeAttribute`:
+
 ```php
 $element->removeAttribute('name');
 ```
 
 ##### With magic method `__unset`:
+
 ```php
 unset($element->name);
 ```
@@ -499,8 +508,11 @@ $document->find('.post')[0]->remove();
 ```
 
 ## Working with cache
+
 Cache is an array of XPath expressions, that were converted from CSS.
+
 #### Getting from cache
+
 ```php
 use DiDom\Query;
 
@@ -512,7 +524,9 @@ $compiled = Query::getCompiled();
 // array('h2' => '//h2')
 var_dump($compiled);
 ```
-#### Installing cache
+
+#### Cache setting
+
 ```php
 Query::setCompiled(['h2' => '//h2']);
 ```
@@ -538,8 +552,13 @@ $document->loadXml($xml);
 The `count ()` method counts children that match the selector:
 
 ```php
-// print the number of links in the document
+// prints the number of links in the document
 echo $document->count('a');
+```
+
+```php
+// prints the number of items in the list
+echo $document->first('ul')->count('li');
 ```
 
 #### `matches`
@@ -553,6 +572,14 @@ $element->matches('div#content');
 // returns true if the element is a div with id equals content and nothing else
 // if the element has any other attributes the method returns false
 $element->matches('div#content', true);
+```
+
+#### `isElementNode`
+
+Checks whether an element is an element (DOMElement):
+
+```php
+$element->isElementNode();
 ```
 
 #### `isTextNode`
