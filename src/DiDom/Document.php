@@ -557,7 +557,7 @@ class Document
      */
     public function is($document)
     {
-        if ($document instanceof self) {
+        if ($document instanceof Document) {
             $element = $document->getElement();
         } else {
             if (!$document instanceof DOMDocument) {

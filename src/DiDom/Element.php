@@ -628,7 +628,7 @@ class Element
      */
     public function is($node)
     {
-        if ($node instanceof self) {
+        if ($node instanceof Element) {
             $node = $node->getNode();
         }
 
@@ -1024,7 +1024,7 @@ class Element
      */
     public function removeChild($childNode)
     {
-        if ($childNode instanceof self) {
+        if ($childNode instanceof Element) {
             $childNode = $childNode->getNode();
         }
 
@@ -1099,7 +1099,7 @@ class Element
             throw new LogicException('Can not replace element without parent node');
         }
 
-        if ($newNode instanceof self) {
+        if ($newNode instanceof Element) {
             $newNode = $newNode->getNode();
         }
 
