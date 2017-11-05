@@ -84,6 +84,82 @@ class ElementTest extends TestCase
     /**
      * @expectedException \InvalidArgumentException
      */
+    public function testPrependChildWithInvalidArgument()
+    {
+        $element = new Element('span', 'hello');
+
+        $element->prependChild('foo');
+    }
+
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage Can not prepend child to element without owner document
+     */
+    public function testPrependChildWithoutParentNode()
+    {
+        $element = new Element(new \DOMElement('div'));
+
+        $element->prependChild(new Element('div'));
+    }
+
+    public function testPrependChild()
+    {
+        $list = new Element('ul');
+
+        $this->assertEquals(0, $list->getNode()->childNodes->length);
+
+        $item = new Element('li', 'bar');
+
+        $prependedChild = $list->prependChild($item);
+
+        $this->assertEquals(1, $list->getNode()->childNodes->length);
+        $this->assertInstanceOf('DiDom\Element', $prependedChild);
+        $this->assertEquals('bar', $prependedChild->getNode()->textContent);
+
+        $item = new Element('li', 'foo');
+
+        $prependedChild = $list->prependChild($item);
+
+        $this->assertEquals(2, $list->getNode()->childNodes->length);
+        $this->assertInstanceOf('DiDom\Element', $prependedChild);
+        $this->assertEquals('foo', $prependedChild->getNode()->textContent);
+
+        $this->assertEquals('foo', $list->getNode()->childNodes->item(0)->textContent);
+        $this->assertEquals('bar', $list->getNode()->childNodes->item(1)->textContent);
+    }
+
+    public function testPrependChildWithArrayOfNodes()
+    {
+        $list = new Element('ul');
+
+        $prependedChild = $list->prependChild(new Element('li', 'foo'));
+
+        $this->assertEquals(1, $list->getNode()->childNodes->length);
+        $this->assertInstanceOf('DiDom\Element', $prependedChild);
+        $this->assertEquals('foo', $prependedChild->getNode()->textContent);
+
+        $items = [];
+
+        $items[] = new Element('li', 'bar');
+        $items[] = new Element('li', 'baz');
+
+        $appendedChildren = $list->prependChild($items);
+
+        $this->assertCount(2, $appendedChildren);
+        $this->assertEquals(3, $list->getNode()->childNodes->length);
+
+        foreach ($appendedChildren as $appendedChild) {
+            $this->assertInstanceOf('DiDom\Element', $appendedChild);
+        }
+
+        foreach (['bar', 'baz', 'foo'] as $index => $value) {
+            $this->assertEquals($value, $list->getNode()->childNodes->item($index)->textContent);
+        }
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
     public function testAppendChildWithInvalidArgument()
     {
         $element = new Element('span', 'hello');
@@ -93,6 +169,7 @@ class ElementTest extends TestCase
 
     /**
      * @expectedException \LogicException
+     * @expectedExceptionMessage Can not append child to element without owner document
      */
     public function testAppendChildWithoutParentNode()
     {
@@ -105,31 +182,52 @@ class ElementTest extends TestCase
     {
         $list = new Element('ul');
 
-        $this->assertCount(0, $list->find('li'));
+        $this->assertEquals(0, $list->getNode()->childNodes->length);
 
         $item = new Element('li', 'foo');
         $appendedChild = $list->appendChild($item);
 
-        $this->assertCount(1, $list->find('li'));
+        $this->assertEquals(1, $list->getNode()->childNodes->length);
         $this->assertInstanceOf('DiDom\Element', $appendedChild);
-        $this->assertEquals('foo', $appendedChild->text());
+        $this->assertEquals('foo', $appendedChild->getNode()->textContent);
 
-        $appendedChild->remove();
+        $item = new Element('li', 'bar');
+        $appendedChild = $list->appendChild($item);
 
-        $this->assertCount(0, $list->find('li'));
+        $this->assertEquals(2, $list->getNode()->childNodes->length);
+        $this->assertInstanceOf('DiDom\Element', $appendedChild);
+        $this->assertEquals('bar', $appendedChild->getNode()->textContent);
+
+        $this->assertEquals('foo', $list->getNode()->childNodes->item(0)->textContent);
+        $this->assertEquals('bar', $list->getNode()->childNodes->item(1)->textContent);
+    }
+
+    public function testAppendChildWithArray()
+    {
+        $list = new Element('ul');
+
+        $appendedChild = $list->appendChild(new Element('li', 'foo'));
+
+        $this->assertEquals(1, $list->getNode()->childNodes->length);
+        $this->assertInstanceOf('DiDom\Element', $appendedChild);
+        $this->assertEquals('foo', $appendedChild->getNode()->textContent);
 
         $items = [];
+
         $items[] = new Element('li', 'bar');
         $items[] = new Element('li', 'baz');
 
         $appendedChildren = $list->appendChild($items);
 
         $this->assertCount(2, $appendedChildren);
-        $this->assertCount(2, $list->find('li'));
+        $this->assertEquals(3, $list->getNode()->childNodes->length);
 
-        foreach (['bar', 'baz'] as $index => $value) {
-            $this->assertInstanceOf('DiDom\Element', $appendedChildren[$index]);
-            $this->assertEquals($value, $appendedChildren[$index]->text());
+        foreach ($appendedChildren as $appendedChild) {
+            $this->assertInstanceOf('DiDom\Element', $appendedChild);
+        }
+
+        foreach (['foo', 'bar', 'baz'] as $index => $value) {
+            $this->assertEquals($value, $list->getNode()->childNodes->item($index)->textContent);
         }
     }
 

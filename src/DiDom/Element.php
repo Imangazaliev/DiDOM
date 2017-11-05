@@ -80,6 +80,64 @@ class Element
     }
 
     /**
+     * Adds new child at the start of the children.
+     *
+     * @param \DiDom\Element|\DOMNode|array $nodes The prepended child
+     *
+     * @return \DiDom\Element|\DiDom\Element[]
+     *
+     * @throws \LogicException if current node has no owner document
+     * @throws \InvalidArgumentException if the provided argument is not an instance of \DOMNode or \DiDom\Element
+     */
+    public function prependChild($nodes)
+    {
+        if ($this->node->ownerDocument === null) {
+            throw new LogicException('Can not prepend child to element without owner document');
+        }
+
+        $returnArray = true;
+
+        if (!is_array($nodes)) {
+            $nodes = [$nodes];
+
+            $returnArray = false;
+        }
+
+        $nodes = array_reverse($nodes);
+
+        $result = [];
+
+        $referenceNode = $this->node->firstChild;
+
+        Errors::disable();
+
+        foreach ($nodes as $node) {
+            if ($node instanceof Element) {
+                $node = $node->getNode();
+            }
+
+            if (!$node instanceof \DOMNode) {
+                throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s\Element or DOMNode, %s given', __METHOD__, __NAMESPACE__, (is_object($node) ? get_class($node) : gettype($node))));
+            }
+
+            $clonedNode = $node->cloneNode(true);
+            $newNode = $this->node->ownerDocument->importNode($clonedNode, true);
+
+            $result[] = $this->node->insertBefore($newNode, $referenceNode);
+
+            $referenceNode = $this->node->firstChild;
+        }
+
+        Errors::restore();
+
+        $result = array_map(function (\DOMNode $node) {
+            return new Element($node);
+        }, $result);
+
+        return $returnArray ? $result : $result[0];
+    }
+
+    /**
      * Adds new child at the end of the children.
      *
      * @param \DiDom\Element|\DOMNode|array $nodes The appended child
@@ -105,6 +163,8 @@ class Element
 
         $result = [];
 
+        Errors::disable();
+
         foreach ($nodes as $node) {
             if ($node instanceof Element) {
                 $node = $node->getNode();
@@ -114,15 +174,13 @@ class Element
                 throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s\Element or DOMNode, %s given', __METHOD__, __NAMESPACE__, (is_object($node) ? get_class($node) : gettype($node))));
             }
 
-            Errors::disable();
-
-            $cloned = $node->cloneNode(true);
-            $newNode = $this->node->ownerDocument->importNode($cloned, true);
+            $clonedNode = $node->cloneNode(true);
+            $newNode = $this->node->ownerDocument->importNode($clonedNode, true);
 
             $result[] = $this->node->appendChild($newNode);
-
-            Errors::restore();
         }
+
+        Errors::restore();
 
         $result = array_map(function (\DOMNode $node) {
             return new Element($node);
