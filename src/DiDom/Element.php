@@ -463,13 +463,27 @@ class Element
     }
 
     /**
-     * Dumps the node into a string using HTML formatting.
+     * Dumps the node into a string using HTML formatting (including child nodes).
      *
-     * @return string The node HTML
+     * @return string
      */
     public function html()
     {
         return $this->toDocument()->html();
+    }
+
+    /**
+     * Dumps the node into a string using HTML formatting (without child nodes).
+     *
+     * @return string
+     */
+    public function outerHtml()
+    {
+        $document = new DOMDocument();
+
+        $importedNode = $document->importNode($this->node);
+
+        return $document->saveHTML($importedNode);
     }
 
     /**
@@ -979,7 +993,7 @@ class Element
     }
 
     /**
-     * @return \DiDom\Element[]
+     * @return bool
      */
     public function hasChildren()
     {
@@ -1026,7 +1040,7 @@ class Element
     /**
      * Removes all child nodes.
      *
-     * @return \DiDom\Element the nodes that has been removed
+     * @return \DiDom\Element[] the nodes that has been removed
      */
     public function removeChildren()
     {

@@ -529,6 +529,16 @@ class ElementTest extends TestCase
         $this->assertEquals('<span>hello</span>', $element->html());
     }
 
+    public function testOuterHtml()
+    {
+        $innerHtml = 'Plain text <span>Lorem ipsum.</span><span>Lorem ipsum.</span>';
+        $html = "<div id=\"foo\" class=\"bar baz\">$innerHtml</div>";
+
+        $document = new Document($html);
+
+        $this->assertEquals('<div id="foo" class="bar baz"></div>', $document->first('#foo')->outerHtml());
+    }
+
     public function testInnerHtml()
     {
         $innerHtml = ' Plain text <span>Lorem ipsum.</span><span>Lorem ipsum.</span>';
