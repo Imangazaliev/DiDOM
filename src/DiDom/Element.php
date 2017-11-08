@@ -109,30 +109,11 @@ class Element
 
         $referenceNode = $this->node->firstChild;
 
-        Errors::disable();
-
         foreach ($nodes as $node) {
-            if ($node instanceof Element) {
-                $node = $node->getNode();
-            }
-
-            if (!$node instanceof \DOMNode) {
-                throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s\Element or DOMNode, %s given', __METHOD__, __NAMESPACE__, (is_object($node) ? get_class($node) : gettype($node))));
-            }
-
-            $clonedNode = $node->cloneNode(true);
-            $newNode = $this->node->ownerDocument->importNode($clonedNode, true);
-
-            $result[] = $this->node->insertBefore($newNode, $referenceNode);
+            $result[] = $this->insertBefore($node, $referenceNode);
 
             $referenceNode = $this->node->firstChild;
         }
-
-        Errors::restore();
-
-        $result = array_map(function (\DOMNode $node) {
-            return new Element($node);
-        }, $result);
 
         return $returnArray ? $result : $result[0];
     }
@@ -211,16 +192,18 @@ class Element
             $node = $node->getNode();
         }
 
-        if ($referenceNode instanceof Element) {
-            $referenceNode = $referenceNode->getNode();
-        }
-
         if (!$node instanceof \DOMNode) {
             throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s\Element or DOMNode, %s given', __METHOD__, __NAMESPACE__, (is_object($node) ? get_class($node) : gettype($node))));
         }
 
-        if ($referenceNode !== null and !$referenceNode instanceof \DOMNode) {
-            throw new InvalidArgumentException(sprintf('Argument 2 passed to %s must be an instance of %s\Element or DOMNode, %s given', __METHOD__, __NAMESPACE__, (is_object($node) ? get_class($node) : gettype($node))));
+        if ($referenceNode !== null) {
+            if ($referenceNode instanceof Element) {
+                $referenceNode = $referenceNode->getNode();
+            }
+
+            if (!$referenceNode instanceof \DOMNode) {
+                throw new InvalidArgumentException(sprintf('Argument 2 passed to %s must be an instance of %s\Element or DOMNode, %s given', __METHOD__, __NAMESPACE__, (is_object($node) ? get_class($node) : gettype($node))));
+            }
         }
 
         Errors::disable();
