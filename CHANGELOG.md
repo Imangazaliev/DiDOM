@@ -1,3 +1,10 @@
+### 1.13
+
+- Add `Element::outerHtml()` method
+- Add `Element::prependChild()` method
+- Add `Element::insertBefore()` and `Element::insertAfter()` methods
+- Update PHP CS Fixer config and run CS fix
+
 ### 1.12
 
 - Many fixes and improvements
