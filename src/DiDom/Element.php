@@ -7,7 +7,6 @@ use DOMElement;
 use DOMNode;
 use InvalidArgumentException;
 use LogicException;
-use phpDocumentor\Reflection\DocBlock\Tags\Param;
 use RuntimeException;
 
 class Element
