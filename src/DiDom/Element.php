@@ -190,6 +190,81 @@ class Element
     }
 
     /**
+     * Adds a new child before a reference node.
+     *
+     * @param \DiDom\Element|\DOMNode $node The new node
+     * @param \DiDom\Element|\DOMNode|null $referenceNode The reference node
+     *
+     * @return \DiDom\Element
+     *
+     * @throws \LogicException if current node has no owner document
+     * @throws \InvalidArgumentException if $node is not an instance of \DOMNode or \DiDom\Element
+     * @throws \InvalidArgumentException if $referenceNode is not an instance of \DOMNode or \DiDom\Element
+     */
+    public function insertBefore($node, $referenceNode = null)
+    {
+        if ($this->node->ownerDocument === null) {
+            throw new LogicException('Can not insert child to element without owner document');
+        }
+
+        if ($node instanceof Element) {
+            $node = $node->getNode();
+        }
+
+        if ($referenceNode instanceof Element) {
+            $referenceNode = $referenceNode->getNode();
+        }
+
+        if (!$node instanceof \DOMNode) {
+            throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s\Element or DOMNode, %s given', __METHOD__, __NAMESPACE__, (is_object($node) ? get_class($node) : gettype($node))));
+        }
+
+        if ($referenceNode !== null and !$referenceNode instanceof \DOMNode) {
+            throw new InvalidArgumentException(sprintf('Argument 2 passed to %s must be an instance of %s\Element or DOMNode, %s given', __METHOD__, __NAMESPACE__, (is_object($node) ? get_class($node) : gettype($node))));
+        }
+
+        Errors::disable();
+
+        $clonedNode = $node->cloneNode(true);
+        $newNode = $this->node->ownerDocument->importNode($clonedNode, true);
+
+        $insertedNode = $this->node->insertBefore($newNode, $referenceNode);
+
+        Errors::restore();
+
+        return new Element($insertedNode);
+    }
+
+    /**
+     * Adds a new child after a reference node.
+     *
+     * @param \DiDom\Element|\DOMNode $node The new node
+     * @param \DiDom\Element|\DOMNode|null $referenceNode The reference node
+     *
+     * @return \DiDom\Element
+     *
+     * @throws \LogicException if current node has no owner document
+     * @throws \InvalidArgumentException if $node is not an instance of \DOMNode or \DiDom\Element
+     * @throws \InvalidArgumentException if $referenceNode is not an instance of \DOMNode or \DiDom\Element
+     */
+    public function insertAfter($node, $referenceNode = null)
+    {
+        if ($referenceNode instanceof Element) {
+            $referenceNode = $referenceNode->getNode();
+        }
+
+        if ($referenceNode !== null and !$referenceNode instanceof \DOMNode) {
+            throw new InvalidArgumentException(sprintf('Argument 2 passed to %s must be an instance of %s\Element or DOMNode, %s given', __METHOD__, __NAMESPACE__, (is_object($node) ? get_class($node) : gettype($node))));
+        }
+
+        if ($referenceNode !== null) {
+            return $this->insertBefore($node, $referenceNode->nextSibling);
+        }
+
+        return $this->insertBefore($node);
+    }
+
+    /**
      * Checks the existence of the node.
      *
      * @param string $expression XPath expression or CSS selector
@@ -568,7 +643,7 @@ class Element
      *
      * @param string $html
      *
-     * @return Element
+     * @return \DiDom\Element
      */
     public function setInnerHtml($html)
     {

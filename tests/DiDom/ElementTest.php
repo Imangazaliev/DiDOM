@@ -231,6 +231,132 @@ class ElementTest extends TestCase
         }
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testInsertBeforeWithInvalidNodeArgument()
+    {
+        $list = new Element('ul');
+
+        $list->insertBefore('foo');
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testInsertBeforeWithInvalidReferenceNodeArgument()
+    {
+        $list = new Element('ul');
+
+        $list->insertBefore(new Element('li', 'foo'), 'foo');
+    }
+
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage Can not insert child to element without owner document
+     */
+    public function testInsertBeforeWithoutParentNode()
+    {
+        $list = new Element(new \DOMElement('ul'));
+
+        $list->insertBefore(new Element('li', 'foo'));
+    }
+
+    public function testInsertBefore()
+    {
+        $list = new Element('ul');
+
+        $insertedNode = $list->insertBefore(new Element('li', 'qux'));
+
+        $this->assertInstanceOf('DiDom\Element', $insertedNode);
+        $this->assertEquals('qux', $insertedNode->getNode()->textContent);
+
+        foreach (['qux'] as $index => $value) {
+            $this->assertEquals($value, $list->getNode()->childNodes->item($index)->textContent);
+        }
+
+        $list->insertBefore(new Element('li', 'foo'), $list->getNode()->childNodes->item(0));
+
+        foreach (['foo', 'qux'] as $index => $value) {
+            $this->assertEquals($value, $list->getNode()->childNodes->item($index)->textContent);
+        }
+
+        $list->insertBefore(new Element('li', 'baz'), $list->getNode()->childNodes->item(1));
+
+        foreach (['foo', 'baz', 'qux'] as $index => $value) {
+            $this->assertEquals($value, $list->getNode()->childNodes->item($index)->textContent);
+        }
+
+        $list->insertBefore(new Element('li', 'bar'), $list->getNode()->childNodes->item(1));
+
+        foreach (['foo', 'bar', 'baz', 'qux'] as $index => $value) {
+            $this->assertEquals($value, $list->getNode()->childNodes->item($index)->textContent);
+        }
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testInsertAfterWithInvalidNodeArgument()
+    {
+        $list = new Element('ul');
+
+        $list->insertAfter('foo');
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testInsertAfterWithInvalidReferenceNodeArgument()
+    {
+        $list = new Element('ul');
+
+        $list->insertAfter(new Element('li', 'foo'), 'foo');
+    }
+
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage Can not insert child to element without owner document
+     */
+    public function testInsertAfterWithoutParentNode()
+    {
+        $list = new Element(new \DOMElement('ul'));
+
+        $list->insertAfter(new Element('li', 'foo'));
+    }
+
+    public function testInsertAfter()
+    {
+        $list = new Element('ul');
+
+        $insertedNode = $list->insertAfter(new Element('li', 'foo'));
+
+        $this->assertInstanceOf('DiDom\Element', $insertedNode);
+        $this->assertEquals('foo', $insertedNode->getNode()->textContent);
+
+        foreach (['foo'] as $index => $value) {
+            $this->assertEquals($value, $list->getNode()->childNodes->item($index)->textContent);
+        }
+
+        $list->insertAfter(new Element('li', 'qux'), $list->getNode()->childNodes->item(0));
+
+        foreach (['foo', 'qux'] as $index => $value) {
+            $this->assertEquals($value, $list->getNode()->childNodes->item($index)->textContent);
+        }
+
+        $list->insertAfter(new Element('li', 'bar'), $list->getNode()->childNodes->item(0));
+
+        foreach (['foo', 'bar', 'qux'] as $index => $value) {
+            $this->assertEquals($value, $list->getNode()->childNodes->item($index)->textContent);
+        }
+
+        $list->insertAfter(new Element('li', 'baz'), $list->getNode()->childNodes->item(1));
+
+        foreach (['foo', 'bar', 'baz', 'qux'] as $index => $value) {
+            $this->assertEquals($value, $list->getNode()->childNodes->item($index)->textContent);
+        }
+    }
+
     public function testHas()
     {
         $document = new \DOMDocument();

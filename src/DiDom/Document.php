@@ -549,7 +549,7 @@ class Document
     /**
      * Indicates if two documents are the same document.
      *
-     * @param Document|\DOMDocument $document The compared document
+     * @param \DiDom\Document|\DOMDocument $document The compared document
      *
      * @return bool
      *
