@@ -3,12 +3,12 @@
 namespace DiDom;
 
 use DOMDocument;
-use DOMNode;
 use DOMElement;
+use DOMNode;
 use InvalidArgumentException;
+use LogicException;
 use phpDocumentor\Reflection\DocBlock\Tags\Param;
 use RuntimeException;
-use LogicException;
 
 class Element
 {
@@ -613,8 +613,7 @@ class Element
     {
         $innerHtml = [];
 
-        foreach ($this->node->childNodes as $childNode)
-        {
+        foreach ($this->node->childNodes as $childNode) {
             $innerHtml[] = $childNode->ownerDocument->saveHTML($childNode);
         }
 
@@ -1123,8 +1122,7 @@ class Element
     {
         $children = [];
 
-        foreach ($this->node->childNodes as $node)
-        {
+        foreach ($this->node->childNodes as $node) {
             $children[] = new Element($node);
         }
 
@@ -1164,15 +1162,13 @@ class Element
         // because removing nodes from the DOMNodeList on iterating is not working
         $childNodes = [];
 
-        foreach ($this->node->childNodes as $childNode)
-        {
+        foreach ($this->node->childNodes as $childNode) {
             $childNodes[] = $childNode;
         }
 
         $removedNodes = [];
 
-        foreach ($childNodes as $childNode)
-        {
+        foreach ($childNodes as $childNode) {
             $removedNode = $this->node->removeChild($childNode);
 
             $removedNodes[] = new Element($removedNode);

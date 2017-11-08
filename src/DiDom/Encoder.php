@@ -20,7 +20,7 @@ class Encoder
             $string = iconv($encoding, 'UTF-8//IGNORE', $string);
         }
 
-        return preg_replace_callback('/[\x80-\xFF]+/', array(__CLASS__, 'htmlEncodingCallback'), $string);
+        return preg_replace_callback('/[\x80-\xFF]+/', [__CLASS__, 'htmlEncodingCallback'], $string);
     }
 
     /**

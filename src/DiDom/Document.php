@@ -348,7 +348,7 @@ class Document
     {
         $xpath = new DOMXPath($this->document);
 
-        $xpath->registerNamespace("php", "http://php.net/xpath");
+        $xpath->registerNamespace('php', 'http://php.net/xpath');
         $xpath->registerPhpFunctions();
 
         $expression = Query::compile($expression, $type);
@@ -375,7 +375,7 @@ class Document
 
         $xpath = new DOMXPath($this->document);
 
-        $xpath->registerNamespace("php", "http://php.net/xpath");
+        $xpath->registerNamespace('php', 'http://php.net/xpath');
         $xpath->registerPhpFunctions();
 
         if ($contextNode !== null) {
@@ -487,7 +487,7 @@ class Document
     {
         $xpath = new DOMXPath($this->document);
 
-        $xpath->registerNamespace("php", "http://php.net/xpath");
+        $xpath->registerNamespace('php', 'http://php.net/xpath');
         $xpath->registerPhpFunctions();
 
         $expression = Query::compile($expression, $type);
