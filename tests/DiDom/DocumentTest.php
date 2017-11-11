@@ -2,9 +2,9 @@
 
 namespace Tests\DiDom;
 
-use Tests\TestCase;
 use DiDom\Document;
 use DiDom\Query;
+use Tests\TestCase;
 
 class DocumentTest extends TestCase
 {

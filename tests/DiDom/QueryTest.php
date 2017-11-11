@@ -2,8 +2,8 @@
 
 namespace Tests\DiDom;
 
-use Tests\TestCase;
 use DiDom\Query;
+use Tests\TestCase;
 
 class QueryTest extends TestCase
 {

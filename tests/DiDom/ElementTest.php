@@ -2,10 +2,10 @@
 
 namespace Tests\DiDom;
 
-use Tests\TestCase;
 use DiDom\Document;
 use DiDom\Element;
 use DiDom\Query;
+use Tests\TestCase;
 
 class ElementTest extends TestCase
 {
@@ -744,6 +744,44 @@ class ElementTest extends TestCase
         $element = new Element(new \DOMComment('Foo'));
 
         $this->assertNull($element->attributes());
+    }
+
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage Style attribute is available only for element nodes
+     */
+    public function testStyleWithTextNode()
+    {
+        $element = new Element(new \DOMText('foo'));
+
+        $element->style();
+    }
+
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage Style attribute is available only for element nodes
+     */
+    public function testStyleWithCommentNode()
+    {
+        $element = new Element(new \DOMComment('foo'));
+
+        $element->style();
+    }
+
+    public function testStyle()
+    {
+        $element = new Element('div');
+
+        $styleAttribute = $element->style();
+
+        $this->assertInstanceOf('DiDom\\StyleAttribute', $styleAttribute);
+        $this->assertSame($element, $styleAttribute->getElement());
+
+        $this->assertSame($styleAttribute, $element->style());
+
+        $element2 = new Element('div');
+
+        $this->assertNotSame($element->style(), $element2->style());
     }
 
     public function testHtml()

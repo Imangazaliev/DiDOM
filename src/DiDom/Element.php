@@ -19,6 +19,11 @@ class Element
     protected $node;
 
     /**
+     * @var \DiDom\StyleAttribute
+     */
+    protected $styleAttribute;
+
+    /**
      * Constructor.
      *
      * @param \DOMElement|\DOMText|\DOMComment|string $name The tag name of the element
@@ -578,6 +583,26 @@ class Element
     }
 
     /**
+     * @return \DiDom\StyleAttribute
+     *
+     * @throws \LogicException if the node is not an instance of \DOMElement
+     */
+    public function style()
+    {
+        if ($this->styleAttribute !== null) {
+            return $this->styleAttribute;
+        }
+
+        if (!$this->isElementNode()) {
+            throw new LogicException('Style attribute is available only for element nodes');
+        }
+
+        $this->styleAttribute = new StyleAttribute($this);
+
+        return $this->styleAttribute;
+    }
+
+    /**
      * Dumps the node into a string using HTML formatting (including child nodes).
      *
      * @return string
@@ -625,6 +650,8 @@ class Element
      * @param string $html
      *
      * @return \DiDom\Element
+     *
+     * @throws InvalidArgumentException if passed argument is not a string
      */
     public function setInnerHtml($html)
     {
