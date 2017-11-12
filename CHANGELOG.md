@@ -3,7 +3,8 @@
 - Add `Element::outerHtml()` method
 - Add `Element::prependChild()` method
 - Add `Element::insertBefore()` and `Element::insertAfter()` methods
-- Update PHP CS Fixer config and run CS fix
+- Add `Element::style()` method for more convenient inline styles manipulation
+- Add `Element::classes()` method for more convenient class manipulation
 
 ### 1.12
 
