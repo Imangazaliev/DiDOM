@@ -19,6 +19,11 @@ class Element
     protected $node;
 
     /**
+     * @var \DiDom\ClassAttribute
+     */
+    protected $classAttribute;
+
+    /**
      * @var \DiDom\StyleAttribute
      */
     protected $styleAttribute;
@@ -580,6 +585,26 @@ class Element
         }
 
         return $result;
+    }
+
+    /**
+     * @return \DiDom\ClassAttribute
+     *
+     * @throws \LogicException if the node is not an instance of \DOMElement
+     */
+    public function classes()
+    {
+        if ($this->classAttribute !== null) {
+            return $this->classAttribute;
+        }
+
+        if (!$this->isElementNode()) {
+            throw new LogicException('Class attribute is available only for element nodes');
+        }
+
+        $this->classAttribute = new ClassAttribute($this);
+
+        return $this->classAttribute;
     }
 
     /**
