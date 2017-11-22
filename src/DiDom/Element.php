@@ -34,8 +34,6 @@ class Element
      * @param \DOMElement|\DOMText|\DOMComment|string $name The tag name of the element
      * @param string|null $value The value of the element
      * @param array $attributes The attributes of the element
-     *
-     * @throws \InvalidArgumentException if the attributes is not an array
      */
     public function __construct($name, $value = null, array $attributes = [])
     {
@@ -66,8 +64,6 @@ class Element
      * @param array  $attributes The attributes of the element
      *
      * @return \DiDom\Element
-     *
-     * @throws \InvalidArgumentException if the attributes is not an array
      */
     public static function create($name, $value = null, array $attributes = [])
     {
