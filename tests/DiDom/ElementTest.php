@@ -243,6 +243,7 @@ class ElementTest extends TestCase
 
     /**
      * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Argument 2 passed to DiDom\Element::insertBefore must be an instance of DiDom\Element or DOMNode, string given
      */
     public function testInsertBeforeWithInvalidReferenceNodeArgument()
     {
@@ -294,6 +295,18 @@ class ElementTest extends TestCase
         }
     }
 
+    public function testInsertBeforeWithoutReferenceNode()
+    {
+        $list = new Element('ul');
+
+        $list->insertBefore(new Element('li', 'foo'));
+        $list->insertBefore(new Element('li', 'bar'));
+
+        foreach (['foo', 'bar'] as $index => $value) {
+            $this->assertEquals($value, $list->getNode()->childNodes->item($index)->textContent);
+        }
+    }
+
     /**
      * @expectedException \InvalidArgumentException
      */
@@ -306,6 +319,7 @@ class ElementTest extends TestCase
 
     /**
      * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Argument 2 passed to DiDom\Element::insertAfter must be an instance of DiDom\Element or DOMNode, string given
      */
     public function testInsertAfterWithInvalidReferenceNodeArgument()
     {
@@ -353,6 +367,18 @@ class ElementTest extends TestCase
         $list->insertAfter(new Element('li', 'baz'), $list->getNode()->childNodes->item(1));
 
         foreach (['foo', 'bar', 'baz', 'qux'] as $index => $value) {
+            $this->assertEquals($value, $list->getNode()->childNodes->item($index)->textContent);
+        }
+    }
+
+    public function testInsertAfterWithoutReferenceNode()
+    {
+        $list = new Element('ul');
+
+        $list->insertAfter(new Element('li', 'foo'));
+        $list->insertAfter(new Element('li', 'bar'));
+
+        foreach (['foo', 'bar'] as $index => $value) {
             $this->assertEquals($value, $list->getNode()->childNodes->item($index)->textContent);
         }
     }

@@ -9,7 +9,7 @@ use RuntimeException;
 class Query
 {
     /**
-     * Types of expressions.
+     * Types of expression.
      *
      * @const string
      */

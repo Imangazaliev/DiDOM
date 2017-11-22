@@ -10,6 +10,14 @@ use RuntimeException;
 class Document
 {
     /**
+     * Types of document.
+     *
+     * @const string
+     */
+    const TYPE_HTML = 'html';
+    const TYPE_XML  = 'xml';
+
+    /**
      * @var \DOMDocument
      */
     protected $document;
@@ -34,7 +42,7 @@ class Document
      *
      * @throws \InvalidArgumentException if the passed encoding is not a string
      */
-    public function __construct($string = null, $isFile = false, $encoding = 'UTF-8', $type = 'html')
+    public function __construct($string = null, $isFile = false, $encoding = 'UTF-8', $type = Document::TYPE_HTML)
     {
         if ($string instanceof DOMDocument) {
             $this->document = $string;
@@ -67,7 +75,7 @@ class Document
      *
      * @return \DiDom\Document
      */
-    public static function create($string = null, $isFile = false, $encoding = 'UTF-8', $type = 'html')
+    public static function create($string = null, $isFile = false, $encoding = 'UTF-8', $type = Document::TYPE_HTML)
     {
         return new Document($string, $isFile, $encoding, $type);
     }
@@ -199,7 +207,7 @@ class Document
      * @throws \InvalidArgumentException if document type parameter is not a string
      * @throws \RuntimeException if document type is not HTML or XML
      */
-    public function load($string, $isFile = false, $type = 'html', $options = null)
+    public function load($string, $isFile = false, $type = Document::TYPE_HTML, $options = null)
     {
         if (!is_string($string)) {
             throw new InvalidArgumentException(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, (is_object($string) ? get_class($string) : gettype($string))));
@@ -209,7 +217,7 @@ class Document
             throw new InvalidArgumentException(sprintf('%s expects parameter 3 to be string, %s given', __METHOD__, (is_object($type) ? get_class($type) : gettype($type))));
         }
 
-        if (!in_array(strtolower($type), ['xml', 'html'])) {
+        if (!in_array(strtolower($type), [Document::TYPE_HTML, Document::TYPE_XML])) {
             throw new RuntimeException(sprintf('Document type must be "xml" or "html", %s given', $type));
         }
 
@@ -228,7 +236,7 @@ class Document
             $string = $this->loadFile($string);
         }
 
-        if (strtolower($type) === 'html') {
+        if (strtolower($type) === Document::TYPE_HTML) {
             $string = Encoder::convertToHtmlEntities($string, $this->encoding);
         }
 
@@ -236,7 +244,11 @@ class Document
 
         Errors::disable();
 
-        $this->type === 'xml' ? $this->document->loadXml($string, $options) : $this->document->loadHtml($string, $options);
+        if ($this->type === Document::TYPE_HTML) {
+            $this->document->loadHtml($string, $options);
+        } else {
+            $this->document->loadXml($string, $options);
+        }
 
         Errors::restore();
 
@@ -255,7 +267,7 @@ class Document
      */
     public function loadHtml($html, $options = null)
     {
-        return $this->load($html, false, 'html', $options);
+        return $this->load($html, false, Document::TYPE_HTML, $options);
     }
 
     /**
@@ -272,7 +284,7 @@ class Document
      */
     public function loadHtmlFile($filename, $options = null)
     {
-        return $this->load($filename, true, 'html', $options);
+        return $this->load($filename, true, Document::TYPE_HTML, $options);
     }
 
     /**
@@ -287,7 +299,7 @@ class Document
      */
     public function loadXml($xml, $options = null)
     {
-        return $this->load($xml, false, 'xml', $options);
+        return $this->load($xml, false, Document::TYPE_XML, $options);
     }
 
     /**
@@ -304,7 +316,7 @@ class Document
      */
     public function loadXmlFile($filename, $options = null)
     {
-        return $this->load($filename, true, 'xml', $options);
+        return $this->load($filename, true, Document::TYPE_XML, $options);
     }
 
     /**
@@ -629,7 +641,7 @@ class Document
      */
     public function __toString()
     {
-        return $this->type === 'xml' ? $this->xml() : $this->html();
+        return $this->type === Document::TYPE_HTML ? $this->html() : $this->xml();
     }
 
     /**
@@ -641,6 +653,8 @@ class Document
      * @param \DOMElement|null $contextNode The node in which the search will be performed
      *
      * @return \DiDom\Element[]|\DOMElement[]
+     *
+     * @deprecated Not longer recommended, use Document::find() instead.
      */
     public function __invoke($expression, $type = Query::TYPE_CSS, $wrapNode = true, $contextNode = null)
     {

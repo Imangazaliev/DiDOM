@@ -9,6 +9,9 @@ use InvalidArgumentException;
 use LogicException;
 use RuntimeException;
 
+/**
+ * @property string $tag
+ */
 class Element
 {
     /**
@@ -207,7 +210,7 @@ class Element
             }
 
             if (!$referenceNode instanceof \DOMNode) {
-                throw new InvalidArgumentException(sprintf('Argument 2 passed to %s must be an instance of %s\Element or DOMNode, %s given', __METHOD__, __NAMESPACE__, (is_object($node) ? get_class($node) : gettype($node))));
+                throw new InvalidArgumentException(sprintf('Argument 2 passed to %s must be an instance of %s\Element or DOMNode, %s given', __METHOD__, __NAMESPACE__, (is_object($referenceNode) ? get_class($referenceNode) : gettype($referenceNode))));
             }
         }
 
@@ -237,19 +240,19 @@ class Element
      */
     public function insertAfter($node, $referenceNode = null)
     {
+        if ($referenceNode === null) {
+            return $this->insertBefore($node);
+        }
+
         if ($referenceNode instanceof Element) {
             $referenceNode = $referenceNode->getNode();
         }
 
-        if ($referenceNode !== null and !$referenceNode instanceof \DOMNode) {
-            throw new InvalidArgumentException(sprintf('Argument 2 passed to %s must be an instance of %s\Element or DOMNode, %s given', __METHOD__, __NAMESPACE__, (is_object($node) ? get_class($node) : gettype($node))));
+        if (!$referenceNode instanceof \DOMNode) {
+            throw new InvalidArgumentException(sprintf('Argument 2 passed to %s must be an instance of %s\Element or DOMNode, %s given', __METHOD__, __NAMESPACE__, (is_object($referenceNode) ? get_class($referenceNode) : gettype($referenceNode))));
         }
 
-        if ($referenceNode !== null) {
-            return $this->insertBefore($node, $referenceNode->nextSibling);
-        }
-
-        return $this->insertBefore($node);
+        return $this->insertBefore($node, $referenceNode->nextSibling);
     }
 
     /**
@@ -1432,6 +1435,8 @@ class Element
      * @param bool   $wrapNode   Returns array of \DiDom\Element if true, otherwise array of \DOMElement
      *
      * @return \DiDom\Element[]|\DOMElement[]
+     *
+     * @deprecated Not longer recommended, use Element::find() instead.
      */
     public function __invoke($expression, $type = Query::TYPE_CSS, $wrapNode = true)
     {

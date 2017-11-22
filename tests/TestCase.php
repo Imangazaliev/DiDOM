@@ -28,7 +28,7 @@ class TestCase extends PHPUnit_Framework_TestCase
 
     protected function createDomElement($name, $value = null, $attributes = [])
     {
-        $document = new DOMDocument('1.0', 'utf-8');
+        $document = new DOMDocument('1.0', 'UTF-8');
         $node = $document->createElement($name, $value);
 
         foreach ($attributes as $name => $value) {
