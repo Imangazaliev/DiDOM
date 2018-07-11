@@ -454,7 +454,7 @@ class Element
      */
     public function hasAttribute($name)
     {
-        return $this->node->hasAttribute($name);
+        return $this->isElementNode() && $this->node->hasAttribute($name);
     }
 
     /**
