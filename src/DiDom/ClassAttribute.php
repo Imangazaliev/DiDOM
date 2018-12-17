@@ -106,7 +106,7 @@ class ClassAttribute
 
         $this->parseClassAttribute();
 
-        if (in_array($className, $this->classes)) {
+        if (in_array($className, $this->classes, true)) {
             return $this;
         }
 
@@ -133,7 +133,7 @@ class ClassAttribute
                 throw new InvalidArgumentException(sprintf('Class name must be a string, %s given', (is_object($className) ? get_class($className) : gettype($className))));
             }
 
-            if (in_array($className, $this->classes)) {
+            if (in_array($className, $this->classes, true)) {
                 continue;
             }
 
@@ -168,7 +168,7 @@ class ClassAttribute
 
         $this->parseClassAttribute();
 
-        return in_array($className, $this->classes);
+        return in_array($className, $this->classes, true);
     }
 
     /**
@@ -245,7 +245,7 @@ class ClassAttribute
                 throw new InvalidArgumentException(sprintf('Class name must be a string, %s given', (is_object($className) ? get_class($className) : gettype($className))));
             }
 
-            if (!in_array($className, $this->classes)) {
+            if (!in_array($className, $this->classes, true)) {
                 continue;
             }
 

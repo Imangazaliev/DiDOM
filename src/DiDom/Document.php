@@ -217,7 +217,7 @@ class Document
             throw new InvalidArgumentException(sprintf('%s expects parameter 3 to be string, %s given', __METHOD__, (is_object($type) ? get_class($type) : gettype($type))));
         }
 
-        if (!in_array(strtolower($type), [Document::TYPE_HTML, Document::TYPE_XML])) {
+        if (!in_array(strtolower($type), [Document::TYPE_HTML, Document::TYPE_XML], true)) {
             throw new RuntimeException(sprintf('Document type must be "xml" or "html", %s given', $type));
         }
 

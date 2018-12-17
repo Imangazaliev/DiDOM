@@ -34,28 +34,28 @@ class Element
     /**
      * Constructor.
      *
-     * @param \DOMElement|\DOMText|\DOMComment|string $name The tag name of the element
+     * @param \DOMElement|\DOMText|\DOMComment|string $tagName The tag name of the element
      * @param string|null $value The value of the element
      * @param array $attributes The attributes of the element
      */
-    public function __construct($name, $value = null, array $attributes = [])
+    public function __construct($tagName, $value = null, array $attributes = [])
     {
-        if (is_string($name)) {
+        if (is_string($tagName)) {
             $document = new DOMDocument('1.0', 'UTF-8');
 
-            $node = $document->createElement($name);
+            $node = $document->createElement($tagName);
 
             $this->setNode($node);
         } else {
-            $this->setNode($name);
+            $this->setNode($tagName);
         }
 
         if ($value !== null) {
             $this->setValue($value);
         }
 
-        foreach ($attributes as $name => $value) {
-            $this->setAttribute($name, $value);
+        foreach ($attributes as $attrName => $attrValue) {
+            $this->setAttribute($attrName, $attrValue);
         }
     }
 
@@ -525,7 +525,7 @@ class Element
         }
 
         foreach ($this->attributes() as $name => $value) {
-            if (in_array($name, $exclusions)) {
+            if (in_array($name, $exclusions, true)) {
                 continue;
             }
 
@@ -578,7 +578,7 @@ class Element
         $result = [];
 
         foreach ($this->node->attributes as $name => $attribute) {
-            if (in_array($name, $names)) {
+            if (in_array($name, $names, true)) {
                 $result[$name] = $attribute->value;
             }
         }
@@ -877,7 +877,7 @@ class Element
 
         $allowedTypes = ['DOMElement', 'DOMText', 'DOMComment'];
 
-        if (!in_array($nodeType, $allowedTypes)) {
+        if (!in_array($nodeType, $allowedTypes, true)) {
             throw new RuntimeException(sprintf('Unknown node type "%s". Allowed types: %s', $nodeType, implode(', ', $allowedTypes)));
         }
 
@@ -937,7 +937,7 @@ class Element
 
             $allowedTypes = ['DOMElement', 'DOMText', 'DOMComment'];
 
-            if (!in_array($nodeType, $allowedTypes)) {
+            if (!in_array($nodeType, $allowedTypes, true)) {
                 throw new RuntimeException(sprintf('Unknown node type "%s". Allowed types: %s', $nodeType, implode(', ', $allowedTypes)));
             }
         }
@@ -1015,7 +1015,7 @@ class Element
 
         $allowedTypes = ['DOMElement', 'DOMText', 'DOMComment'];
 
-        if (!in_array($nodeType, $allowedTypes)) {
+        if (!in_array($nodeType, $allowedTypes, true)) {
             throw new RuntimeException(sprintf('Unknown node type "%s". Allowed types: %s', $nodeType, implode(', ', $allowedTypes)));
         }
 
@@ -1075,7 +1075,7 @@ class Element
 
             $allowedTypes = ['DOMElement', 'DOMText', 'DOMComment'];
 
-            if (!in_array($nodeType, $allowedTypes)) {
+            if (!in_array($nodeType, $allowedTypes, true)) {
                 throw new RuntimeException(sprintf('Unknown node type "%s". Allowed types: %s', $nodeType, implode(', ', $allowedTypes)));
             }
         }
@@ -1315,7 +1315,7 @@ class Element
     {
         $allowedClasses = ['DOMElement', 'DOMText', 'DOMComment'];
 
-        if (!in_array(get_class($node), $allowedClasses)) {
+        if (!is_object($node) || !in_array(get_class($node), $allowedClasses, true)) {
             throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of DOMElement, DOMText or DOMComment, %s given', __METHOD__, (is_object($node) ? get_class($node) : gettype($node))));
         }
 

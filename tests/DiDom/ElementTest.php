@@ -12,9 +12,25 @@ class ElementTest extends TestCase
     /**
      * @expectedException \InvalidArgumentException
      */
-    public function testConstructorWithInvalidName()
+    public function testConstructorWithNullTagName()
     {
         new Element(null);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testConstructorWithInvalidTagNameType()
+    {
+        new Element([]);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testConstructorWithInvalidObject()
+    {
+        new Element(new \StdClass());
     }
 
     /**

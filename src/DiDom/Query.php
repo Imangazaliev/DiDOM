@@ -326,8 +326,8 @@ class Query
      */
     protected static function convertAttribute($name, $value)
     {
-        $isSimpleSelector = !in_array(substr($name, 0, 1), ['^', '!']);
-        $isSimpleSelector = $isSimpleSelector && (!in_array(substr($name, -1), ['^', '$', '*', '!', '~']));
+        $isSimpleSelector = !in_array(substr($name, 0, 1), ['^', '!'], true);
+        $isSimpleSelector = $isSimpleSelector && (!in_array(substr($name, -1), ['^', '$', '*', '!', '~'], true));
 
         if ($isSimpleSelector) {
             // if specified only the attribute name
