@@ -102,7 +102,7 @@ class StyleAttribute
         $properties = [];
 
         foreach ($this->properties as $propertyName => $value) {
-            $properties[] = $propertyName.': '.$value;
+            $properties[] = $propertyName . ': ' . $value;
         }
 
         return implode('; ', $properties);

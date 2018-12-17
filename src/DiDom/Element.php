@@ -395,7 +395,7 @@ class Element
             $innerHtml = $this->html();
             $html = "<root>$innerHtml</root>";
 
-            $selector = 'root > '.trim($selector);
+            $selector = 'root > ' . trim($selector);
 
             $document = new Document();
 

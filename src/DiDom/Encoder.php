@@ -50,7 +50,7 @@ class Encoder
                 $code = (($codes[$characterIndex++] - 0xC0) << 6) + $codes[$characterIndex++] - 0x80;
             }
 
-            $entities .= '&#'.$code.';';
+            $entities .= '&#' . $code . ';';
         }
 
         return $entities;

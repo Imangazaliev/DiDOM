@@ -400,7 +400,7 @@ class Document
             }
 
             if ($type === Query::TYPE_CSS) {
-                $expression = '.'.$expression;
+                $expression = '.' . $expression;
             }
         }
 
@@ -436,7 +436,7 @@ class Document
         $expression = Query::compile($expression, $type);
 
         if ($contextNode !== null && $type === Query::TYPE_CSS) {
-            $expression = '.'.$expression;
+            $expression = '.' . $expression;
         }
 
         $expression = sprintf('(%s)[1]', $expression);

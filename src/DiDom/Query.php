@@ -143,7 +143,7 @@ class Query
         $name = '(?P<name>[\w\-]+)';
         $args = '(?:\((?P<args>[^\)]+)?\))?';
 
-        $regexp = '/^::'.$name.$args.'/is';
+        $regexp = '/^::' . $name . $args . '/is';
 
         if (preg_match($regexp, $selector, $matches) !== 1) {
             throw new InvalidSelectorException(sprintf('Invalid property "%s"', $selector));
@@ -309,7 +309,7 @@ class Query
             throw new InvalidArgumentException('The array of segments must contain the name of the tag or at least one attribute');
         }
 
-        $xpath = $prefix.$tagName;
+        $xpath = $prefix . $tagName;
 
         if ($count = count($attributes)) {
             $xpath .= ($count > 1) ? sprintf('[(%s)]', implode(') and (', $attributes)) : sprintf('[%s]', $attributes[0]);
