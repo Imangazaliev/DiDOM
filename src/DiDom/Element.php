@@ -407,7 +407,7 @@ class Element
             throw new RuntimeException(sprintf('Tag name must be specified in %s', $selector));
         }
 
-        if ($segments['tag'] !== $this->tag and $segments['tag'] !== '*') {
+        if ($segments['tag'] !== $this->tag && $segments['tag'] !== '*') {
             return false;
         }
 
@@ -424,21 +424,21 @@ class Element
         $diff1 = array_diff($segments['classes'], $classes);
         $diff2 = array_diff($classes, $segments['classes']);
 
-        if (count($diff1) > 0 or count($diff2) > 0) {
+        if (count($diff1) > 0 || count($diff2) > 0) {
             return false;
         }
 
         $attributes = $this->attributes();
 
-        unset($attributes['id']);
-        unset($attributes['class']);
+        unset($attributes['id'], $attributes['class']);
 
         $segments['attributes'] = array_key_exists('attributes', $segments) ? $segments['attributes'] : [];
 
         $diff1 = array_diff_assoc($segments['attributes'], $attributes);
         $diff2 = array_diff_assoc($attributes, $segments['attributes']);
 
-        if (count($diff1) > 0 or count($diff2) > 0) {
+        // if the attributes are not equal
+        if (count($diff1) > 0 || count($diff2) > 0) {
             return false;
         }
 
@@ -471,7 +471,7 @@ class Element
             $value = (string) $value;
         }
 
-        if (!is_string($value) and $value !== null) {
+        if (!is_string($value) && $value !== null) {
             throw new InvalidArgumentException(sprintf('%s expects parameter 2 to be string or null, %s given', __METHOD__, (is_object($value) ? get_class($value) : gettype($value))));
         }
 
@@ -743,7 +743,7 @@ class Element
             $value = (string) $value;
         }
 
-        if (!is_string($value) and $value !== null) {
+        if (!is_string($value) && $value !== null) {
             throw new InvalidArgumentException(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, (is_object($value) ? get_class($value) : gettype($value))));
         }
 
@@ -835,7 +835,7 @@ class Element
         while (true) {
             $parent = $node->parent();
 
-            if ($parent === null or $parent instanceof Document) {
+            if ($parent === null || $parent instanceof Document) {
                 return null;
             }
 
@@ -863,11 +863,11 @@ class Element
             return null;
         }
 
-        if ($selector === null and $nodeType === null) {
+        if ($selector === null && $nodeType === null) {
             return new Element($this->node->previousSibling);
         }
 
-        if ($selector !== null and $nodeType === null) {
+        if ($selector !== null && $nodeType === null) {
             $nodeType = 'DOMElement';
         }
 
@@ -881,7 +881,7 @@ class Element
             throw new RuntimeException(sprintf('Unknown node type "%s". Allowed types: %s', $nodeType, implode(', ', $allowedTypes)));
         }
 
-        if ($selector !== null and $nodeType !== 'DOMElement') {
+        if ($selector !== null && $nodeType !== 'DOMElement') {
             throw new LogicException(sprintf('Selector can be used only with DOMElement node type, %s given', $nodeType));
         }
 
@@ -926,7 +926,7 @@ class Element
             return [];
         }
 
-        if ($selector !== null and $nodeType === null) {
+        if ($selector !== null && $nodeType === null) {
             $nodeType = 'DOMElement';
         }
 
@@ -942,7 +942,7 @@ class Element
             }
         }
 
-        if ($selector !== null and $nodeType !== 'DOMElement') {
+        if ($selector !== null && $nodeType !== 'DOMElement') {
             throw new LogicException(sprintf('Selector can be used only with DOMElement node type, %s given', $nodeType));
         }
 
@@ -1001,11 +1001,11 @@ class Element
             return null;
         }
 
-        if ($selector === null and $nodeType === null) {
+        if ($selector === null && $nodeType === null) {
             return new Element($this->node->nextSibling);
         }
 
-        if ($selector !== null and $nodeType === null) {
+        if ($selector !== null && $nodeType === null) {
             $nodeType = 'DOMElement';
         }
 
@@ -1019,7 +1019,7 @@ class Element
             throw new RuntimeException(sprintf('Unknown node type "%s". Allowed types: %s', $nodeType, implode(', ', $allowedTypes)));
         }
 
-        if ($selector !== null and $nodeType !== 'DOMElement') {
+        if ($selector !== null && $nodeType !== 'DOMElement') {
             throw new LogicException(sprintf('Selector can be used only with DOMElement node type, %s given', $nodeType));
         }
 
@@ -1064,7 +1064,7 @@ class Element
             return [];
         }
 
-        if ($selector !== null and $nodeType === null) {
+        if ($selector !== null && $nodeType === null) {
             $nodeType = 'DOMElement';
         }
 
@@ -1080,7 +1080,7 @@ class Element
             }
         }
 
-        if ($selector !== null and $nodeType !== 'DOMElement') {
+        if ($selector !== null && $nodeType !== 'DOMElement') {
             throw new LogicException(sprintf('Selector can be used only with DOMElement node type, %s given', $nodeType));
         }
 
@@ -1273,7 +1273,7 @@ class Element
             $newNode = $newNode->cloneNode(true);
         }
 
-        if ($newNode->ownerDocument === null or !$this->getDocument()->is($newNode->ownerDocument)) {
+        if ($newNode->ownerDocument === null || !$this->getDocument()->is($newNode->ownerDocument)) {
             $newNode = $this->node->ownerDocument->importNode($newNode, true);
         }
 

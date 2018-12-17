@@ -93,9 +93,7 @@ class Document
     {
         $node = $this->document->createElement($name);
 
-        $element = new Element($node, $value, $attributes);
-
-        return $element;
+        return new Element($node, $value, $attributes);
     }
 
     /**
@@ -435,7 +433,7 @@ class Document
     {
         $expression = Query::compile($expression, $type);
 
-        if ($contextNode !== null and $type === Query::TYPE_CSS) {
+        if ($contextNode !== null && $type === Query::TYPE_CSS) {
             $expression = '.'.$expression;
         }
 
