@@ -33,7 +33,7 @@ class StyleAttribute
     public function __construct(Element $element)
     {
         if (!$element->isElementNode()) {
-            throw new InvalidArgumentException(sprintf('The element should contain DOMElement node'));
+            throw new InvalidArgumentException(sprintf('The element must contain DOMElement node'));
         }
 
         $this->element = $element;

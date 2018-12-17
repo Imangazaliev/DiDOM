@@ -62,7 +62,7 @@ class Element
     }
 
     /**
-     * Create new element.
+     * Creates a new element.
      *
      * @param \DOMNode|string $name The tag name of the element
      * @param string|null $value The value of the element
@@ -76,7 +76,7 @@ class Element
     }
 
     /**
-     * Create new element node by CSS selector.
+     * Creates a new element node by CSS selector.
      *
      * @param string $selector
      * @param string|null $value
@@ -90,7 +90,7 @@ class Element
     }
 
     /**
-     * Adds new child at the start of the children.
+     * Adds a new child at the start of the children.
      *
      * @param \DiDom\Element|\DOMNode|array $nodes The prepended child
      *
@@ -129,7 +129,7 @@ class Element
     }
 
     /**
-     * Adds new child at the end of the children.
+     * Adds a new child at the end of the children.
      *
      * @param \DiDom\Element|\DOMNode|array $nodes The appended child
      *

@@ -225,7 +225,7 @@ class Query
                 }
 
                 if ($parameters[1] !== 'true' && $parameters[1] !== 'false') {
-                    throw new InvalidSelectorException(sprintf('Parameter 2 of "contains" pseudo-class should be equal true or false, "%s" given', $parameters[1]));
+                    throw new InvalidSelectorException(sprintf('Parameter 2 of "contains" pseudo-class must be equal true or false, "%s" given', $parameters[1]));
                 }
 
                 $caseSensitive = $parameters[1] === 'true';
@@ -235,7 +235,7 @@ class Query
                 }
 
                 if ($parameters[2] !== 'true' && $parameters[2] !== 'false') {
-                    throw new InvalidSelectorException(sprintf('Parameter 3 of "contains" pseudo-class should be equal true or false, "%s" given', $parameters[2]));
+                    throw new InvalidSelectorException(sprintf('Parameter 3 of "contains" pseudo-class must be equal true or false, "%s" given', $parameters[2]));
                 }
 
                 $fullMatch = $parameters[2] === 'true';
@@ -306,7 +306,7 @@ class Query
         }
 
         if (count($attributes) === 0 && !isset($segments['tag'])) {
-            throw new InvalidArgumentException('The array of segments should contain the name of the tag or at least one attribute');
+            throw new InvalidArgumentException('The array of segments must contain the name of the tag or at least one attribute');
         }
 
         $xpath = $prefix.$tagName;

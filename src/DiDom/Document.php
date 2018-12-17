@@ -12,7 +12,7 @@ use RuntimeException;
 class Document
 {
     /**
-     * Types of document.
+     * Types of a document.
      *
      * @const string
      */
@@ -37,8 +37,8 @@ class Document
     /**
      * Constructor.
      *
-     * @param string|null $string   HTML or XML string or file path
-     * @param bool        $isFile   Indicates that in first parameter was passed to the file path
+     * @param string|null $string   An HTML or XML string or a file path
+     * @param bool        $isFile   Indicates that the first parameter is a path to a file
      * @param string      $encoding The document encoding
      * @param string      $type     The document type
      *
@@ -68,10 +68,10 @@ class Document
     }
 
     /**
-     * Create new document.
+     * Creates a new document.
      *
-     * @param string|null $string   HTML or XML string or file path
-     * @param bool        $isFile   Indicates that in first parameter was passed to the file path
+     * @param string|null $string   An HTML or XML string or a file path
+     * @param bool        $isFile   Indicates that the first parameter is a path to a file
      * @param string      $encoding The document encoding
      * @param string      $type     The document type
      *
@@ -83,7 +83,7 @@ class Document
     }
 
     /**
-     * Create new element node.
+     * Creates a new element node.
      *
      * @param string      $name       The tag name of the element
      * @param string|null $value      The value of the element
@@ -99,11 +99,11 @@ class Document
     }
 
     /**
-     * Create new element node by CSS selector.
+     * Creates a new element node by CSS selector.
      *
-     * @param string $selector
+     * @param string      $selector
      * @param string|null $value
-     * @param array $attributes
+     * @param array       $attributes
      *
      * @return \DiDom\Element
      */
@@ -129,7 +129,7 @@ class Document
     }
 
     /**
-     * Add new child at the end of the children.
+     * Adds a new child at the end of the children.
      *
      * @param \DiDom\Element|\DOMNode|array $nodes The appended child
      *
@@ -226,7 +226,7 @@ class Document
             $options = LIBXML_HTML_NODEFDTD;
         }
 
-        if (!is_integer($options)) {
+        if (!is_int($options)) {
             throw new InvalidArgumentException(sprintf('%s expects parameter 4 to be integer, %s given', __METHOD__, (is_object($options) ? get_class($options) : gettype($options))));
         }
 
@@ -474,7 +474,7 @@ class Document
     }
 
     /**
-     * Searches for an node in the DOM tree for a given XPath expression.
+     * Searches for a node in the DOM tree for a given XPath expression.
      *
      * @param string      $expression  XPath expression
      * @param bool        $wrapNode    Returns array of \DiDom\Element if true, otherwise array of \DOMElement
@@ -587,7 +587,7 @@ class Document
     }
 
     /**
-     * Returns the type of document (XML or HTML).
+     * Returns the type of the document (XML or HTML).
      *
      * @return string
      */
@@ -597,7 +597,7 @@ class Document
     }
 
     /**
-     * Returns the encoding of document (XML or HTML).
+     * Returns the encoding of the document (XML or HTML).
      *
      * @return string
      */

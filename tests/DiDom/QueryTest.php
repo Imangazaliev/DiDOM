@@ -116,7 +116,7 @@ class QueryTest extends TestCase
      */
     public function testContainsInvalidCaseSensitiveParameter($caseSensitive)
     {
-        $message = sprintf('Parameter 2 of "contains" pseudo-class should be equal true or false, "%s" given', $caseSensitive);
+        $message = sprintf('Parameter 2 of "contains" pseudo-class must be equal true or false, "%s" given', $caseSensitive);
 
         $this->setExpectedException('DiDom\Exceptions\InvalidSelectorException', $message);
 

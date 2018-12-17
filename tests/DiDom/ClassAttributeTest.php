@@ -10,7 +10,7 @@ class ClassAttributeTest extends TestCase
 {
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The element should contain DOMElement node
+     * @expectedExceptionMessage The element must contain DOMElement node
      */
     public function testConstructorWithTextNode()
     {
@@ -21,7 +21,7 @@ class ClassAttributeTest extends TestCase
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The element should contain DOMElement node
+     * @expectedExceptionMessage The element must contain DOMElement node
      */
     public function testConstructorWithCommentNode()
     {
