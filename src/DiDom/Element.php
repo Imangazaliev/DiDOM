@@ -1386,13 +1386,11 @@ class Element
      */
     public function __get($name)
     {
-        switch ($name) {
-            case 'tag':
-                return $this->node->tagName;
-                break;
-            default:
-                return $this->getAttribute($name);
+        if ($name === 'tag') {
+            return $this->node->tagName;
         }
+
+        return $this->getAttribute($name);
     }
 
     /**
