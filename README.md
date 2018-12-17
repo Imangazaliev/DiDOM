@@ -16,19 +16,21 @@ DiDOM - simple and fast HTML parser.
 - [Creating new document](#creating-new-document)
 - [Search for elements](#search-for-elements)
 - [Verify if element exists](#verify-if-element-exists)
+- [Search in element](#search-in-element)
 - [Supported selectors](#supported-selectors)
 - [Output](#output)
-- [Creating a new element](#creating-a-new-element)
-- [Getting the name of an element](#getting-the-name-of-an-element)
-- [Getting parent element](#getting-parent-element)
-- [Getting sibling elements](#getting-sibling-elements)
-- [Getting the child elements](#getting-the-child-elements)
-- [Getting document](#getting-document)
-- [Working with element attributes](#working-with-element-attributes)
-- [Comparing elements](#comparing-elements)
-- [Adding a child element](#adding-a-child-element)
-- [Replacing element](#replacing-element)
-- [Removing element](#removing-element)
+- [Working with elements](#working-with-elements)
+    - [Creating a new element](#creating-a-new-element)
+    - [Getting the name of an element](#getting-the-name-of-an-element)
+    - [Getting parent element](#getting-parent-element)
+    - [Getting sibling elements](#getting-sibling-elements)
+    - [Getting the child elements](#getting-the-child-elements)
+    - [Getting document](#getting-document)
+    - [Working with element attributes](#working-with-element-attributes)
+    - [Comparing elements](#comparing-elements)
+    - [Adding a child element](#adding-a-child-element)
+    - [Replacing element](#replacing-element)
+    - [Removing element](#removing-element)
 - [Working with cache](#working-with-cache)
 - [Miscellaneous](#miscellaneous)
 - [Comparison with other parsers](#comparison-with-other-parsers)
@@ -72,6 +74,20 @@ $document = new Document('http://www.example.com/', true);
 
 The second parameter specifies if you need to load file. Default is `false`.
 
+Signature:
+
+```php
+__construct($string = null, $isFile = false, $encoding = 'UTF-8', $type = Document::TYPE_HTML)
+```
+
+`$string` - an HTML or XML string or a file path.
+
+`$isFile` - indicates that the first parameter is a path to a file.
+
+`$encoding` - the document encoding.
+
+`$type` - the document type (HTML - `Document::TYPE_HTML`, XML - `Document::TYPE_XML`).
+
 ##### With separate methods
 
 ```php
@@ -86,10 +102,14 @@ $document->loadHtmlFile('http://www.example.com/');
 
 There are two methods available for loading XML: `loadXml` and `loadXmlFile`.
 
-These methods accept additional options:
+These methods accept additional [options](http://php.net/manual/en/libxml.constants.php):
 
 ```php
 $document->loadHtml($html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+$document->loadHtmlFile($url, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+
+$document->loadXml($xml, LIBXML_PARSEHUGE);
+$document->loadXmlFile($url, LIBXML_PARSEHUGE);
 ```
 
 ## Search for elements
@@ -118,6 +138,8 @@ If the elements that match a given expression are found, then method returns an 
 ```php
 $posts = $document('.post');
 ```
+
+**Warning:** using this method is undesirable because it may be removed in the future.
 
 ##### With method `xpath()`:
 
@@ -158,7 +180,33 @@ if (count($elements = $document->find('.post')) > 0) {
 }
 ```
 
-because in the first case it makes two requests.
+because in the first case it makes two queries.
+
+## Search in element
+
+Methods `find()`, `first()`, `xpath()`, `has()`, `count()` are available in Element too.
+
+Example:
+
+```php
+echo $document->find('nav')[0]->first('ul.menu')->xpath('//li')[0]->text();
+```
+
+#### Method `findInDocument()`
+
+If you change, replace, or remove an element that was found in another element, the document will not be changed. This happens because method `find()` of `Element` class (a, respectively, the `first ()` and `xpath` methods) creates a new document to search.
+
+To search for elements in the source document, you must use the methods `findInDocument()` and `firstInDocument()`:
+
+```php
+// nothing will happen
+$document->first('head')->first('title')->remove();
+
+// but this will do
+$document->first('head')->firstInDocument('title')->remove();
+```
+
+**Warning:** methods  `findInDocument()` and `firstInDocument()` work only for elements, which belong to a document, and for elements created via `new Element(...)`. If an element does not belong to a document, `LogicException` will be thrown;
 
 ## Supported selectors
 
@@ -501,11 +549,35 @@ $element = new Element('span', 'hello');
 $document->find('.post')[0]->replace($element);
 ```
 
+**Waning:** you can replace only those elements that were found directly in the document:
+
+```php
+// nothing will happen
+$document->first('head')->first('title')->replace($title);
+
+// but this will do
+$document->first('head title')->replace($title);
+```
+
+More about this in section [Search for elements](#search-for-elements).
+
 ## Removing element
 
 ```php
 $document->find('.post')[0]->remove();
 ```
+
+**Warning:** you can remove only those elements that were found directly in the document:
+
+```php
+// nothing will happen
+$document->first('head')->first('title')->remove();
+
+// but this will do
+$document->first('head title')->remove();
+```
+
+More about this in section [Search for elements](#search-for-elements).
 
 ## Working with cache
 
