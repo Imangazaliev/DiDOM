@@ -358,15 +358,10 @@ class Document
      */
     public function has($expression, $type = Query::TYPE_CSS)
     {
-        $xpath = new DOMXPath($this->document);
-
-        $xpath->registerNamespace('php', 'http://php.net/xpath');
-        $xpath->registerPhpFunctions();
-
         $expression = Query::compile($expression, $type);
         $expression = sprintf('count(%s) > 0', $expression);
 
-        return $xpath->evaluate($expression);
+        return $this->createXpath()->evaluate($expression);
     }
 
     /**
@@ -385,11 +380,6 @@ class Document
     {
         $expression = Query::compile($expression, $type);
 
-        $xpath = new DOMXPath($this->document);
-
-        $xpath->registerNamespace('php', 'http://php.net/xpath');
-        $xpath->registerPhpFunctions();
-
         if ($contextNode !== null) {
             if ($contextNode instanceof Element) {
                 $contextNode = $contextNode->getNode();
@@ -404,7 +394,7 @@ class Document
             }
         }
 
-        $nodeList = $xpath->query($expression, $contextNode);
+        $nodeList = $this->createXpath()->query($expression, $contextNode);
 
         $result = [];
 
@@ -497,15 +487,23 @@ class Document
      */
     public function count($expression, $type = Query::TYPE_CSS)
     {
+        $expression = Query::compile($expression, $type);
+        $expression = sprintf('count(%s)', $expression);
+
+        return (int) $this->createXpath()->evaluate($expression);
+    }
+
+    /**
+     * @return DOMXPath
+     */
+    public function createXpath()
+    {
         $xpath = new DOMXPath($this->document);
 
         $xpath->registerNamespace('php', 'http://php.net/xpath');
         $xpath->registerPhpFunctions();
 
-        $expression = Query::compile($expression, $type);
-        $expression = sprintf('count(%s)', $expression);
-
-        return (int) $xpath->evaluate($expression);
+        return $xpath;
     }
 
     /**

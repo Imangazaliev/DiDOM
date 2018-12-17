@@ -494,6 +494,16 @@ class DocumentTest extends TestCase
         $this->assertEquals(0, $document->count('li'));
     }
 
+    public function testCreateXpath()
+    {
+        $document = new Document();
+
+        $xpath =$document->createXpath();
+
+        $this->assertInstanceOf('DOMXPath', $xpath);
+        $this->assertEquals($document->getDocument(), $xpath->document);
+    }
+
     public function testHtml()
     {
         $html = '
