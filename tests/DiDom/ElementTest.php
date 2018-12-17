@@ -886,6 +886,28 @@ Tiếng Việt <br>
         $this->assertEquals($expectedContent, $document->first('body')->innerHtml());
     }
 
+    public function testInnerHtmlOnXmlElement()
+    {
+        $innerXml = 'Plain text <span>Lorem <single-tag/> ipsum.</span><span>Lorem ipsum.</span>';
+        $xml = "<div id=\"root\">$innerXml</div>";
+
+        $document = new Document($xml, false, 'UTF-8', Document::TYPE_XML);
+
+        $expectedXml = 'Plain text <span>Lorem <single-tag></single-tag> ipsum.</span><span>Lorem ipsum.</span>';
+
+        $this->assertEquals($expectedXml, $document->first('#root')->innerHtml());
+    }
+
+    public function testInnerXml()
+    {
+        $innerXml = 'Plain text <span>Lorem <single-tag/> ipsum.</span><span>Lorem ipsum.</span>';
+        $xml = "<div id=\"root\">$innerXml</div>";
+
+        $document = new Document($xml, false, 'UTF-8', Document::TYPE_XML);
+
+        $this->assertEquals($innerXml, $document->first('#root')->innerXml());
+    }
+
     public function testSetInnerHtml()
     {
         $list = new Element('ul');

@@ -672,6 +672,24 @@ class Element
     }
 
     /**
+     * Dumps the node descendants into a string using XML formatting.
+     *
+     * @param string $delimiter
+     *
+     * @return string
+     */
+    public function innerXml($delimiter = '')
+    {
+        $innerXml = [];
+
+        foreach ($this->node->childNodes as $childNode) {
+            $innerXml[] = $childNode->ownerDocument->saveXML($childNode);
+        }
+
+        return implode($delimiter, $innerXml);
+    }
+
+    /**
      * Sets inner HTML.
      *
      * @param string $html
