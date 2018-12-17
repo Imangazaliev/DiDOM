@@ -3,8 +3,10 @@
 namespace DiDom;
 
 use DOMDocument;
+use DOMComment;
 use DOMElement;
 use DOMNode;
+use DOMText;
 use InvalidArgumentException;
 use LogicException;
 use RuntimeException;
@@ -159,7 +161,7 @@ class Element
                 $node = $node->getNode();
             }
 
-            if (!$node instanceof \DOMNode) {
+            if (!$node instanceof DOMNode) {
                 throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s\Element or DOMNode, %s given', __METHOD__, __NAMESPACE__, (is_object($node) ? get_class($node) : gettype($node))));
             }
 
@@ -171,7 +173,7 @@ class Element
 
         Errors::restore();
 
-        $result = array_map(function (\DOMNode $node) {
+        $result = array_map(function (DOMNode $node) {
             return new Element($node);
         }, $result);
 
@@ -200,7 +202,7 @@ class Element
             $node = $node->getNode();
         }
 
-        if (!$node instanceof \DOMNode) {
+        if (!$node instanceof DOMNode) {
             throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s\Element or DOMNode, %s given', __METHOD__, __NAMESPACE__, (is_object($node) ? get_class($node) : gettype($node))));
         }
 
@@ -209,7 +211,7 @@ class Element
                 $referenceNode = $referenceNode->getNode();
             }
 
-            if (!$referenceNode instanceof \DOMNode) {
+            if (!$referenceNode instanceof DOMNode) {
                 throw new InvalidArgumentException(sprintf('Argument 2 passed to %s must be an instance of %s\Element or DOMNode, %s given', __METHOD__, __NAMESPACE__, (is_object($referenceNode) ? get_class($referenceNode) : gettype($referenceNode))));
             }
         }
@@ -248,7 +250,7 @@ class Element
             $referenceNode = $referenceNode->getNode();
         }
 
-        if (!$referenceNode instanceof \DOMNode) {
+        if (!$referenceNode instanceof DOMNode) {
             throw new InvalidArgumentException(sprintf('Argument 2 passed to %s must be an instance of %s\Element or DOMNode, %s given', __METHOD__, __NAMESPACE__, (is_object($referenceNode) ? get_class($referenceNode) : gettype($referenceNode))));
         }
 
@@ -372,7 +374,8 @@ class Element
      *
      * @return bool
      *
-     * @throws \RuntimeException if tag name is not specified in strict mode
+     * @throws \InvalidArgumentException if the tag name is not a string
+     * @throws \RuntimeException if the tag name is not specified in strict mode
      */
     public function matches($selector, $strict = false)
     {
@@ -380,7 +383,7 @@ class Element
             throw new InvalidArgumentException(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, gettype($selector)));
         }
 
-        if (!$this->node instanceof \DOMElement) {
+        if (!$this->node instanceof DOMElement) {
             return false;
         }
 
@@ -759,7 +762,7 @@ class Element
      */
     public function isElementNode()
     {
-        return $this->node instanceof \DOMElement;
+        return $this->node instanceof DOMElement;
     }
 
     /**
@@ -769,7 +772,7 @@ class Element
      */
     public function isTextNode()
     {
-        return $this->node instanceof \DOMText;
+        return $this->node instanceof DOMText;
     }
 
     /**
@@ -779,7 +782,7 @@ class Element
      */
     public function isCommentNode()
     {
-        return $this->node instanceof \DOMComment;
+        return $this->node instanceof DOMComment;
     }
 
     /**
@@ -813,7 +816,7 @@ class Element
             return null;
         }
 
-        if ($this->node->parentNode instanceof \DOMDocument) {
+        if ($this->node->parentNode instanceof DOMDocument) {
             return new Document($this->node->parentNode);
         }
 
@@ -1124,6 +1127,8 @@ class Element
     }
 
     /**
+     * @param int $index
+     *
      * @return \DiDom\Element|null
      */
     public function child($index)

@@ -3,6 +3,8 @@
 namespace DiDom;
 
 use DOMDocument;
+use DOMElement;
+use DOMNode;
 use DOMXPath;
 use InvalidArgumentException;
 use RuntimeException;
@@ -152,7 +154,7 @@ class Document
                 $node = $node->getNode();
             }
 
-            if (!$node instanceof \DOMNode) {
+            if (!$node instanceof DOMNode) {
                 throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s\Element or DOMNode, %s given', __METHOD__, __NAMESPACE__, (is_object($node) ? get_class($node) : gettype($node))));
             }
 
@@ -166,7 +168,7 @@ class Document
             Errors::restore();
         }
 
-        $result = array_map(function (\DOMNode $node) {
+        $result = array_map(function (DOMNode $node) {
             return new Element($node);
         }, $result);
 
@@ -393,7 +395,7 @@ class Document
                 $contextNode = $contextNode->getNode();
             }
 
-            if (!$contextNode instanceof \DOMElement) {
+            if (!$contextNode instanceof DOMElement) {
                 throw new InvalidArgumentException(sprintf('Argument 4 passed to %s must be an instance of %s\Element or DOMElement, %s given', __METHOD__, __NAMESPACE__, (is_object($contextNode) ? get_class($contextNode) : gettype($contextNode))));
             }
 
