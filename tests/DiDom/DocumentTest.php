@@ -415,6 +415,26 @@ class DocumentTest extends TestCase
         }
     }
 
+    public function testFindComment()
+    {
+        $html = $this->loadFixture('menu.html');
+
+        $document = new Document($html);
+
+        $comment = $document->xpath('/html/body/ul/li/a/comment()');
+        $this->assertTrue($comment[0]->isCommentNode());
+        $this->assertTrue($comment[1]->isCommentNode());
+
+        $this->assertTrue(is_array($comment));
+        $this->assertEquals(2, count($comment));
+
+        $comment = $document->xpath('/html/body/comment()');
+        $this->assertTrue($comment[0]->isCommentNode());
+
+        $this->assertTrue(is_array($comment));
+        $this->assertEquals(1, count($comment));
+    }
+
     public function findTests()
     {
         $html = $this->loadFixture('posts.html');
