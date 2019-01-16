@@ -445,7 +445,7 @@ class Document
      *
      * @return \DiDom\Element|string
      *
-     * @throws InvalidArgumentException if node is not DOMElement, DOMText, DOMAttr, DOMComment
+     * @throws InvalidArgumentException if node is not DOMElement, DOMText, DOMComment or DOMAttr
      */
     protected function wrapNode($node)
     {
@@ -456,11 +456,11 @@ class Document
             case 'DOMText':
                 return $node->data;
 
-            case 'DOMAttr':
-                return $node->value;
-
             case 'DOMComment':
                 return new Element($node);
+
+            case 'DOMAttr':
+                return $node->value;
         }
 
         throw new InvalidArgumentException(sprintf('Unknown node type "%s"', get_class($node)));

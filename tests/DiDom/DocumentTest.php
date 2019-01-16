@@ -400,21 +400,6 @@ class DocumentTest extends TestCase
         $this->assertEquals(['Link 1', 'Link 2', 'Link 3'], $texts);
     }
 
-    public function testFindAttribute()
-    {
-        $html = $this->loadFixture('menu.html');
-
-        $document = new Document($html);
-        $links = $document->find('//a/@href', Query::TYPE_XPATH);
-
-        $this->assertTrue(is_array($links));
-        $this->assertEquals(3, count($links));
-
-        foreach ($links as $link) {
-            $this->assertEquals('http://example.com', $link);
-        }
-    }
-
     public function testFindComment()
     {
         $html = $this->loadFixture('menu.html');
@@ -433,6 +418,21 @@ class DocumentTest extends TestCase
 
         $this->assertTrue(is_array($comment));
         $this->assertEquals(1, count($comment));
+    }
+
+    public function testFindAttribute()
+    {
+        $html = $this->loadFixture('menu.html');
+
+        $document = new Document($html);
+        $links = $document->find('//a/@href', Query::TYPE_XPATH);
+
+        $this->assertTrue(is_array($links));
+        $this->assertEquals(3, count($links));
+
+        foreach ($links as $link) {
+            $this->assertEquals('http://example.com', $link);
+        }
     }
 
     public function findTests()
