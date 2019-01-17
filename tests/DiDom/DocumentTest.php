@@ -120,6 +120,39 @@ class DocumentTest extends TestCase
         $this->assertEquals(['name' => 'name', 'placeholder' => 'Enter your name'], $element->attributes());
     }
 
+    public function testCreateTextNode()
+    {
+        $document = new Document();
+
+        $textNode = $document->createTextNode('foo bar baz');
+
+        $this->assertInstanceOf('DiDom\Element', $textNode);
+        $this->assertInstanceOf('DOMText', $textNode->getNode());
+        $this->assertEquals('foo bar baz', $textNode->text());
+    }
+
+    public function testCreateComment()
+    {
+        $document = new Document();
+
+        $comment = $document->createComment('foo bar baz');
+
+        $this->assertInstanceOf('DiDom\Element', $comment);
+        $this->assertInstanceOf('DOMComment', $comment->getNode());
+        $this->assertEquals('foo bar baz', $comment->text());
+    }
+
+    public function testCreateCDATASection()
+    {
+        $document = new Document();
+
+        $cdataSection = $document->createCdataSection('foo bar baz');
+
+        $this->assertInstanceOf('DiDom\Element', $cdataSection);
+        $this->assertInstanceOf('DOMCdataSection', $cdataSection->getNode());
+        $this->assertEquals('foo bar baz', $cdataSection->text());
+    }
+
     /**
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Argument 1 passed to DiDom\Document::appendChild must be an instance of DiDom\Element or DOMNode, string given

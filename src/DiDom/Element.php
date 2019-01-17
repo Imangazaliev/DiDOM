@@ -2,8 +2,9 @@
 
 namespace DiDom;
 
-use DOMDocument;
+use DOMCdataSection;
 use DOMComment;
+use DOMDocument;
 use DOMElement;
 use DOMNode;
 use DOMText;
@@ -19,7 +20,7 @@ class Element
     /**
      * The DOM element instance.
      *
-     * @var \DOMElement|\DOMText|\DOMComment
+     * @var \DOMElement|\DOMText|\DOMComment|\DOMCdataSection
      */
     protected $node;
 
@@ -36,7 +37,7 @@ class Element
     /**
      * Constructor.
      *
-     * @param \DOMElement|\DOMText|\DOMComment|string $tagName The tag name of the element
+     * @param \DOMElement|\DOMText|\DOMComment|\DOMCdataSection|string $tagName The tag name of the element
      * @param string|null $value The value of the element
      * @param array $attributes The attributes of the element
      */
@@ -774,7 +775,7 @@ class Element
     }
 
     /**
-     * Returns true if current node is DOMElement.
+     * Returns true if current node is a DOMElement instance.
      *
      * @return bool
      */
@@ -784,7 +785,7 @@ class Element
     }
 
     /**
-     * Returns true if current node is DOMText.
+     * Returns true if current node is a a DOMText instance.
      *
      * @return bool
      */
@@ -794,13 +795,23 @@ class Element
     }
 
     /**
-     * Returns true if current node is DOMComment.
+     * Returns true if current node is a DOMComment instance.
      *
      * @return bool
      */
     public function isCommentNode()
     {
         return $this->node instanceof DOMComment;
+    }
+
+    /**
+     * Returns true if current node is a DOMCdataSection instance.
+     *
+     * @return bool
+     */
+    public function isCdataSectionNode()
+    {
+        return $this->node instanceof DOMCdataSection;
     }
 
     /**
@@ -896,7 +907,7 @@ class Element
             throw new InvalidArgumentException(sprintf('%s expects parameter 2 to be string, %s given', __METHOD__, gettype($nodeType)));
         }
 
-        $allowedTypes = ['DOMElement', 'DOMText', 'DOMComment'];
+        $allowedTypes = ['DOMElement', 'DOMText', 'DOMComment', 'DOMCdataSection'];
 
         if (!in_array($nodeType, $allowedTypes, true)) {
             throw new RuntimeException(sprintf('Unknown node type "%s". Allowed types: %s', $nodeType, implode(', ', $allowedTypes)));
@@ -956,7 +967,7 @@ class Element
                 throw new InvalidArgumentException(sprintf('%s expects parameter 2 to be string, %s given', __METHOD__, gettype($nodeType)));
             }
 
-            $allowedTypes = ['DOMElement', 'DOMText', 'DOMComment'];
+            $allowedTypes = ['DOMElement', 'DOMText', 'DOMComment', 'DOMCdataSection'];
 
             if (!in_array($nodeType, $allowedTypes, true)) {
                 throw new RuntimeException(sprintf('Unknown node type "%s". Allowed types: %s', $nodeType, implode(', ', $allowedTypes)));
@@ -1034,7 +1045,7 @@ class Element
             throw new InvalidArgumentException(sprintf('%s expects parameter 2 to be string, %s given', __METHOD__, gettype($nodeType)));
         }
 
-        $allowedTypes = ['DOMElement', 'DOMText', 'DOMComment'];
+        $allowedTypes = ['DOMElement', 'DOMText', 'DOMComment', 'DOMCdataSection'];
 
         if (!in_array($nodeType, $allowedTypes, true)) {
             throw new RuntimeException(sprintf('Unknown node type "%s". Allowed types: %s', $nodeType, implode(', ', $allowedTypes)));
@@ -1094,7 +1105,7 @@ class Element
                 throw new InvalidArgumentException(sprintf('%s expects parameter 2 to be string, %s given', __METHOD__, gettype($nodeType)));
             }
 
-            $allowedTypes = ['DOMElement', 'DOMText', 'DOMComment'];
+            $allowedTypes = ['DOMElement', 'DOMText', 'DOMComment', 'DOMCdataSection'];
 
             if (!in_array($nodeType, $allowedTypes, true)) {
                 throw new RuntimeException(sprintf('Unknown node type "%s". Allowed types: %s', $nodeType, implode(', ', $allowedTypes)));
@@ -1330,16 +1341,16 @@ class Element
     /**
      * Sets current node instance.
      *
-     * @param \DOMElement|\DOMText|\DOMComment $node
+     * @param \DOMElement|\DOMText|\DOMComment|\DOMCdataSection $node
      *
      * @return \DiDom\Element
      */
     protected function setNode($node)
     {
-        $allowedClasses = ['DOMElement', 'DOMText', 'DOMComment'];
+        $allowedClasses = ['DOMElement', 'DOMText', 'DOMComment', 'DOMCdataSection'];
 
         if (!is_object($node) || !in_array(get_class($node), $allowedClasses, true)) {
-            throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of DOMElement, DOMText or DOMComment, %s given', __METHOD__, (is_object($node) ? get_class($node) : gettype($node))));
+            throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of DOMElement, DOMText, DOMComment or DOMCdataSection, %s given', __METHOD__, (is_object($node) ? get_class($node) : gettype($node))));
         }
 
         $this->node = $node;
@@ -1350,7 +1361,7 @@ class Element
     /**
      * Returns current node instance.
      *
-     * @return \DOMElement|\DOMText|\DOMComment
+     * @return \DOMElement|\DOMText|\DOMComment|\DOMCdataSection
      */
     public function getNode()
     {

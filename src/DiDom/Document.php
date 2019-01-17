@@ -2,9 +2,12 @@
 
 namespace DiDom;
 
+use DOMCdataSection;
+use DOMComment;
 use DOMDocument;
 use DOMElement;
 use DOMNode;
+use DOMText;
 use DOMXPath;
 use InvalidArgumentException;
 use RuntimeException;
@@ -126,6 +129,36 @@ class Document
         }
 
         return $this->createElement($name, $value, $attributes);
+    }
+
+    /**
+     * @param string $content
+     *
+     * @return Element
+     */
+    public function createTextNode($content)
+    {
+        return new Element(new DOMText($content));
+    }
+
+    /**
+     * @param string $data
+     *
+     * @return Element
+     */
+    public function createComment($data)
+    {
+        return new Element(new DOMComment($data));
+    }
+
+    /**
+     * @param string $data
+     *
+     * @return Element
+     */
+    public function createCdataSection($data)
+    {
+        return new Element(new DOMCdataSection($data));
     }
 
     /**
@@ -445,7 +478,7 @@ class Document
      *
      * @return \DiDom\Element|string
      *
-     * @throws InvalidArgumentException if node is not DOMElement, DOMText, DOMComment or DOMAttr
+     * @throws InvalidArgumentException if node is not DOMElement, DOMText, DOMComment, DOMCdataSection or DOMAttr
      */
     protected function wrapNode($node)
     {
@@ -457,6 +490,9 @@ class Document
                 return $node->data;
 
             case 'DOMComment':
+                return new Element($node);
+
+            case 'DOMCdataSection':
                 return new Element($node);
 
             case 'DOMAttr':
