@@ -38,16 +38,22 @@ class Document
     protected $encoding;
 
     /**
+     * @var array
+     */
+    protected $context;
+
+    /**
      * Constructor.
      *
      * @param string|null $string   An HTML or XML string or a file path
      * @param bool        $isFile   Indicates that the first parameter is a path to a file
      * @param string      $encoding The document encoding
      * @param string      $type     The document type
+     * @param array       $context  The stream context for url.
      *
      * @throws \InvalidArgumentException if the passed encoding is not a string
      */
-    public function __construct($string = null, $isFile = false, $encoding = 'UTF-8', $type = Document::TYPE_HTML)
+    public function __construct($string = null, $isFile = false, $encoding = 'UTF-8', $type = Document::TYPE_HTML, $context = [])
     {
         if ($string instanceof DOMDocument) {
             $this->document = $string;
@@ -60,6 +66,12 @@ class Document
         }
 
         $this->encoding = $encoding;
+
+        if (!is_array($context)) {
+            throw new InvalidArgumentException(sprintf('%s expects parameter 5 to be array, %s given', __METHOD__, gettype($context)));
+        }
+
+        $this->context = $context;
 
         $this->document = new DOMDocument('1.0', $encoding);
 
@@ -369,7 +381,12 @@ class Document
         }
 
         try {
-            $content = file_get_contents($filename);
+            if (count($this->context) > 0) {
+                $context = stream_context_create($this->context);
+                $content = file_get_contents($filename, false, $context);
+            } else {
+                $content = file_get_contents($filename);
+            }
         } catch (\Exception $exception) {
             throw new RuntimeException(sprintf('Could not load file %s', $filename));
         }
