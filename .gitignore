@@ -1,6 +1,7 @@
 /vendor
 /.idea
 composer.phar
+composer.json
 .php_cs.cache
 .DS_Store
 Thumbs.db
