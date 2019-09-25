@@ -1,6 +1,6 @@
 # DiDOM
 
-[![Build Status](https://codeship.com/projects/cf938980-36f0-0134-119e-36dc468776c7/status?branch=master)](https://codeship.com/projects/165662)
+[![Build Status](https://travis-ci.org/Imangazaliev/DiDOM.svg?branch=master)](https://travis-ci.org/Imangazaliev/DiDOM)
 [![Total Downloads](https://poser.pugx.org/imangazaliev/didom/downloads)](https://packagist.org/packages/imangazaliev/didom)
 [![Latest Stable Version](https://poser.pugx.org/imangazaliev/didom/v/stable)](https://packagist.org/packages/imangazaliev/didom)
 [![License](https://poser.pugx.org/imangazaliev/didom/license)](https://packagist.org/packages/imangazaliev/didom)
