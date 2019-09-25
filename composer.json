@@ -28,5 +28,10 @@
         "psr-4": { 
             "Tests\\": "tests/"
         }
+    },
+    "config": {
+        "platform": {
+            "php": "5.4"
+        }
     }
 }
