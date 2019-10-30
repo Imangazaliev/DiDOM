@@ -4,12 +4,13 @@ namespace Tests\DiDom;
 
 use DiDom\Element;
 use DiDom\StyleAttribute;
+use InvalidArgumentException;
 use Tests\TestCase;
 
 class StyleAttributeTest extends TestCase
 {
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage The element must contain DOMElement node
      */
     public function testConstructorWithTextNode()
@@ -20,7 +21,7 @@ class StyleAttributeTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage The element must contain DOMElement node
      */
     public function testConstructorWithCommentNode()
@@ -31,7 +32,7 @@ class StyleAttributeTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage DiDom\StyleAttribute::setProperty expects parameter 1 to be string, NULL given
      */
     public function testSetPropertyWithInvalidPropertyName()
@@ -46,7 +47,7 @@ class StyleAttributeTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage DiDom\StyleAttribute::setProperty expects parameter 2 to be string, NULL given
      */
     public function testSetPropertyWithInvalidPropertyValue()
@@ -76,7 +77,7 @@ class StyleAttributeTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Property name must be a string, integer given
      */
     public function testSetMultiplePropertiesWithInvalidPropertyName()
@@ -94,7 +95,7 @@ class StyleAttributeTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Property value must be a string, NULL given
      */
     public function testSetMultiplePropertiesWithInvalidPropertyValue()
@@ -130,7 +131,7 @@ class StyleAttributeTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage DiDom\StyleAttribute::getProperty expects parameter 1 to be string, NULL given
      */
     public function testGetPropertyWithInvalidPropertyName()
@@ -196,7 +197,7 @@ class StyleAttributeTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Property name must be a string, NULL given
      */
     public function testGetMultiplePropertiesWithInvalidPropertyName()
@@ -316,7 +317,7 @@ class StyleAttributeTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage DiDom\StyleAttribute::hasProperty expects parameter 1 to be string, NULL given
      */
     public function testHasPropertyWithInvalidPropertyName()
@@ -343,7 +344,7 @@ class StyleAttributeTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage DiDom\StyleAttribute::removeProperty expects parameter 1 to be string, NULL given
      */
     public function testRemovePropertyWithInvalidPropertyName()
@@ -375,7 +376,7 @@ class StyleAttributeTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Property name must be a string, NULL given
      */
     public function testRemoveMultiplePropertiesWithInvalidPropertyName()
@@ -439,7 +440,7 @@ class StyleAttributeTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Property name must be a string, NULL given
      */
     public function testRemoveAllPropertiesWithInvalidPropertyName()

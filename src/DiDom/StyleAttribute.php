@@ -9,7 +9,7 @@ class StyleAttribute
     /**
      * The DOM element instance.
      *
-     * @var \DiDom\Element
+     * @var Element
      */
     protected $element;
 
@@ -26,9 +26,9 @@ class StyleAttribute
     /**
      * Constructor.
      *
-     * @param \DiDom\Element $element
+     * @param Element $element
      *
-     * @throws \InvalidArgumentException if passed argument is not an element node
+     * @throws InvalidArgumentException if passed argument is not an element node
      */
     public function __construct(Element $element)
     {
@@ -112,10 +112,10 @@ class StyleAttribute
      * @param string $name
      * @param string $value
      *
-     * @return \DiDom\StyleAttribute
+     * @return StyleAttribute
      *
-     * @throws \InvalidArgumentException if property name is not a string
-     * @throws \InvalidArgumentException if property value is not a string
+     * @throws InvalidArgumentException if property name is not a string
+     * @throws InvalidArgumentException if property value is not a string
      */
     public function setProperty($name, $value)
     {
@@ -139,10 +139,10 @@ class StyleAttribute
     /**
      * @param array $properties
      *
-     * @return \DiDom\StyleAttribute
+     * @return StyleAttribute
      *
-     * @throws \InvalidArgumentException if property name is not a string
-     * @throws \InvalidArgumentException if property value is not a string
+     * @throws InvalidArgumentException if property name is not a string
+     * @throws InvalidArgumentException if property value is not a string
      */
     public function setMultipleProperties(array $properties)
     {
@@ -191,7 +191,7 @@ class StyleAttribute
      *
      * @return mixed
      *
-     * @throws \InvalidArgumentException if property name is not a string
+     * @throws InvalidArgumentException if property name is not a string
      */
     public function getMultipleProperties(array $propertyNames)
     {
@@ -241,9 +241,9 @@ class StyleAttribute
     /**
      * @param string $name
      *
-     * @return \DiDom\StyleAttribute
+     * @return StyleAttribute
      *
-     * @throws \InvalidArgumentException if property name is not a string
+     * @throws InvalidArgumentException if property name is not a string
      */
     public function removeProperty($name)
     {
@@ -263,9 +263,9 @@ class StyleAttribute
     /**
      * @param array $propertyNames
      *
-     * @return \DiDom\StyleAttribute
+     * @return StyleAttribute
      *
-     * @throws \InvalidArgumentException if property name is not a string
+     * @throws InvalidArgumentException if property name is not a string
      */
     public function removeMultipleProperties(array $propertyNames)
     {
@@ -287,7 +287,7 @@ class StyleAttribute
     /**
      * @param string[] $exclusions
      *
-     * @return \DiDom\StyleAttribute
+     * @return StyleAttribute
      */
     public function removeAllProperties(array $exclusions = [])
     {
@@ -315,7 +315,7 @@ class StyleAttribute
     }
 
     /**
-     * @return \DiDom\Element
+     * @return Element
      */
     public function getElement()
     {

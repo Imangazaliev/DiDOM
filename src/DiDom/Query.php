@@ -550,7 +550,7 @@ class Query
     /**
      * @param array $compiled
      *
-     * @throws \InvalidArgumentException if the attributes is not an array
+     * @throws InvalidArgumentException if the attributes is not an array
      */
     public static function setCompiled(array $compiled)
     {

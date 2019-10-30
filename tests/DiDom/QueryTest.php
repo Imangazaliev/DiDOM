@@ -3,12 +3,14 @@
 namespace Tests\DiDom;
 
 use DiDom\Query;
+use InvalidArgumentException;
+use RuntimeException;
 use Tests\TestCase;
 
 class QueryTest extends TestCase
 {
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage DiDom\Query::compile expects parameter 1 to be string, NULL given
      */
     public function testCompileWithNonStringExpression()
@@ -17,7 +19,7 @@ class QueryTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage DiDom\Query::compile expects parameter 2 to be string, NULL given
      */
     public function testCompileWithNonStringExpressionType()
@@ -26,7 +28,7 @@ class QueryTest extends TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException RuntimeException
      * @expectedExceptionMessage Unknown expression type "foo"
      */
     public function testCompileWithUnknownExpressionType()
@@ -44,6 +46,9 @@ class QueryTest extends TestCase
 
     /**
      * @dataProvider getSegmentsTests
+     *
+     * @param string $selector
+     * @param array $segments
      */
     public function testGetSegments($selector, $segments)
     {
@@ -52,6 +57,9 @@ class QueryTest extends TestCase
 
     /**
      * @dataProvider buildXpathTests
+     *
+     * @param array $segments
+     * @param string $xpath
      */
     public function testBuildXpath($segments, $xpath)
     {
@@ -59,7 +67,7 @@ class QueryTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      */
     public function testBuildXpathWithEmptyArray()
     {

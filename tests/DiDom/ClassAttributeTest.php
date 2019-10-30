@@ -4,12 +4,13 @@ namespace Tests\DiDom;
 
 use DiDom\Element;
 use DiDom\ClassAttribute;
+use InvalidArgumentException;
 use Tests\TestCase;
 
 class ClassAttributeTest extends TestCase
 {
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage The element must contain DOMElement node
      */
     public function testConstructorWithTextNode()
@@ -20,7 +21,7 @@ class ClassAttributeTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage The element must contain DOMElement node
      */
     public function testConstructorWithCommentNode()
@@ -31,7 +32,7 @@ class ClassAttributeTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage DiDom\ClassAttribute::add expects parameter 1 to be string, NULL given
      */
     public function testAddWithInvalidClassName()
@@ -112,7 +113,7 @@ class ClassAttributeTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Class name must be a string, NULL given
      */
     public function testAddMultipleWithInvalidClassName()
@@ -227,7 +228,7 @@ class ClassAttributeTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage DiDom\ClassAttribute::remove expects parameter 1 to be string, NULL given
      */
     public function testRemoveWithInvalidClassName()
@@ -270,7 +271,7 @@ class ClassAttributeTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Class name must be a string, NULL given
      */
     public function testRemoveMultipleWithInvalidClassName()
@@ -313,7 +314,7 @@ class ClassAttributeTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Class name must be a string, NULL given
      */
     public function testRemoveAllWithInvalidClassName()

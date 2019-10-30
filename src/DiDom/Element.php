@@ -20,24 +20,24 @@ class Element
     /**
      * The DOM element instance.
      *
-     * @var \DOMElement|\DOMText|\DOMComment|\DOMCdataSection
+     * @var DOMElement|DOMText|DOMComment|DOMCdataSection
      */
     protected $node;
 
     /**
-     * @var \DiDom\ClassAttribute
+     * @var ClassAttribute
      */
     protected $classAttribute;
 
     /**
-     * @var \DiDom\StyleAttribute
+     * @var StyleAttribute
      */
     protected $styleAttribute;
 
     /**
      * Constructor.
      *
-     * @param \DOMElement|\DOMText|\DOMComment|\DOMCdataSection|string $tagName The tag name of the element
+     * @param DOMElement|DOMText|DOMComment|DOMCdataSection|string $tagName The tag name of the element
      * @param string|null $value The value of the element
      * @param array $attributes The attributes of the element
      */
@@ -65,11 +65,11 @@ class Element
     /**
      * Creates a new element.
      *
-     * @param \DOMNode|string $name The tag name of the element
+     * @param DOMNode|string $name The tag name of the element
      * @param string|null $value The value of the element
      * @param array  $attributes The attributes of the element
      *
-     * @return \DiDom\Element
+     * @return Element
      */
     public static function create($name, $value = null, array $attributes = [])
     {
@@ -83,7 +83,7 @@ class Element
      * @param string|null $value
      * @param array $attributes
      *
-     * @return \DiDom\Element
+     * @return Element
      */
     public static function createBySelector($selector, $value = null, array $attributes = [])
     {
@@ -93,12 +93,12 @@ class Element
     /**
      * Adds a new child at the start of the children.
      *
-     * @param \DiDom\Element|\DOMNode|array $nodes The prepended child
+     * @param Element|DOMNode|array $nodes The prepended child
      *
-     * @return \DiDom\Element|\DiDom\Element[]
+     * @return Element|Element[]
      *
-     * @throws \LogicException if current node has no owner document
-     * @throws \InvalidArgumentException if the provided argument is not an instance of \DOMNode or \DiDom\Element
+     * @throws LogicException if current node has no owner document
+     * @throws InvalidArgumentException if the provided argument is not an instance of DOMNode or Element
      */
     public function prependChild($nodes)
     {
@@ -132,12 +132,12 @@ class Element
     /**
      * Adds a new child at the end of the children.
      *
-     * @param \DiDom\Element|\DOMNode|array $nodes The appended child
+     * @param Element|DOMNode|array $nodes The appended child
      *
-     * @return \DiDom\Element|\DiDom\Element[]
+     * @return Element|Element[]
      *
-     * @throws \LogicException if current node has no owner document
-     * @throws \InvalidArgumentException if the provided argument is not an instance of \DOMNode or \DiDom\Element
+     * @throws LogicException if current node has no owner document
+     * @throws InvalidArgumentException if the provided argument is not an instance of DOMNode or Element
      */
     public function appendChild($nodes)
     {
@@ -184,14 +184,14 @@ class Element
     /**
      * Adds a new child before a reference node.
      *
-     * @param \DiDom\Element|\DOMNode $node The new node
-     * @param \DiDom\Element|\DOMNode|null $referenceNode The reference node
+     * @param Element|DOMNode $node The new node
+     * @param Element|DOMNode|null $referenceNode The reference node
      *
-     * @return \DiDom\Element
+     * @return Element
      *
-     * @throws \LogicException if current node has no owner document
-     * @throws \InvalidArgumentException if $node is not an instance of \DOMNode or \DiDom\Element
-     * @throws \InvalidArgumentException if $referenceNode is not an instance of \DOMNode or \DiDom\Element
+     * @throws LogicException if current node has no owner document
+     * @throws InvalidArgumentException if $node is not an instance of DOMNode or Element
+     * @throws InvalidArgumentException if $referenceNode is not an instance of DOMNode or Element
      */
     public function insertBefore($node, $referenceNode = null)
     {
@@ -232,14 +232,14 @@ class Element
     /**
      * Adds a new child after a reference node.
      *
-     * @param \DiDom\Element|\DOMNode $node The new node
-     * @param \DiDom\Element|\DOMNode|null $referenceNode The reference node
+     * @param Element|DOMNode $node The new node
+     * @param Element|DOMNode|null $referenceNode The reference node
      *
-     * @return \DiDom\Element
+     * @return Element
      *
-     * @throws \LogicException if current node has no owner document
-     * @throws \InvalidArgumentException if $node is not an instance of \DOMNode or \DiDom\Element
-     * @throws \InvalidArgumentException if $referenceNode is not an instance of \DOMNode or \DiDom\Element
+     * @throws LogicException if current node has no owner document
+     * @throws InvalidArgumentException if $node is not an instance of DOMNode or Element
+     * @throws InvalidArgumentException if $referenceNode is not an instance of DOMNode or Element
      */
     public function insertAfter($node, $referenceNode = null)
     {
@@ -276,9 +276,9 @@ class Element
      *
      * @param string $expression  XPath expression or a CSS selector
      * @param string $type        The type of the expression
-     * @param bool   $wrapElement Returns array of \DiDom\Element if true, otherwise array of \DOMElement
+     * @param bool   $wrapElement Returns array of Element if true, otherwise array of DOMElement
      *
-     * @return \DiDom\Element[]|\DOMElement[]
+     * @return Element[]|DOMElement[]
      */
     public function find($expression, $type = Query::TYPE_CSS, $wrapElement = true)
     {
@@ -290,11 +290,11 @@ class Element
      *
      * @param string $expression XPath expression or a CSS selector
      * @param string $type       The type of the expression
-     * @param bool   $wrapNode   Returns array of \DiDom\Element if true, otherwise array of \DOMElement
+     * @param bool   $wrapNode   Returns array of Element if true, otherwise array of DOMElement
      *
-     * @return \DiDom\Element[]|\DOMElement[]
+     * @return Element[]|DOMElement[]
      *
-     * @throws \LogicException if current node has no owner document
+     * @throws LogicException if current node has no owner document
      */
     public function findInDocument($expression, $type = Query::TYPE_CSS, $wrapNode = true)
     {
@@ -312,9 +312,9 @@ class Element
      *
      * @param string $expression XPath expression or a CSS selector
      * @param string $type       The type of the expression
-     * @param bool   $wrapNode   Returns \DiDom\Element if true, otherwise \DOMElement
+     * @param bool   $wrapNode   Returns Element if true, otherwise DOMElement
      *
-     * @return \DiDom\Element|\DOMElement|null
+     * @return Element|DOMElement|null
      */
     public function first($expression, $type = Query::TYPE_CSS, $wrapNode = true)
     {
@@ -326,9 +326,9 @@ class Element
      *
      * @param string $expression XPath expression or a CSS selector
      * @param string $type       The type of the expression
-     * @param bool   $wrapNode   Returns \DiDom\Element if true, otherwise \DOMElement
+     * @param bool   $wrapNode   Returns Element if true, otherwise DOMElement
      *
-     * @return \DiDom\Element|\DOMElement|null
+     * @return Element|DOMElement|null
      */
     public function firstInDocument($expression, $type = Query::TYPE_CSS, $wrapNode = true)
     {
@@ -345,9 +345,9 @@ class Element
      * Searches for an node in the DOM tree for a given XPath expression.
      *
      * @param string $expression XPath expression
-     * @param bool   $wrapNode Returns array of \DiDom\Element if true, otherwise array of \DOMElement
+     * @param bool   $wrapNode Returns array of Element if true, otherwise array of DOMElement
      *
-     * @return \DiDom\Element[]|\DOMElement[]
+     * @return Element[]|DOMElement[]
      */
     public function xpath($expression, $wrapNode = true)
     {
@@ -375,8 +375,8 @@ class Element
      *
      * @return bool
      *
-     * @throws \InvalidArgumentException if the tag name is not a string
-     * @throws \RuntimeException if the tag name is not specified in strict mode
+     * @throws InvalidArgumentException if the tag name is not a string
+     * @throws RuntimeException if the tag name is not specified in strict mode
      */
     public function matches($selector, $strict = false)
     {
@@ -467,7 +467,7 @@ class Element
      * @param string $name The attribute name
      * @param string $value The attribute value
      *
-     * @return \DiDom\Element
+     * @return Element
      */
     public function setAttribute($name, $value)
     {
@@ -506,7 +506,7 @@ class Element
      *
      * @param string $name The attribute name
      *
-     * @return \DiDom\Element
+     * @return Element
      */
     public function removeAttribute($name)
     {
@@ -520,7 +520,7 @@ class Element
      *
      * @param string[] $exclusions
      *
-     * @return \DiDom\Element
+     * @return Element
      */
     public function removeAllAttributes(array $exclusions = [])
     {
@@ -545,7 +545,7 @@ class Element
      * @param string $name The attribute name
      * @param string|null $value The attribute value or null if the attribute does not exist
      *
-     * @return string|null|\DiDom\Element
+     * @return string|null|Element
      */
     public function attr($name, $value = null)
     {
@@ -591,9 +591,9 @@ class Element
     }
 
     /**
-     * @return \DiDom\ClassAttribute
+     * @return ClassAttribute
      *
-     * @throws \LogicException if the node is not an instance of \DOMElement
+     * @throws LogicException if the node is not an instance of DOMElement
      */
     public function classes()
     {
@@ -611,9 +611,9 @@ class Element
     }
 
     /**
-     * @return \DiDom\StyleAttribute
+     * @return StyleAttribute
      *
-     * @throws \LogicException if the node is not an instance of \DOMElement
+     * @throws LogicException if the node is not an instance of DOMElement
      */
     public function style()
     {
@@ -695,7 +695,7 @@ class Element
      *
      * @param string $html
      *
-     * @return \DiDom\Element
+     * @return Element
      *
      * @throws InvalidArgumentException if passed argument is not a string
      */
@@ -755,9 +755,9 @@ class Element
      *
      * @param string $value The new value of the node
      *
-     * @return \DiDom\Element
+     * @return Element
      *
-     * @throws \InvalidArgumentException if value is not string
+     * @throws InvalidArgumentException if value is not string
      */
     public function setValue($value)
     {
@@ -817,11 +817,11 @@ class Element
     /**
      * Indicates if two nodes are the same node.
      *
-     * @param \DiDom\Element|\DOMNode $node
+     * @param Element|DOMNode $node
      *
      * @return bool
      *
-     * @throws \InvalidArgumentException if the provided argument is not an instance of \DOMNode
+     * @throws InvalidArgumentException if the provided argument is not an instance of DOMNode
      */
     public function is($node)
     {
@@ -837,7 +837,7 @@ class Element
     }
 
     /**
-     * @return \DiDom\Element|\DiDom\Document|null
+     * @return Element|Document|null
      */
     public function parent()
     {
@@ -858,7 +858,7 @@ class Element
      * @param string $selector
      * @param bool $strict
      *
-     * @return \DiDom\Element|null
+     * @return Element|null
      */
     public function closest($selector, $strict = false)
     {
@@ -883,11 +883,11 @@ class Element
      * @param string|null $selector
      * @param string|null $nodeType
      *
-     * @return \DiDom\Element|null
+     * @return Element|null
      *
-     * @throws \InvalidArgumentException if node type is not string
-     * @throws \RuntimeException if node type is invalid
-     * @throws \LogicException if selector used with non DOMElement node type
+     * @throws InvalidArgumentException if node type is not string
+     * @throws RuntimeException if node type is invalid
+     * @throws LogicException if selector used with non DOMElement node type
      */
     public function previousSibling($selector = null, $nodeType = null)
     {
@@ -946,11 +946,11 @@ class Element
      * @param string|null $selector
      * @param string|null $nodeType
      *
-     * @return \DiDom\Element[]
+     * @return Element[]
      *
-     * @throws \InvalidArgumentException if node type is not string
-     * @throws \RuntimeException if node type is invalid
-     * @throws \LogicException if selector used with non DOMElement node type
+     * @throws InvalidArgumentException if node type is not string
+     * @throws RuntimeException if node type is invalid
+     * @throws LogicException if selector used with non DOMElement node type
      */
     public function previousSiblings($selector = null, $nodeType = null)
     {
@@ -1021,11 +1021,11 @@ class Element
      * @param string|null $selector
      * @param string|null $nodeType
      *
-     * @return \DiDom\Element|null
+     * @return Element|null
      *
-     * @throws \InvalidArgumentException if node type is not string
-     * @throws \RuntimeException if node type is invalid
-     * @throws \LogicException if selector used with non DOMElement node type
+     * @throws InvalidArgumentException if node type is not string
+     * @throws RuntimeException if node type is invalid
+     * @throws LogicException if selector used with non DOMElement node type
      */
     public function nextSibling($selector = null, $nodeType = null)
     {
@@ -1084,11 +1084,11 @@ class Element
      * @param string|null $selector
      * @param string $nodeType
      *
-     * @return \DiDom\Element[]
+     * @return Element[]
      *
-     * @throws \InvalidArgumentException if node type is not string
-     * @throws \RuntimeException if node type is invalid
-     * @throws \LogicException if selector used with non DOMElement node type
+     * @throws InvalidArgumentException if node type is not string
+     * @throws RuntimeException if node type is invalid
+     * @throws LogicException if selector used with non DOMElement node type
      */
     public function nextSiblings($selector = null, $nodeType = null)
     {
@@ -1158,7 +1158,7 @@ class Element
     /**
      * @param int $index
      *
-     * @return \DiDom\Element|null
+     * @return Element|null
      */
     public function child($index)
     {
@@ -1168,7 +1168,7 @@ class Element
     }
 
     /**
-     * @return \DiDom\Element|null
+     * @return Element|null
      */
     public function firstChild()
     {
@@ -1180,7 +1180,7 @@ class Element
     }
 
     /**
-     * @return \DiDom\Element|null
+     * @return Element|null
      */
     public function lastChild()
     {
@@ -1200,7 +1200,7 @@ class Element
     }
 
     /**
-     * @return \DiDom\Element[]
+     * @return Element[]
      */
     public function children()
     {
@@ -1216,9 +1216,9 @@ class Element
     /**
      * Removes child from list of children.
      *
-     * @param \DOMNode|\DiDom\Element $childNode
+     * @param DOMNode|Element $childNode
      *
-     * @return \DiDom\Element the node that has been removed
+     * @return Element the node that has been removed
      */
     public function removeChild($childNode)
     {
@@ -1238,7 +1238,7 @@ class Element
     /**
      * Removes all child nodes.
      *
-     * @return \DiDom\Element[] the nodes that has been removed
+     * @return Element[] the nodes that has been removed
      */
     public function removeChildren()
     {
@@ -1264,9 +1264,9 @@ class Element
     /**
      * Removes current node from the parent.
      *
-     * @return \DiDom\Element the node that has been removed
+     * @return Element the node that has been removed
      *
-     * @throws \LogicException if current node has no parent node
+     * @throws LogicException if current node has no parent node
      */
     public function remove()
     {
@@ -1282,12 +1282,12 @@ class Element
     /**
      * Replaces a child.
      *
-     * @param \DOMNode|\DiDom\Element $newNode The new node
+     * @param DOMNode|Element $newNode The new node
      * @param bool $clone Clone the node if true, otherwise move it
      *
-     * @return \DiDom\Element The node that has been replaced
+     * @return Element The node that has been replaced
      *
-     * @throws \LogicException if current node has no parent node
+     * @throws LogicException if current node has no parent node
      */
     public function replace($newNode, $clone = true)
     {
@@ -1331,7 +1331,7 @@ class Element
      *
      * @param bool $deep Indicates whether to copy all descendant nodes
      *
-     * @return \DiDom\Element The cloned node
+     * @return Element The cloned node
      */
     public function cloneNode($deep = true)
     {
@@ -1341,9 +1341,9 @@ class Element
     /**
      * Sets current node instance.
      *
-     * @param \DOMElement|\DOMText|\DOMComment|\DOMCdataSection $node
+     * @param DOMElement|DOMText|DOMComment|DOMCdataSection $node
      *
-     * @return \DiDom\Element
+     * @return Element
      */
     protected function setNode($node)
     {
@@ -1361,7 +1361,7 @@ class Element
     /**
      * Returns current node instance.
      *
-     * @return \DOMElement|\DOMText|\DOMComment|\DOMCdataSection
+     * @return DOMElement|DOMText|DOMComment|DOMCdataSection
      */
     public function getNode()
     {
@@ -1371,7 +1371,7 @@ class Element
     /**
      * Returns the document associated with this node.
      *
-     * @return \DiDom\Document|null
+     * @return Document|null
      */
     public function getDocument()
     {
@@ -1387,7 +1387,7 @@ class Element
      *
      * @param string $encoding The document encoding
      *
-     * @return \DiDom\Document
+     * @return Document
      */
     public function toDocument($encoding = 'UTF-8')
     {
@@ -1404,7 +1404,7 @@ class Element
      * @param string $name The attribute name
      * @param mixed  $value The attribute value
      *
-     * @return \DiDom\Element
+     * @return Element
      */
     public function __set($name, $value)
     {
@@ -1464,9 +1464,9 @@ class Element
      *
      * @param string $expression XPath expression or a CSS selector
      * @param string $type       The type of the expression
-     * @param bool   $wrapNode   Returns array of \DiDom\Element if true, otherwise array of \DOMElement
+     * @param bool   $wrapNode   Returns array of Element if true, otherwise array of DOMElement
      *
-     * @return \DiDom\Element[]|\DOMElement[]
+     * @return Element[]|DOMElement[]
      *
      * @deprecated Not longer recommended, use Element::find() instead.
      */

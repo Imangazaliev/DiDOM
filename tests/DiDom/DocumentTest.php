@@ -4,12 +4,14 @@ namespace Tests\DiDom;
 
 use DiDom\Document;
 use DiDom\Query;
+use InvalidArgumentException;
+use RuntimeException;
 use Tests\TestCase;
 
 class DocumentTest extends TestCase
 {
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage DiDom\Document::load expects parameter 1 to be string, array given
      */
     public function testConstructWithInvalidArgument()
@@ -18,7 +20,7 @@ class DocumentTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage DiDom\Document::__construct expects parameter 3 to be string, NULL given
      */
     public function testConstructWithInvalidEncoding()
@@ -27,7 +29,7 @@ class DocumentTest extends TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException RuntimeException
      * @expectedExceptionMessage Could not load file path/to/file
      */
     public function testConstructWithNotExistingFile()
@@ -36,7 +38,7 @@ class DocumentTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage DiDom\Document::load expects parameter 3 to be string, NULL given
      */
     public function testConstructorWithInvalidTypeOfDocumentTypeArgument()
@@ -45,7 +47,7 @@ class DocumentTest extends TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException RuntimeException
      * @expectedExceptionMessage Document type must be "xml" or "html", bar given
      */
     public function testConstructorWithInvalidDocumentType()
@@ -154,7 +156,7 @@ class DocumentTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Argument 1 passed to DiDom\Document::appendChild must be an instance of DiDom\Element or DOMNode, string given
      */
     public function testAppendChildWithInvalidArgument()
@@ -210,7 +212,7 @@ class DocumentTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage DiDom\Document::load expects parameter 1 to be string, NULL given
      */
     public function testLoadWithInvalidContentArgument()
@@ -221,7 +223,7 @@ class DocumentTest extends TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException RuntimeException
      * @expectedExceptionMessage Could not load file path/to/file
      */
     public function testLoadWithNotExistingFile()
@@ -232,7 +234,7 @@ class DocumentTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage DiDom\Document::load expects parameter 3 to be string, NULL given
      */
     public function testLoadWithInvalidTypeOfDocumentTypeArgument()
@@ -243,7 +245,7 @@ class DocumentTest extends TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException RuntimeException
      * @expectedExceptionMessage Document type must be "xml" or "html", bar given
      */
     public function testLoadWithInvalidDocumentType()
@@ -254,7 +256,7 @@ class DocumentTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage DiDom\Document::load expects parameter 4 to be integer, string given
      */
     public function testLoadWithInvalidOptionsType()
@@ -302,7 +304,7 @@ class DocumentTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage DiDom\Document::load expects parameter 1 to be string, NULL given
      */
     public function testLoadHtmlWithInvalidArgument()
@@ -313,7 +315,7 @@ class DocumentTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage DiDom\Document::load expects parameter 1 to be string, array given
      */
     public function testLoadHtmlFileWithInvalidArgument()
@@ -324,7 +326,7 @@ class DocumentTest extends TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException RuntimeException
      * @expectedExceptionMessage Could not load file path/to/file
      */
     public function testLoadHtmlFileWithNotExistingFile()
@@ -335,7 +337,7 @@ class DocumentTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage DiDom\Document::load expects parameter 1 to be string, NULL given
      */
     public function testLoadXmlWithInvalidArgument()
@@ -346,7 +348,7 @@ class DocumentTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage DiDom\Document::load expects parameter 1 to be string, array given
      */
     public function testLoadXmlFileWithInvalidArgument()
@@ -357,7 +359,7 @@ class DocumentTest extends TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException RuntimeException
      * @expectedExceptionMessage Could not load file path/to/file
      */
     public function testLoadXmlFileWithNotExistingFile()

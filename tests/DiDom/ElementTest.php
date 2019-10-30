@@ -5,12 +5,19 @@ namespace Tests\DiDom;
 use DiDom\Document;
 use DiDom\Element;
 use DiDom\Query;
+use DOMComment;
+use DOMDocument;
+use DOMElement;
+use DOMText;
+use LogicException;
+use InvalidArgumentException;
+use RuntimeException;
 use Tests\TestCase;
 
 class ElementTest extends TestCase
 {
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      */
     public function testConstructorWithNullTagName()
     {
@@ -18,7 +25,7 @@ class ElementTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      */
     public function testConstructorWithInvalidTagNameType()
     {
@@ -26,7 +33,7 @@ class ElementTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      */
     public function testConstructorWithInvalidObject()
     {
@@ -34,7 +41,7 @@ class ElementTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      */
     public function testConstructorWithInvalidValue()
     {
@@ -61,19 +68,19 @@ class ElementTest extends TestCase
         $this->assertEquals('John', $element->getNode()->getAttribute('value'));
 
         // create from DOMElement
-        $node = new \DOMElement('span', 'Foo');
+        $node = new DOMElement('span', 'Foo');
         $element = new Element($node);
 
         $this->assertEquals($node, $element->getNode());
 
         // create from DOMText
-        $node = new \DOMText('Foo');
+        $node = new DOMText('Foo');
         $element = new Element($node);
 
         $this->assertEquals($node, $element->getNode());
 
         // create from DOMComment
-        $node = new \DOMComment('Foo');
+        $node = new DOMComment('Foo');
         $element = new Element($node);
 
         $this->assertEquals($node, $element->getNode());
@@ -98,7 +105,7 @@ class ElementTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      */
     public function testPrependChildWithInvalidArgument()
     {
@@ -108,12 +115,12 @@ class ElementTest extends TestCase
     }
 
     /**
-     * @expectedException \LogicException
+     * @expectedException LogicException
      * @expectedExceptionMessage Can not prepend child to element without owner document
      */
     public function testPrependChildWithoutParentNode()
     {
-        $element = new Element(new \DOMElement('div'));
+        $element = new Element(new DOMElement('div'));
 
         $element->prependChild(new Element('div'));
     }
@@ -174,7 +181,7 @@ class ElementTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      */
     public function testAppendChildWithInvalidArgument()
     {
@@ -184,12 +191,12 @@ class ElementTest extends TestCase
     }
 
     /**
-     * @expectedException \LogicException
+     * @expectedException LogicException
      * @expectedExceptionMessage Can not append child to element without owner document
      */
     public function testAppendChildWithoutParentNode()
     {
-        $element = new Element(new \DOMElement('div'));
+        $element = new Element(new DOMElement('div'));
 
         $element->appendChild(new Element('div'));
     }
@@ -248,7 +255,7 @@ class ElementTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      */
     public function testInsertBeforeWithInvalidNodeArgument()
     {
@@ -258,7 +265,7 @@ class ElementTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Argument 2 passed to DiDom\Element::insertBefore must be an instance of DiDom\Element or DOMNode, string given
      */
     public function testInsertBeforeWithInvalidReferenceNodeArgument()
@@ -269,12 +276,12 @@ class ElementTest extends TestCase
     }
 
     /**
-     * @expectedException \LogicException
+     * @expectedException LogicException
      * @expectedExceptionMessage Can not insert child to element without owner document
      */
     public function testInsertBeforeWithoutParentNode()
     {
-        $list = new Element(new \DOMElement('ul'));
+        $list = new Element(new DOMElement('ul'));
 
         $list->insertBefore(new Element('li', 'foo'));
     }
@@ -324,7 +331,7 @@ class ElementTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      */
     public function testInsertAfterWithInvalidNodeArgument()
     {
@@ -334,7 +341,7 @@ class ElementTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Argument 2 passed to DiDom\Element::insertAfter must be an instance of DiDom\Element or DOMNode, string given
      */
     public function testInsertAfterWithInvalidReferenceNodeArgument()
@@ -345,12 +352,12 @@ class ElementTest extends TestCase
     }
 
     /**
-     * @expectedException \LogicException
+     * @expectedException LogicException
      * @expectedExceptionMessage Can not insert child to element without owner document
      */
     public function testInsertAfterWithoutParentNode()
     {
-        $list = new Element(new \DOMElement('ul'));
+        $list = new Element(new DOMElement('ul'));
 
         $list->insertAfter(new Element('li', 'foo'));
     }
@@ -401,7 +408,7 @@ class ElementTest extends TestCase
 
     public function testHas()
     {
-        $document = new \DOMDocument();
+        $document = new DOMDocument();
         $document->loadHTML('<div><span class="foo">bar</span></div>');
 
         $node = $document->getElementsByTagName('div')->item(0);
@@ -416,7 +423,7 @@ class ElementTest extends TestCase
      */
     public function testFind($html, $selector, $type, $count)
     {
-        $document = new \DOMDocument();
+        $document = new DOMDocument();
         $document->loadHTML($html);
 
         $domElement = $document->getElementsByTagName('body')->item(0);
@@ -433,11 +440,11 @@ class ElementTest extends TestCase
     }
 
     /**
-     * @expectedException \LogicException
+     * @expectedException LogicException
      */
     public function testFindInDocumentWithoutOwnerDocument()
     {
-        $element = new Element(new \DOMElement('div'));
+        $element = new Element(new DOMElement('div'));
 
         $element->findInDocument('.foo');
     }
@@ -467,11 +474,11 @@ class ElementTest extends TestCase
     }
 
     /**
-     * @expectedException \LogicException
+     * @expectedException LogicException
      */
     public function testFirstInDocumentWithoutOwnerDocument()
     {
-        $element = new Element(new \DOMElement('div'));
+        $element = new Element(new DOMElement('div'));
 
         $element->firstInDocument('.foo');
     }
@@ -517,7 +524,7 @@ class ElementTest extends TestCase
      */
     public function testFindAndReturnDomElement($html, $selector, $type, $count)
     {
-        $document = new \DOMDocument();
+        $document = new DOMDocument();
         $document->loadHTML($html);
 
         $node = $document->getElementsByTagName('body')->item(0);
@@ -549,7 +556,7 @@ class ElementTest extends TestCase
     {
         $html = $this->loadFixture('posts.html');
 
-        $document = new \DOMDocument();
+        $document = new DOMDocument();
         $document->loadHTML($html);
 
         $node = $document->getElementsByTagName('body')->item(0);
@@ -580,7 +587,7 @@ class ElementTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      */
     public function testMatchesWithInvalidSelectorType()
     {
@@ -590,7 +597,7 @@ class ElementTest extends TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException RuntimeException
      */
     public function testMatchesStrictWithoutTagName()
     {
@@ -639,12 +646,12 @@ class ElementTest extends TestCase
         $this->assertFalse($anchor->matches('a img[alt="Bar"]'));
         $this->assertFalse($anchor->matches('img'));
 
-        $textNode = new \DOMText('Foo');
+        $textNode = new DOMText('Foo');
         $element = new Element($textNode);
 
         $this->assertFalse($element->matches('#foo'));
 
-        $commentNode = new \DOMComment('Foo');
+        $commentNode = new DOMComment('Foo');
         $element = new Element($commentNode);
 
         $this->assertFalse($element->matches('#foo'));
@@ -663,7 +670,7 @@ class ElementTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      */
     public function testSetAttributeWithInvalidValue()
     {
@@ -775,7 +782,7 @@ class ElementTest extends TestCase
 
     public function testAttributesWithText()
     {
-        $element = new Element(new \DOMText('Foo'));
+        $element = new Element(new DOMText('Foo'));
 
         $this->assertNull($element->attributes());
     }
@@ -783,29 +790,29 @@ class ElementTest extends TestCase
 
     public function testAttributesWithComment()
     {
-        $element = new Element(new \DOMComment('Foo'));
+        $element = new Element(new DOMComment('Foo'));
 
         $this->assertNull($element->attributes());
     }
 
     /**
-     * @expectedException \LogicException
+     * @expectedException LogicException
      * @expectedExceptionMessage Style attribute is available only for element nodes
      */
     public function testStyleWithTextNode()
     {
-        $element = new Element(new \DOMText('foo'));
+        $element = new Element(new DOMText('foo'));
 
         $element->style();
     }
 
     /**
-     * @expectedException \LogicException
+     * @expectedException LogicException
      * @expectedExceptionMessage Style attribute is available only for element nodes
      */
     public function testStyleWithCommentNode()
     {
-        $element = new Element(new \DOMComment('foo'));
+        $element = new Element(new DOMComment('foo'));
 
         $element->style();
     }
@@ -1022,7 +1029,7 @@ Tiếng Việt <br>
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      */
     public function testIsWithInvalidArgument()
     {
@@ -1169,7 +1176,7 @@ Tiếng Việt <br>
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      */
     public function testPreviousSiblingWithInvalidTypeOfNodeTypeArgument()
     {
@@ -1183,7 +1190,7 @@ Tiếng Việt <br>
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException RuntimeException
      */
     public function testPreviousSiblingWithInvalidNodeType()
     {
@@ -1199,7 +1206,9 @@ Tiếng Việt <br>
     /**
      * @dataProvider previousSiblingWithSelectorAndNotDomElementNodeTypeDataProvider
      *
-     * @expectedException \LogicException
+     * @expectedException LogicException
+     *
+     * @param string $nodeType
      */
     public function testPreviousSiblingWithSelectorAndNotDomElement($nodeType)
     {
@@ -1331,7 +1340,7 @@ Tiếng Việt <br>
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      */
     public function testPreviousSiblingsWithInvalidTypeOfNodeTypeArgument()
     {
@@ -1345,7 +1354,7 @@ Tiếng Việt <br>
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException RuntimeException
      */
     public function testPreviousSiblingsWithInvalidNodeType()
     {
@@ -1361,7 +1370,9 @@ Tiếng Việt <br>
     /**
      * @dataProvider previousSiblingsWithSelectorAndNotDomElementNodeTypeDataProvider
      *
-     * @expectedException \LogicException
+     * @expectedException LogicException
+     *
+     * @param string $nodeType
      */
     public function testPreviousSiblingsWithSelectorAndNotDomElement($nodeType)
     {
@@ -1484,7 +1495,7 @@ Tiếng Việt <br>
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      */
     public function testNextSiblingWithInvalidTypeOfNodeTypeArgument()
     {
@@ -1498,7 +1509,7 @@ Tiếng Việt <br>
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException RuntimeException
      */
     public function testNextSiblingWithInvalidNodeType()
     {
@@ -1514,7 +1525,9 @@ Tiếng Việt <br>
     /**
      * @dataProvider nextSiblingWithSelectorAndNotDomElementNodeTypeDataProvider
      *
-     * @expectedException \LogicException
+     * @expectedException LogicException
+     *
+     * @param string $nodeType
      */
     public function testNextSiblingWithSelectorAndNotDomElement($nodeType)
     {
@@ -1644,7 +1657,7 @@ Tiếng Việt <br>
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      */
     public function testNextSiblingsWithInvalidTypeOfNodeTypeArgument()
     {
@@ -1658,7 +1671,7 @@ Tiếng Việt <br>
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException RuntimeException
      */
     public function testNextSiblingsWithInvalidNodeType()
     {
@@ -1674,7 +1687,9 @@ Tiếng Việt <br>
     /**
      * @dataProvider nextSiblingsWithSelectorAndNotDomElementNodeTypeDataProvider
      *
-     * @expectedException \LogicException
+     * @expectedException LogicException
+     *
+     * @param string $nodeType
      */
     public function testNextSiblingsWithSelectorAndNotDomElement($nodeType)
     {
@@ -1824,7 +1839,7 @@ Tiếng Việt <br>
 
     public function testParentWithoutOwner()
     {
-        $element = new Element(new \DOMElement('span', 'hello'));
+        $element = new Element(new DOMElement('span', 'hello'));
 
         $this->assertNull($element->parent());
     }
@@ -1871,7 +1886,7 @@ Tiếng Việt <br>
     }
 
     /**
-     * @expectedException \LogicException
+     * @expectedException LogicException
      */
     public function testRemoveWithoutParentNode()
     {
@@ -1925,7 +1940,7 @@ Tiếng Việt <br>
 
         $anchor = $document->first('a');
 
-        $textNode = new \DOMText($anchor->text());
+        $textNode = new DOMText($anchor->text());
 
         $anchor->replace($textNode);
     }
@@ -1944,7 +1959,7 @@ Tiếng Việt <br>
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      */
     public function testReplaceWithInvalidArgument()
     {
@@ -1956,7 +1971,7 @@ Tiếng Việt <br>
     }
 
     /**
-     * @expectedException \LogicException
+     * @expectedException LogicException
      */
     public function testReplaceElementWithoutParentNode()
     {
@@ -2073,10 +2088,15 @@ Tiếng Việt <br>
 
     /**
      * @dataProvider findTests
+     *
+     * @param string $html
+     * @param string $selector
+     * @param string $type
+     * @param int $count
      */
     public function testInvoke($html, $selector, $type, $count)
     {
-        $document = new \DOMDocument();
+        $document = new DOMDocument();
         $document->loadHTML($html);
 
         $node = $document->getElementsByTagName('body')->item(0);

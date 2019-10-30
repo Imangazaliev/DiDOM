@@ -9,7 +9,7 @@ class ClassAttribute
     /**
      * The DOM element instance.
      *
-     * @var \DiDom\Element
+     * @var Element
      */
     protected $element;
 
@@ -26,9 +26,9 @@ class ClassAttribute
     /**
      * Constructor.
      *
-     * @param \DiDom\Element $element
+     * @param Element $element
      *
-     * @throws \InvalidArgumentException if passed argument is not an element node
+     * @throws InvalidArgumentException if passed argument is not an element node
      */
     public function __construct(Element $element)
     {
@@ -94,9 +94,9 @@ class ClassAttribute
     /**
      * @param string $className
      *
-     * @return \DiDom\ClassAttribute
+     * @return ClassAttribute
      *
-     * @throws \InvalidArgumentException if class name is not a string
+     * @throws InvalidArgumentException if class name is not a string
      */
     public function add($className)
     {
@@ -120,9 +120,9 @@ class ClassAttribute
     /**
      * @param array $classNames
      *
-     * @return \DiDom\ClassAttribute
+     * @return ClassAttribute
      *
-     * @throws \InvalidArgumentException if class name is not a string
+     * @throws InvalidArgumentException if class name is not a string
      */
     public function addMultiple(array $classNames)
     {
@@ -174,9 +174,9 @@ class ClassAttribute
     /**
      * @param string $className
      *
-     * @return \DiDom\ClassAttribute
+     * @return ClassAttribute
      *
-     * @throws \InvalidArgumentException if class name is not a string
+     * @throws InvalidArgumentException if class name is not a string
      */
     public function remove($className)
     {
@@ -202,9 +202,9 @@ class ClassAttribute
     /**
      * @param array $classNames
      *
-     * @return \DiDom\ClassAttribute
+     * @return ClassAttribute
      *
-     * @throws \InvalidArgumentException if class name is not a string
+     * @throws InvalidArgumentException if class name is not a string
      */
     public function removeMultiple(array $classNames)
     {
@@ -232,7 +232,7 @@ class ClassAttribute
     /**
      * @param string[] $exclusions
      *
-     * @return \DiDom\ClassAttribute
+     * @return ClassAttribute
      */
     public function removeAll(array $exclusions = [])
     {
@@ -260,7 +260,7 @@ class ClassAttribute
     }
 
     /**
-     * @return \DiDom\Element
+     * @return Element
      */
     public function getElement()
     {
