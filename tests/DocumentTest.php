@@ -1,12 +1,11 @@
 <?php
 
-namespace Tests\DiDom;
+namespace DiDom\Tests;
 
 use DiDom\Document;
 use DiDom\Query;
 use InvalidArgumentException;
 use RuntimeException;
-use Tests\TestCase;
 
 class DocumentTest extends TestCase
 {

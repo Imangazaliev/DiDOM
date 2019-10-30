@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\DiDom;
+namespace DiDom\Tests;
 
 use DiDom\Document;
 use DiDom\Element;
@@ -12,7 +12,6 @@ use DOMText;
 use LogicException;
 use InvalidArgumentException;
 use RuntimeException;
-use Tests\TestCase;
 
 class ElementTest extends TestCase
 {

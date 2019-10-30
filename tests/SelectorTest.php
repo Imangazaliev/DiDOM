@@ -1,9 +1,8 @@
 <?php
 
-namespace Tests\DiDom;
+namespace DiDom\Tests;
 
 use DiDom\Document;
-use Tests\TestCase;
 
 class SelectorTest extends TestCase
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests;
+namespace DiDom\Tests;
 
 use PHPUnit_Framework_TestCase;
 use DOMDocument;
@@ -8,13 +8,6 @@ use Exception;
 
 class TestCase extends PHPUnit_Framework_TestCase
 {
-    protected function tearDown()
-    {
-        if (class_exists('Mockery')) {
-            \Mockery::close();
-        }
-    }
-
     protected function loadFixture($filename)
     {
         $path = __DIR__.'/fixtures/'.$filename;
@@ -26,13 +19,13 @@ class TestCase extends PHPUnit_Framework_TestCase
         throw new Exception(sprintf('Fixture "%s" does not exist', $filename));
     }
 
-    protected function createDomElement($name, $value = null, $attributes = [])
+    protected function createDomElement($tagName, $value = null, $attributes = [])
     {
         $document = new DOMDocument('1.0', 'UTF-8');
-        $node = $document->createElement($name, $value);
+        $node = $document->createElement($tagName, $value);
 
-        foreach ($attributes as $name => $value) {
-            $node->setAttribute($name, $value);
+        foreach ($attributes as $attrName => $attrValue) {
+            $node->setAttribute($attrName, $attrValue);
         }
 
         return $node;

@@ -1,11 +1,10 @@
 <?php
 
-namespace Tests\DiDom;
+namespace DiDom\Tests;
 
 use DiDom\Element;
 use DiDom\ClassAttribute;
 use InvalidArgumentException;
-use Tests\TestCase;
 
 class ClassAttributeTest extends TestCase
 {
