@@ -265,7 +265,7 @@ class ElementTest extends TestCase
 
     /**
      * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Argument 2 passed to DiDom\Element::insertBefore must be an instance of DiDom\Element or DOMNode, string given
+     * @expectedExceptionMessage Argument 2 passed to DiDom\Node::insertBefore must be an instance of DiDom\Node or DOMNode, string given
      */
     public function testInsertBeforeWithInvalidReferenceNodeArgument()
     {
@@ -341,7 +341,7 @@ class ElementTest extends TestCase
 
     /**
      * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Argument 2 passed to DiDom\Element::insertAfter must be an instance of DiDom\Element or DOMNode, string given
+     * @expectedExceptionMessage Argument 2 passed to DiDom\Node::insertAfter must be an instance of DiDom\Node or DOMNode, string given
      */
     public function testInsertAfterWithInvalidReferenceNodeArgument()
     {
