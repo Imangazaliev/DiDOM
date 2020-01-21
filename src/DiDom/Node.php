@@ -6,6 +6,7 @@ use DiDom\Exceptions\InvalidSelectorException;
 use DOMCdataSection;
 use DOMComment;
 use DOMDocument;
+use DOMDocumentFragment;
 use DOMElement;
 use DOMNode;
 use DOMText;
@@ -21,14 +22,14 @@ abstract class Node
     /**
      * The DOM element instance.
      *
-     * @var DOMElement|DOMText|DOMComment|DOMCdataSection
+     * @var DOMElement|DOMText|DOMComment|DOMCdataSection|DOMDocumentFragment
      */
     protected $node;
 
     /**
      * Adds a new child at the start of the children.
      *
-     * @param Element|DOMNode|array $nodes The prepended child
+     * @param Node|DOMNode|array $nodes The prepended child
      *
      * @return Element|Element[]
      *
@@ -67,7 +68,7 @@ abstract class Node
     /**
      * Adds a new child at the end of the children.
      *
-     * @param Element|DOMNode|array $nodes The appended child
+     * @param Node|DOMNode|array $nodes The appended child
      *
      * @return Element|Element[]
      *
@@ -119,7 +120,7 @@ abstract class Node
     /**
      * Adds a new child before a reference node.
      *
-     * @param Element|DOMNode $node The new node
+     * @param Node|DOMNode $node The new node
      * @param Element|DOMNode|null $referenceNode The reference node
      *
      * @return Element
@@ -167,7 +168,7 @@ abstract class Node
     /**
      * Adds a new child after a reference node.
      *
-     * @param Element|DOMNode $node The new node
+     * @param Node|DOMNode $node The new node
      * @param Element|DOMNode|null $referenceNode The reference node
      *
      * @return Element
@@ -378,9 +379,10 @@ abstract class Node
      *
      * @param string $html
      *
-     * @return Element
+     * @return static
      *
      * @throws InvalidArgumentException if passed argument is not a string
+     * @throws InvalidSelectorException
      */
     public function setInnerHtml($html)
     {
@@ -438,7 +440,7 @@ abstract class Node
      *
      * @param string $value The new value of the node
      *
-     * @return Element
+     * @return static
      *
      * @throws InvalidArgumentException if value is not string
      */
@@ -907,7 +909,7 @@ abstract class Node
     /**
      * Removes child from list of children.
      *
-     * @param DOMNode|Element $childNode
+     * @param Node|DOMNode $childNode
      *
      * @return Element the node that has been removed
      */
@@ -973,7 +975,7 @@ abstract class Node
     /**
      * Replaces a child.
      *
-     * @param DOMNode|Element $newNode The new node
+     * @param Node|DOMNode $newNode The new node
      * @param bool $clone Clone the node if true, otherwise move it
      *
      * @return Element The node that has been replaced
@@ -1032,16 +1034,16 @@ abstract class Node
     /**
      * Sets current node instance.
      *
-     * @param DOMElement|DOMText|DOMComment|DOMCdataSection $node
+     * @param DOMElement|DOMText|DOMComment|DOMCdataSection|DOMDocumentFragment $node
      *
-     * @return Element
+     * @return static
      */
     protected function setNode($node)
     {
-        $allowedClasses = ['DOMElement', 'DOMText', 'DOMComment', 'DOMCdataSection'];
+        $allowedClasses = ['DOMElement', 'DOMText', 'DOMComment', 'DOMCdataSection', 'DOMDocumentFragment'];
 
         if ( ! is_object($node) || ! in_array(get_class($node), $allowedClasses, true)) {
-            throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of DOMElement, DOMText, DOMComment or DOMCdataSection, %s given', __METHOD__, (is_object($node) ? get_class($node) : gettype($node))));
+            throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of DOMElement, DOMText, DOMComment, DOMCdataSection or DOMDocumentFragment, %s given', __METHOD__, (is_object($node) ? get_class($node) : gettype($node))));
         }
 
         $this->node = $node;
@@ -1052,7 +1054,7 @@ abstract class Node
     /**
      * Returns current node instance.
      *
-     * @return DOMElement|DOMText|DOMComment|DOMCdataSection
+     * @return DOMElement|DOMText|DOMComment|DOMCdataSection|DOMDocumentFragment
      */
     public function getNode()
     {

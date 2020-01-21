@@ -179,6 +179,40 @@ class ElementTest extends TestCase
         }
     }
 
+    public function testPrependDocumentFragment()
+    {
+        $xml = '
+            <list>
+                <item>Foo</item>
+                <item>Bar</item>
+                <item>Baz</item>
+            </list>
+        ';
+
+        $document = new Document();
+
+        $document->loadXml($xml);
+
+        $fragmentXml = '
+            <item>Qux</item>
+            <item>Quux</item>
+            <item>Quuz</item>
+        ';
+
+        $documentFragment = $document->createDocumentFragment();
+
+        $documentFragment->appendXml($fragmentXml);
+
+        $document->first('list')->prependChild($documentFragment);
+
+        $expectedContent = ['Qux', 'Quux', 'Quuz', 'Foo', 'Bar', 'Baz'];
+
+        foreach ($document->find('item') as $index => $childNode) {
+            $this->assertEquals('item', $childNode->tag);
+            $this->assertEquals($expectedContent[$index], $childNode->text());
+        }
+    }
+
     /**
      * @expectedException InvalidArgumentException
      */
@@ -250,6 +284,40 @@ class ElementTest extends TestCase
 
         foreach (['foo', 'bar', 'baz'] as $index => $value) {
             $this->assertEquals($value, $list->getNode()->childNodes->item($index)->textContent);
+        }
+    }
+
+    public function testAppendDocumentFragment()
+    {
+        $xml = '
+            <list>
+                <item>Foo</item>
+                <item>Bar</item>
+                <item>Baz</item>
+            </list>
+        ';
+
+        $document = new Document();
+
+        $document->loadXml($xml);
+
+        $fragmentXml = '
+            <item>Qux</item>
+            <item>Quux</item>
+            <item>Quuz</item>
+        ';
+
+        $documentFragment = $document->createDocumentFragment();
+
+        $documentFragment->appendXml($fragmentXml);
+
+        $document->first('list')->appendChild($documentFragment);
+
+        $expectedContent = ['Foo', 'Bar', 'Baz', 'Qux', 'Quux', 'Quuz'];
+
+        foreach ($document->find('item') as $index => $childNode) {
+            $this->assertEquals('item', $childNode->tag);
+            $this->assertEquals($expectedContent[$index], $childNode->text());
         }
     }
 
@@ -1918,7 +1986,7 @@ Tiếng Việt <br>
         $this->assertCount(2, $document->find('li'));
     }
 
-    public function testReplaceToNewElement()
+    public function testReplaceWithNewElement()
     {
         $html = '<ul><li>One</li><li>Two</li><li>Three</li></ul>';
 
@@ -1944,7 +2012,7 @@ Tiếng Việt <br>
         $anchor->replace($textNode);
     }
 
-    public function testReplaceWithDifferentDocuments()
+    public function testReplaceWithElementFromAnotherDocument()
     {
         $html = '<ul><li>One</li><li>Two</li><li>Three</li></ul>';
 
@@ -1955,6 +2023,40 @@ Tiếng Việt <br>
         $third = $document2->find('li')[2];
 
         $first->replace($third);
+    }
+
+    public function testReplaceWithDocumentFragment()
+    {
+        $xml = '
+            <list>
+                <item>Foo</item>
+                <item>Bar</item>
+                <item>Baz</item>
+            </list>
+        ';
+
+        $document = new Document();
+
+        $document->loadXml($xml);
+
+        $fragmentXml = '
+            <item>Qux</item>
+            <item>Quux</item>
+            <item>Quuz</item>
+        ';
+
+        $documentFragment = $document->createDocumentFragment();
+
+        $documentFragment->appendXml($fragmentXml);
+
+        $document->first('item:nth-child(2)')->replace($documentFragment);
+
+        $expectedContent = ['Foo', 'Qux', 'Quux', 'Quuz', 'Baz'];
+
+        foreach ($document->find('item') as $index => $childNode) {
+            $this->assertEquals('item', $childNode->tag);
+            $this->assertEquals($expectedContent[$index], $childNode->text());
+        }
     }
 
     /**

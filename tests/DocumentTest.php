@@ -143,7 +143,7 @@ class DocumentTest extends TestCase
         $this->assertEquals('foo bar baz', $comment->text());
     }
 
-    public function testCreateCDATASection()
+    public function testCreateCdataSection()
     {
         $document = new Document();
 
@@ -152,6 +152,16 @@ class DocumentTest extends TestCase
         $this->assertInstanceOf('DiDom\Element', $cdataSection);
         $this->assertInstanceOf('DOMCdataSection', $cdataSection->getNode());
         $this->assertEquals('foo bar baz', $cdataSection->text());
+    }
+
+    public function testCreateDocumentFragment()
+    {
+        $document = new Document();
+
+        $documentFragment = $document->createDocumentFragment();
+
+        $this->assertInstanceOf('DiDom\DocumentFragment', $documentFragment);
+        $this->assertInstanceOf('DOMDocumentFragment', $documentFragment->getNode());
     }
 
     /**

@@ -165,6 +165,14 @@ class Document
     }
 
     /**
+     * @return DocumentFragment
+     */
+    public function createDocumentFragment()
+    {
+        return new DocumentFragment($this->document->createDocumentFragment());
+    }
+
+    /**
      * Adds a new child at the end of the children.
      *
      * @param Element|DOMNode|array $nodes The appended child
