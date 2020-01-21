@@ -2,6 +2,7 @@
 
 namespace DiDom;
 
+use DiDom\Exceptions\InvalidSelectorException;
 use DOMCdataSection;
 use DOMComment;
 use DOMDocument;
@@ -35,8 +36,6 @@ class Element
     protected $styleAttribute;
 
     /**
-     * Constructor.
-     *
      * @param DOMElement|DOMText|DOMComment|DOMCdataSection|string $tagName The tag name of the element
      * @param string|null $value The value of the element
      * @param array $attributes The attributes of the element
@@ -84,6 +83,8 @@ class Element
      * @param array $attributes
      *
      * @return Element
+     *
+     * @throws InvalidSelectorException
      */
     public static function createBySelector($selector, $value = null, array $attributes = [])
     {
@@ -108,7 +109,7 @@ class Element
 
         $returnArray = true;
 
-        if (!is_array($nodes)) {
+        if ( ! is_array($nodes)) {
             $nodes = [$nodes];
 
             $returnArray = false;
@@ -147,7 +148,7 @@ class Element
 
         $returnArray = true;
 
-        if (!is_array($nodes)) {
+        if ( ! is_array($nodes)) {
             $nodes = [$nodes];
 
             $returnArray = false;
@@ -162,8 +163,8 @@ class Element
                 $node = $node->getNode();
             }
 
-            if (!$node instanceof DOMNode) {
-                throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s\Element or DOMNode, %s given', __METHOD__, __NAMESPACE__, (is_object($node) ? get_class($node) : gettype($node))));
+            if ( ! $node instanceof DOMNode) {
+                throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s or DOMNode, %s given', __METHOD__, __CLASS__, (is_object($node) ? get_class($node) : gettype($node))));
             }
 
             $clonedNode = $node->cloneNode(true);
@@ -203,8 +204,8 @@ class Element
             $node = $node->getNode();
         }
 
-        if (!$node instanceof DOMNode) {
-            throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s\Element or DOMNode, %s given', __METHOD__, __NAMESPACE__, (is_object($node) ? get_class($node) : gettype($node))));
+        if ( ! $node instanceof DOMNode) {
+            throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s or DOMNode, %s given', __METHOD__, __CLASS__, (is_object($node) ? get_class($node) : gettype($node))));
         }
 
         if ($referenceNode !== null) {
@@ -212,8 +213,8 @@ class Element
                 $referenceNode = $referenceNode->getNode();
             }
 
-            if (!$referenceNode instanceof DOMNode) {
-                throw new InvalidArgumentException(sprintf('Argument 2 passed to %s must be an instance of %s\Element or DOMNode, %s given', __METHOD__, __NAMESPACE__, (is_object($referenceNode) ? get_class($referenceNode) : gettype($referenceNode))));
+            if ( ! $referenceNode instanceof DOMNode) {
+                throw new InvalidArgumentException(sprintf('Argument 2 passed to %s must be an instance of %s or DOMNode, %s given', __METHOD__, __CLASS__, (is_object($referenceNode) ? get_class($referenceNode) : gettype($referenceNode))));
             }
         }
 
@@ -251,8 +252,8 @@ class Element
             $referenceNode = $referenceNode->getNode();
         }
 
-        if (!$referenceNode instanceof DOMNode) {
-            throw new InvalidArgumentException(sprintf('Argument 2 passed to %s must be an instance of %s\Element or DOMNode, %s given', __METHOD__, __NAMESPACE__, (is_object($referenceNode) ? get_class($referenceNode) : gettype($referenceNode))));
+        if ( ! $referenceNode instanceof DOMNode) {
+            throw new InvalidArgumentException(sprintf('Argument 2 passed to %s must be an instance of %s or DOMNode, %s given', __METHOD__, __CLASS__, (is_object($referenceNode) ? get_class($referenceNode) : gettype($referenceNode))));
         }
 
         return $this->insertBefore($node, $referenceNode->nextSibling);
@@ -279,6 +280,8 @@ class Element
      * @param bool   $wrapElement Returns array of Element if true, otherwise array of DOMElement
      *
      * @return Element[]|DOMElement[]
+     *
+     * @throws InvalidSelectorException
      */
     public function find($expression, $type = Query::TYPE_CSS, $wrapElement = true)
     {
@@ -295,6 +298,7 @@ class Element
      * @return Element[]|DOMElement[]
      *
      * @throws LogicException if current node has no owner document
+     * @throws InvalidSelectorException
      */
     public function findInDocument($expression, $type = Query::TYPE_CSS, $wrapNode = true)
     {
@@ -315,6 +319,8 @@ class Element
      * @param bool   $wrapNode   Returns Element if true, otherwise DOMElement
      *
      * @return Element|DOMElement|null
+     *
+     * @throws InvalidSelectorException
      */
     public function first($expression, $type = Query::TYPE_CSS, $wrapNode = true)
     {
@@ -329,6 +335,8 @@ class Element
      * @param bool   $wrapNode   Returns Element if true, otherwise DOMElement
      *
      * @return Element|DOMElement|null
+     *
+     * @throws InvalidSelectorException
      */
     public function firstInDocument($expression, $type = Query::TYPE_CSS, $wrapNode = true)
     {
@@ -348,6 +356,8 @@ class Element
      * @param bool   $wrapNode Returns array of Element if true, otherwise array of DOMElement
      *
      * @return Element[]|DOMElement[]
+     *
+     * @throws InvalidSelectorException
      */
     public function xpath($expression, $wrapNode = true)
     {
@@ -361,6 +371,8 @@ class Element
      * @param string $type The type of the expression
      *
      * @return int
+     *
+     * @throws InvalidSelectorException
      */
     public function count($expression, $type = Query::TYPE_CSS)
     {
@@ -375,16 +387,17 @@ class Element
      *
      * @return bool
      *
+     * @throws InvalidSelectorException if the selector is invalid
      * @throws InvalidArgumentException if the tag name is not a string
      * @throws RuntimeException if the tag name is not specified in strict mode
      */
     public function matches($selector, $strict = false)
     {
-        if (!is_string($selector)) {
+        if ( ! is_string($selector)) {
             throw new InvalidArgumentException(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, gettype($selector)));
         }
 
-        if (!$this->node instanceof DOMElement) {
+        if ( ! $this->node instanceof DOMElement) {
             return false;
         }
 
@@ -392,7 +405,7 @@ class Element
             return true;
         }
 
-        if (!$strict) {
+        if ( ! $strict) {
             $innerHtml = $this->html();
             $html = "<root>$innerHtml</root>";
 
@@ -407,7 +420,7 @@ class Element
 
         $segments = Query::getSegments($selector);
 
-        if (!array_key_exists('tag', $segments)) {
+        if ( ! array_key_exists('tag', $segments)) {
             throw new RuntimeException(sprintf('Tag name must be specified in %s', $selector));
         }
 
@@ -475,7 +488,7 @@ class Element
             $value = (string) $value;
         }
 
-        if (!is_string($value) && $value !== null) {
+        if ( ! is_string($value) && $value !== null) {
             throw new InvalidArgumentException(sprintf('%s expects parameter 2 to be string or null, %s given', __METHOD__, (is_object($value) ? get_class($value) : gettype($value))));
         }
 
@@ -524,7 +537,7 @@ class Element
      */
     public function removeAllAttributes(array $exclusions = [])
     {
-        if (!$this->node instanceof DOMElement) {
+        if ( ! $this->node instanceof DOMElement) {
             return $this;
         }
 
@@ -565,7 +578,7 @@ class Element
      */
     public function attributes(array $names = null)
     {
-        if (!$this->node instanceof DOMElement) {
+        if ( ! $this->node instanceof DOMElement) {
             return null;
         }
 
@@ -601,7 +614,7 @@ class Element
             return $this->classAttribute;
         }
 
-        if (!$this->isElementNode()) {
+        if ( ! $this->isElementNode()) {
             throw new LogicException('Class attribute is available only for element nodes');
         }
 
@@ -621,7 +634,7 @@ class Element
             return $this->styleAttribute;
         }
 
-        if (!$this->isElementNode()) {
+        if ( ! $this->isElementNode()) {
             throw new LogicException('Style attribute is available only for element nodes');
         }
 
@@ -701,7 +714,7 @@ class Element
      */
     public function setInnerHtml($html)
     {
-        if (!is_string($html)) {
+        if ( ! is_string($html)) {
             throw new InvalidArgumentException(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, (is_object($html) ? get_class($html) : gettype($html))));
         }
 
@@ -765,7 +778,7 @@ class Element
             $value = (string) $value;
         }
 
-        if (!is_string($value) && $value !== null) {
+        if ( ! is_string($value) && $value !== null) {
             throw new InvalidArgumentException(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, (is_object($value) ? get_class($value) : gettype($value))));
         }
 
@@ -829,7 +842,7 @@ class Element
             $node = $node->getNode();
         }
 
-        if (!$node instanceof DOMNode) {
+        if ( ! $node instanceof DOMNode) {
             throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s or DOMNode, %s given', __METHOD__, __CLASS__, (is_object($node) ? get_class($node) : gettype($node))));
         }
 
@@ -859,6 +872,8 @@ class Element
      * @param bool $strict
      *
      * @return Element|null
+     *
+     * @throws InvalidSelectorException if the selector is invalid
      */
     public function closest($selector, $strict = false)
     {
@@ -877,6 +892,8 @@ class Element
 
             $node = $parent;
         }
+
+        return null;
     }
 
     /**
@@ -885,9 +902,10 @@ class Element
      *
      * @return Element|null
      *
-     * @throws InvalidArgumentException if node type is not string
-     * @throws RuntimeException if node type is invalid
-     * @throws LogicException if selector used with non DOMElement node type
+     * @throws InvalidArgumentException if the node type is not string
+     * @throws RuntimeException if the node type is invalid
+     * @throws LogicException if the selector used with non DOMElement node type
+     * @throws InvalidSelectorException if the selector is invalid
      */
     public function previousSibling($selector = null, $nodeType = null)
     {
@@ -903,13 +921,13 @@ class Element
             $nodeType = 'DOMElement';
         }
 
-        if (!is_string($nodeType)) {
+        if ( ! is_string($nodeType)) {
             throw new InvalidArgumentException(sprintf('%s expects parameter 2 to be string, %s given', __METHOD__, gettype($nodeType)));
         }
 
         $allowedTypes = ['DOMElement', 'DOMText', 'DOMComment', 'DOMCdataSection'];
 
-        if (!in_array($nodeType, $allowedTypes, true)) {
+        if ( ! in_array($nodeType, $allowedTypes, true)) {
             throw new RuntimeException(sprintf('Unknown node type "%s". Allowed types: %s', $nodeType, implode(', ', $allowedTypes)));
         }
 
@@ -948,9 +966,10 @@ class Element
      *
      * @return Element[]
      *
-     * @throws InvalidArgumentException if node type is not string
-     * @throws RuntimeException if node type is invalid
-     * @throws LogicException if selector used with non DOMElement node type
+     * @throws InvalidArgumentException if the node type is not string
+     * @throws RuntimeException if the node type is invalid
+     * @throws LogicException if the selector used with non DOMElement node type
+     * @throws InvalidSelectorException if the selector is invalid
      */
     public function previousSiblings($selector = null, $nodeType = null)
     {
@@ -963,13 +982,13 @@ class Element
         }
 
         if ($nodeType !== null) {
-            if (!is_string($nodeType)) {
+            if ( ! is_string($nodeType)) {
                 throw new InvalidArgumentException(sprintf('%s expects parameter 2 to be string, %s given', __METHOD__, gettype($nodeType)));
             }
 
             $allowedTypes = ['DOMElement', 'DOMText', 'DOMComment', 'DOMCdataSection'];
 
-            if (!in_array($nodeType, $allowedTypes, true)) {
+            if ( ! in_array($nodeType, $allowedTypes, true)) {
                 throw new RuntimeException(sprintf('Unknown node type "%s". Allowed types: %s', $nodeType, implode(', ', $allowedTypes)));
             }
         }
@@ -1023,9 +1042,10 @@ class Element
      *
      * @return Element|null
      *
-     * @throws InvalidArgumentException if node type is not string
-     * @throws RuntimeException if node type is invalid
-     * @throws LogicException if selector used with non DOMElement node type
+     * @throws InvalidArgumentException if the node type is not string
+     * @throws RuntimeException if the node type is invalid
+     * @throws LogicException if the selector used with non DOMElement node type
+     * @throws InvalidSelectorException if the selector is invalid
      */
     public function nextSibling($selector = null, $nodeType = null)
     {
@@ -1041,13 +1061,13 @@ class Element
             $nodeType = 'DOMElement';
         }
 
-        if (!is_string($nodeType)) {
+        if ( ! is_string($nodeType)) {
             throw new InvalidArgumentException(sprintf('%s expects parameter 2 to be string, %s given', __METHOD__, gettype($nodeType)));
         }
 
         $allowedTypes = ['DOMElement', 'DOMText', 'DOMComment', 'DOMCdataSection'];
 
-        if (!in_array($nodeType, $allowedTypes, true)) {
+        if ( ! in_array($nodeType, $allowedTypes, true)) {
             throw new RuntimeException(sprintf('Unknown node type "%s". Allowed types: %s', $nodeType, implode(', ', $allowedTypes)));
         }
 
@@ -1086,9 +1106,10 @@ class Element
      *
      * @return Element[]
      *
-     * @throws InvalidArgumentException if node type is not string
-     * @throws RuntimeException if node type is invalid
-     * @throws LogicException if selector used with non DOMElement node type
+     * @throws InvalidArgumentException if the node type is not string
+     * @throws RuntimeException if the node type is invalid
+     * @throws LogicException if the selector used with non DOMElement node type
+     * @throws InvalidSelectorException if the selector is invalid
      */
     public function nextSiblings($selector = null, $nodeType = null)
     {
@@ -1101,13 +1122,13 @@ class Element
         }
 
         if ($nodeType !== null) {
-            if (!is_string($nodeType)) {
+            if ( ! is_string($nodeType)) {
                 throw new InvalidArgumentException(sprintf('%s expects parameter 2 to be string, %s given', __METHOD__, gettype($nodeType)));
             }
 
             $allowedTypes = ['DOMElement', 'DOMText', 'DOMComment', 'DOMCdataSection'];
 
-            if (!in_array($nodeType, $allowedTypes, true)) {
+            if ( ! in_array($nodeType, $allowedTypes, true)) {
                 throw new RuntimeException(sprintf('Unknown node type "%s". Allowed types: %s', $nodeType, implode(', ', $allowedTypes)));
             }
         }
@@ -1226,7 +1247,7 @@ class Element
             $childNode = $childNode->getNode();
         }
 
-        if (!$childNode instanceof DOMNode) {
+        if ( ! $childNode instanceof DOMNode) {
             throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s or DOMNode, %s given', __METHOD__, __CLASS__, (is_object($childNode) ? get_class($childNode) : gettype($childNode))));
         }
 
@@ -1299,7 +1320,7 @@ class Element
             $newNode = $newNode->getNode();
         }
 
-        if (!$newNode instanceof DOMNode) {
+        if ( ! $newNode instanceof DOMNode) {
             throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s or DOMNode, %s given', __METHOD__, __CLASS__, (is_object($newNode) ? get_class($newNode) : gettype($newNode))));
         }
 
@@ -1307,7 +1328,7 @@ class Element
             $newNode = $newNode->cloneNode(true);
         }
 
-        if ($newNode->ownerDocument === null || !$this->getDocument()->is($newNode->ownerDocument)) {
+        if ($newNode->ownerDocument === null || ! $this->getDocument()->is($newNode->ownerDocument)) {
             $newNode = $this->node->ownerDocument->importNode($newNode, true);
         }
 
@@ -1349,7 +1370,7 @@ class Element
     {
         $allowedClasses = ['DOMElement', 'DOMText', 'DOMComment', 'DOMCdataSection'];
 
-        if (!is_object($node) || !in_array(get_class($node), $allowedClasses, true)) {
+        if ( ! is_object($node) || ! in_array(get_class($node), $allowedClasses, true)) {
             throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of DOMElement, DOMText, DOMComment or DOMCdataSection, %s given', __METHOD__, (is_object($node) ? get_class($node) : gettype($node))));
         }
 
@@ -1467,6 +1488,8 @@ class Element
      * @param bool   $wrapNode   Returns array of Element if true, otherwise array of DOMElement
      *
      * @return Element[]|DOMElement[]
+     *
+     * @throws InvalidSelectorException
      *
      * @deprecated Not longer recommended, use Element::find() instead.
      */
