@@ -129,6 +129,21 @@ class StyleAttributeTest extends TestCase
         $this->assertEquals('color: blue; border: 1px solid black; font-size: 16px; font-family: Times', $element->getAttribute('style'));
     }
 
+    public function testSetMultiplePropertiesWithStringProperties()
+    {
+        $element = new Element('div', null, [
+            'style' => 'color: blue; border: 1px solid black',
+        ]);
+
+        $styleAttribute = new StyleAttribute($element);
+
+        $this->assertEquals('color: blue; border: 1px solid black', $element->getAttribute('style'));
+
+        $styleAttribute->setMultipleProperties('font-size: 16px;font-family :Times');
+
+        $this->assertEquals('color: blue; border: 1px solid black; font-size: 16px; font-family: Times', $element->getAttribute('style'));
+    }
+
     /**
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage DiDom\StyleAttribute::getProperty expects parameter 1 to be string, NULL given

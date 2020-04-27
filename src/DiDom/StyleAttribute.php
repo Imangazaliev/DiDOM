@@ -135,16 +135,33 @@ class StyleAttribute
     }
 
     /**
-     * @param array $properties
+     * @param array|string $properties
      *
      * @return StyleAttribute
      *
      * @throws InvalidArgumentException if property name is not a string
      * @throws InvalidArgumentException if property value is not a string
      */
-    public function setMultipleProperties(array $properties)
+    public function setMultipleProperties($properties)
     {
         $this->parseStyleAttribute();
+
+        if (!is_array($properties)) {
+            $tmp = explode(';', $properties);
+            $properties = [];
+            foreach ($tmp as $property) {
+                if (strpos($property, ':') === false) {
+                    continue;
+                }
+
+                list($name, $value) = explode(':', $property);
+
+                $name = trim($name);
+                $value = trim($value);
+
+                $properties[$name] = $value;
+            }
+        }
 
         foreach ($properties as $propertyName => $value) {
             if ( ! is_string($propertyName)) {
