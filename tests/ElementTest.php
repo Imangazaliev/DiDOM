@@ -323,6 +323,7 @@ class ElementTest extends TestCase
 
     /**
      * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Argument 1 passed to DiDom\Node::insertBefore must be an instance of DiDom\Node or DOMNode, string given
      */
     public function testInsertBeforeWithInvalidNodeArgument()
     {
@@ -344,7 +345,7 @@ class ElementTest extends TestCase
 
     /**
      * @expectedException LogicException
-     * @expectedExceptionMessage Can not insert child to element without owner document
+     * @expectedExceptionMessage Can not insert a child to an element without the owner document
      */
     public function testInsertBeforeWithoutParentNode()
     {
@@ -357,48 +358,38 @@ class ElementTest extends TestCase
     {
         $list = new Element('ul');
 
-        $insertedNode = $list->insertBefore(new Element('li', 'qux'));
+        $insertedNode = $list->insertBefore(new Element('li', 'baz'));
 
         $this->assertInstanceOf('DiDom\Element', $insertedNode);
-        $this->assertEquals('qux', $insertedNode->getNode()->textContent);
+        $this->assertEquals('baz', $insertedNode->getNode()->textContent);
 
-        foreach (['qux'] as $index => $value) {
+        foreach (['baz'] as $index => $value) {
             $this->assertEquals($value, $list->getNode()->childNodes->item($index)->textContent);
         }
 
         $list->insertBefore(new Element('li', 'foo'), $list->getNode()->childNodes->item(0));
 
-        foreach (['foo', 'qux'] as $index => $value) {
-            $this->assertEquals($value, $list->getNode()->childNodes->item($index)->textContent);
-        }
-
-        $list->insertBefore(new Element('li', 'baz'), $list->getNode()->childNodes->item(1));
-
-        foreach (['foo', 'baz', 'qux'] as $index => $value) {
+        foreach (['foo', 'baz'] as $index => $value) {
             $this->assertEquals($value, $list->getNode()->childNodes->item($index)->textContent);
         }
 
         $list->insertBefore(new Element('li', 'bar'), $list->getNode()->childNodes->item(1));
+
+        foreach (['foo', 'bar', 'baz'] as $index => $value) {
+            $this->assertEquals($value, $list->getNode()->childNodes->item($index)->textContent);
+        }
+
+        // without the reference node
+        $list->insertBefore(new Element('li', 'qux'));
 
         foreach (['foo', 'bar', 'baz', 'qux'] as $index => $value) {
             $this->assertEquals($value, $list->getNode()->childNodes->item($index)->textContent);
         }
     }
 
-    public function testInsertBeforeWithoutReferenceNode()
-    {
-        $list = new Element('ul');
-
-        $list->insertBefore(new Element('li', 'foo'));
-        $list->insertBefore(new Element('li', 'bar'));
-
-        foreach (['foo', 'bar'] as $index => $value) {
-            $this->assertEquals($value, $list->getNode()->childNodes->item($index)->textContent);
-        }
-    }
-
     /**
      * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Argument 1 passed to DiDom\Node::insertBefore must be an instance of DiDom\Node or DOMNode, string given
      */
     public function testInsertAfterWithInvalidNodeArgument()
     {
@@ -420,7 +411,7 @@ class ElementTest extends TestCase
 
     /**
      * @expectedException LogicException
-     * @expectedExceptionMessage Can not insert child to element without owner document
+     * @expectedExceptionMessage Can not insert a child to an element without the owner document
      */
     public function testInsertAfterWithoutParentNode()
     {
@@ -442,33 +433,122 @@ class ElementTest extends TestCase
             $this->assertEquals($value, $list->getNode()->childNodes->item($index)->textContent);
         }
 
-        $list->insertAfter(new Element('li', 'qux'), $list->getNode()->childNodes->item(0));
+        $list->insertAfter(new Element('li', 'baz'), $list->getNode()->childNodes->item(0));
 
-        foreach (['foo', 'qux'] as $index => $value) {
+        foreach (['foo', 'baz'] as $index => $value) {
             $this->assertEquals($value, $list->getNode()->childNodes->item($index)->textContent);
         }
 
         $list->insertAfter(new Element('li', 'bar'), $list->getNode()->childNodes->item(0));
 
-        foreach (['foo', 'bar', 'qux'] as $index => $value) {
+        foreach (['foo', 'bar', 'baz'] as $index => $value) {
             $this->assertEquals($value, $list->getNode()->childNodes->item($index)->textContent);
         }
 
-        $list->insertAfter(new Element('li', 'baz'), $list->getNode()->childNodes->item(1));
+        // without the reference node
+        $list->insertAfter(new Element('li', 'qux'));
 
         foreach (['foo', 'bar', 'baz', 'qux'] as $index => $value) {
             $this->assertEquals($value, $list->getNode()->childNodes->item($index)->textContent);
         }
     }
 
-    public function testInsertAfterWithoutReferenceNode()
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Argument 1 passed to DiDom\Node::insertSiblingBefore must be an instance of DiDom\Node or DOMNode, string given
+     */
+    public function testInsertSiblingBeforeWithInvalidNodeArgument()
     {
         $list = new Element('ul');
 
-        $list->insertAfter(new Element('li', 'foo'));
-        $list->insertAfter(new Element('li', 'bar'));
+        $item = $list->appendChild(new Element('li', 'foo'));
 
-        foreach (['foo', 'bar'] as $index => $value) {
+        $item->insertSiblingBefore('foo');
+    }
+
+    /**
+     * @expectedException LogicException
+     * @expectedExceptionMessage Can not insert a child to an element without the owner document
+     */
+    public function testInsertSiblingBeforeWithoutParentNode()
+    {
+        $item = new Element(new DOMElement('li', 'foo'));
+
+        $item->insertSiblingBefore(new Element('li', 'bar'));
+    }
+
+    public function testInsertSiblingBefore()
+    {
+        $list = new Element('ul');
+
+        $insertedNode = $list->appendChild(new Element('li', 'baz'));
+
+        $this->assertInstanceOf('DiDom\Element', $insertedNode);
+        $this->assertEquals('baz', $insertedNode->getNode()->textContent);
+
+        foreach (['baz'] as $index => $value) {
+            $this->assertEquals($value, $list->getNode()->childNodes->item($index)->textContent);
+        }
+
+        $insertedNode->insertSiblingBefore(new Element('li', 'foo'));
+
+        foreach (['foo', 'baz'] as $index => $value) {
+            $this->assertEquals($value, $list->getNode()->childNodes->item($index)->textContent);
+        }
+
+        $insertedNode->insertSiblingBefore(new Element('li', 'bar'));
+
+        foreach (['foo', 'bar', 'baz'] as $index => $value) {
+            $this->assertEquals($value, $list->getNode()->childNodes->item($index)->textContent);
+        }
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Argument 1 passed to DiDom\Node::appendChild must be an instance of DiDom\Node or DOMNode, string given
+     */
+    public function testInsertSiblingAfterWithInvalidNodeArgument()
+    {
+        $list = new Element('ul');
+
+        $item = $list->appendChild(new Element('li', 'foo'));
+
+        $item->insertSiblingAfter('foo');
+    }
+
+    /**
+     * @expectedException LogicException
+     * @expectedExceptionMessage Can not insert a child to an element without the owner document
+     */
+    public function testInsertSiblingAfterWithoutParentNode()
+    {
+        $item = new Element(new DOMElement('li', 'foo'));
+
+        $item->insertSiblingAfter(new Element('li', 'bar'));
+    }
+
+    public function testInsertSiblingAfter()
+    {
+        $list = new Element('ul');
+
+        $insertedNode = $list->appendChild(new Element('li', 'foo'));
+
+        $this->assertInstanceOf('DiDom\Element', $insertedNode);
+        $this->assertEquals('foo', $insertedNode->getNode()->textContent);
+
+        foreach (['foo'] as $index => $value) {
+            $this->assertEquals($value, $list->getNode()->childNodes->item($index)->textContent);
+        }
+
+        $insertedNode->insertSiblingAfter(new Element('li', 'baz'));
+
+        foreach (['foo', 'baz'] as $index => $value) {
+            $this->assertEquals($value, $list->getNode()->childNodes->item($index)->textContent);
+        }
+
+        $insertedNode->insertSiblingAfter(new Element('li', 'bar'));
+
+        foreach (['foo', 'bar', 'baz'] as $index => $value) {
             $this->assertEquals($value, $list->getNode()->childNodes->item($index)->textContent);
         }
     }

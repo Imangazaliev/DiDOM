@@ -132,7 +132,7 @@ abstract class Node
     public function insertBefore($node, $referenceNode = null)
     {
         if ($this->node->ownerDocument === null) {
-            throw new LogicException('Can not insert child to element without owner document');
+            throw new LogicException('Can not insert a child to an element without the owner document');
         }
 
         if ($node instanceof Node) {
@@ -192,6 +192,78 @@ abstract class Node
         }
 
         return $this->insertBefore($node, $referenceNode->nextSibling);
+    }
+
+    /**
+     * Adds a new sibling before a reference node.
+     *
+     * @param Node|DOMNode $node The new node
+     *
+     * @return Element
+     *
+     * @throws LogicException if current node has no owner document
+     * @throws InvalidArgumentException if $node is not an instance of DOMNode or Element
+     * @throws InvalidArgumentException if $referenceNode is not an instance of DOMNode or Element
+     */
+    public function insertSiblingBefore($node)
+    {
+        if ($this->node->ownerDocument === null) {
+            throw new LogicException('Can not insert a child to an element without the owner document');
+        }
+
+        if ($this->parent() === null) {
+            throw new LogicException('Can not insert a child to an element without the parent');
+        }
+
+        if ($node instanceof Node) {
+            $node = $node->getNode();
+        }
+
+        if ( ! $node instanceof DOMNode) {
+            throw new InvalidArgumentException(sprintf('Argument 1 passed to %s must be an instance of %s or DOMNode, %s given', __METHOD__, __CLASS__, (is_object($node) ? get_class($node) : gettype($node))));
+        }
+
+        Errors::disable();
+
+        $clonedNode = $node->cloneNode(true);
+        $newNode = $this->node->ownerDocument->importNode($clonedNode, true);
+
+        $insertedNode = $this->parent()->getNode()->insertBefore($newNode, $this->node);
+
+        Errors::restore();
+
+        return new Element($insertedNode);
+    }
+
+    /**
+     * Adds a new sibling after a reference node.
+     *
+     * @param Node|DOMNode $node The new node
+     *
+     * @return Element
+     *
+     * @throws LogicException if current node has no owner document
+     * @throws InvalidArgumentException if $node is not an instance of DOMNode or Element
+     * @throws InvalidArgumentException if $referenceNode is not an instance of DOMNode or Element
+     */
+    public function insertSiblingAfter($node)
+    {
+        if ($this->node->ownerDocument === null) {
+            throw new LogicException('Can not insert a child to an element without the owner document');
+        }
+
+        if ($this->parent() === null) {
+            throw new LogicException('Can not insert a child to an element without the parent');
+        }
+
+        $nextSibling = $this->nextSibling();
+
+        // if the current node is the last child
+        if ($nextSibling === null) {
+            return $this->parent()->appendChild($node);
+        }
+
+        return $nextSibling->insertSiblingBefore($node);
     }
 
     /**
