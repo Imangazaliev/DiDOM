@@ -23,7 +23,7 @@ class Document
      * @const string
      */
     const TYPE_HTML = 'html';
-    const TYPE_XML  = 'xml';
+    const TYPE_XML = 'xml';
 
     /**
      * @var DOMDocument
@@ -41,12 +41,12 @@ class Document
     protected $encoding;
 
     /**
-     * @param string|null $string   An HTML or XML string or a file path
-     * @param bool        $isFile   Indicates that the first parameter is a path to a file
-     * @param string      $encoding The document encoding
-     * @param string      $type     The document type
+     * @param string|null $string An HTML or XML string or a file path
+     * @param bool $isFile Indicates that the first parameter is a path to a file
+     * @param string $encoding The document encoding
+     * @param string $type The document type
      *
-     * @throws InvalidArgumentException if the passed encoding is not a string
+     * @throws InvalidArgumentException if parameter 3 is not a string
      */
     public function __construct($string = null, $isFile = false, $encoding = 'UTF-8', $type = Document::TYPE_HTML)
     {
@@ -74,10 +74,10 @@ class Document
     /**
      * Creates a new document.
      *
-     * @param string|null $string   An HTML or XML string or a file path
-     * @param bool        $isFile   Indicates that the first parameter is a path to a file
-     * @param string      $encoding The document encoding
-     * @param string      $type     The document type
+     * @param string|null $string An HTML or XML string or a file path
+     * @param bool $isFile Indicates that the first parameter is a path to a file
+     * @param string $encoding The document encoding
+     * @param string $type The document type
      *
      * @return Document
      */
@@ -89,9 +89,9 @@ class Document
     /**
      * Creates a new element node.
      *
-     * @param string      $name       The tag name of the element
-     * @param string|null $value      The value of the element
-     * @param array       $attributes The attributes of the element
+     * @param string $name The tag name of the element
+     * @param string|null $value The value of the element
+     * @param array $attributes The attributes of the element
      *
      * @return Element created element
      */
@@ -105,9 +105,9 @@ class Document
     /**
      * Creates a new element node by CSS selector.
      *
-     * @param string      $selector
+     * @param string $selector
      * @param string|null $value
-     * @param array       $attributes
+     * @param array $attributes
      *
      * @return Element
      *
@@ -179,7 +179,7 @@ class Document
      *
      * @return Element|Element[]
      *
-     * @throws InvalidArgumentException if the passed argument is not an instance of DOMNode or Element
+     * @throws InvalidArgumentException if one of elements of parameter 1 is not an instance of DOMNode or Element
      */
     public function appendChild($nodes)
     {
@@ -240,16 +240,17 @@ class Document
     /**
      * Load HTML or XML.
      *
-     * @param string   $string  HTML or XML string or file path
-     * @param bool     $isFile  Indicates that in first parameter was passed to the file path
-     * @param string   $type    Type of the document
-     * @param int|null $options Additional parameters
+     * @param string $string An HTML or XML string or a file path
+     * @param bool $isFile Indicates that the first parameter is a file path
+     * @param string $type The type of a document
+     * @param int|null $options libxml option constants
      *
      * @return Document
      *
-     * @throws InvalidArgumentException if first parameter is not a string
-     * @throws InvalidArgumentException if document type parameter is not a string
-     * @throws RuntimeException if document type is not HTML or XML
+     * @throws InvalidArgumentException if parameter 1 is not a string
+     * @throws InvalidArgumentException if parameter 3 is not a string
+     * @throws InvalidArgumentException if parameter 4 is not an integer or null
+     * @throws RuntimeException if the document type is invalid (not Document::TYPE_HTML or Document::TYPE_XML)
      */
     public function load($string, $isFile = false, $type = Document::TYPE_HTML, $options = null)
     {
@@ -302,12 +303,12 @@ class Document
     /**
      * Load HTML from a string.
      *
-     * @param string   $html    The HTML string
+     * @param string $html The HTML string
      * @param int|null $options Additional parameters
      *
      * @return Document
      *
-     * @throws InvalidArgumentException if the provided argument is not a string
+     * @throws InvalidArgumentException if parameter 1 is not a string
      */
     public function loadHtml($html, $options = null)
     {
@@ -317,13 +318,13 @@ class Document
     /**
      * Load HTML from a file.
      *
-     * @param string   $filename The path to the HTML file
-     * @param int|null $options  Additional parameters
+     * @param string $filename The path to the HTML file
+     * @param int|null $options Additional parameters
      *
      * @return Document
      *
-     * @throws InvalidArgumentException if the file path is not a string
-     * @throws RuntimeException if the file does not exist
+     * @throws InvalidArgumentException if parameter 1 not a string
+     * @throws RuntimeException if the file doesn't exist
      * @throws RuntimeException if you are unable to load the file
      */
     public function loadHtmlFile($filename, $options = null)
@@ -334,12 +335,12 @@ class Document
     /**
      * Load XML from a string.
      *
-     * @param string   $xml     The XML string
+     * @param string $xml The XML string
      * @param int|null $options Additional parameters
      *
      * @return Document
      *
-     * @throws InvalidArgumentException if the provided argument is not a string
+     * @throws InvalidArgumentException if parameter 1 is not a string
      */
     public function loadXml($xml, $options = null)
     {
@@ -349,13 +350,13 @@ class Document
     /**
      * Load XML from a file.
      *
-     * @param string   $filename The path to the XML file
-     * @param int|null $options  Additional parameters
+     * @param string $filename The path to the XML file
+     * @param int|null $options Additional parameters
      *
      * @return Document
      *
      * @throws InvalidArgumentException if the file path is not a string
-     * @throws RuntimeException if the file does not exist
+     * @throws RuntimeException if the file doesn't exist
      * @throws RuntimeException if you are unable to load the file
      */
     public function loadXmlFile($filename, $options = null)
@@ -370,7 +371,7 @@ class Document
      *
      * @return string
      *
-     * @throws InvalidArgumentException if the file path is not a string
+     * @throws InvalidArgumentException if parameter 1 is not a string
      * @throws RuntimeException if an error occurred
      */
     protected function loadFile($filename)
@@ -411,9 +412,9 @@ class Document
     /**
      * Searches for an node in the DOM tree for a given XPath expression or a CSS selector.
      *
-     * @param string          $expression  XPath expression or a CSS selector
-     * @param string          $type        The type of the expression
-     * @param bool            $wrapNode    Returns array of Element if true, otherwise array of DOMElement
+     * @param string $expression XPath expression or a CSS selector
+     * @param string $type The type of the expression
+     * @param bool $wrapNode Returns array of Element if true, otherwise array of DOMElement
      * @param DOMElement|null $contextNode The node in which the search will be performed
      *
      * @return Element[]|DOMElement[]
@@ -459,9 +460,9 @@ class Document
     /**
      * Searches for an node in the DOM tree and returns first element or null.
      *
-     * @param string           $expression  XPath expression or a CSS selector
-     * @param string           $type        The type of the expression
-     * @param bool             $wrapNode    Returns array of Element if true, otherwise array of DOMElement
+     * @param string $expression XPath expression or a CSS selector
+     * @param string $type The type of the expression
+     * @param bool $wrapNode Returns array of Element if true, otherwise array of DOMElement
      * @param DOMElement|null $contextNode The node in which the search will be performed
      *
      * @return Element|DOMElement|null
@@ -492,7 +493,7 @@ class Document
      *
      * @return Element|string
      *
-     * @throws InvalidArgumentException if node is not DOMElement, DOMText, DOMComment, DOMCdataSection or DOMAttr
+     * @throws InvalidArgumentException if parameter 1 is not an instance of DOMElement, DOMText, DOMComment, DOMCdataSection or DOMAttr
      */
     protected function wrapNode($node)
     {
@@ -515,8 +516,8 @@ class Document
     /**
      * Searches for a node in the DOM tree for a given XPath expression.
      *
-     * @param string      $expression  XPath expression
-     * @param bool        $wrapNode    Returns array of Element if true, otherwise array of DOMElement
+     * @param string $expression XPath expression
+     * @param bool $wrapNode Returns array of Element if true, otherwise array of DOMElement
      * @param DOMElement $contextNode The node in which the search will be performed
      *
      * @return Element[]|DOMElement[]
@@ -614,7 +615,7 @@ class Document
      *
      * @return bool
      *
-     * @throws InvalidArgumentException if the provided argument is not an instance of DOMDocument or Document
+     * @throws InvalidArgumentException if parameter 1 is not an instance of DOMDocument or Document
      */
     public function is($document)
     {
@@ -696,9 +697,9 @@ class Document
     /**
      * Searches for an node in the DOM tree for a given XPath expression or a CSS selector.
      *
-     * @param string           $expression  XPath expression or a CSS selector
-     * @param string           $type        The type of the expression
-     * @param bool             $wrapNode    Returns array of Element if true, otherwise array of DOMElement
+     * @param string $expression XPath expression or a CSS selector
+     * @param string $type The type of the expression
+     * @param bool $wrapNode Returns array of Element if true, otherwise array of DOMElement
      * @param DOMElement|null $contextNode The node in which the search will be performed
      *
      * @return Element[]|DOMElement[]

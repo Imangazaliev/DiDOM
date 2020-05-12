@@ -26,7 +26,7 @@ class ClassAttribute
     /**
      * @param Element $element
      *
-     * @throws InvalidArgumentException if passed argument is not an element node
+     * @throws InvalidArgumentException if parameter 1 is not an element node
      */
     public function __construct(Element $element)
     {

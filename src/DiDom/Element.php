@@ -29,9 +29,9 @@ class Element extends Node
     protected $styleAttribute;
 
     /**
-     * @param DOMElement|DOMText|DOMComment|DOMCdataSection|string $tagName The tag name of the element
-     * @param string|null $value The value of the element
-     * @param array $attributes The attributes of the element
+     * @param DOMElement|DOMText|DOMComment|DOMCdataSection|string $tagName The tag name of an element
+     * @param string|null $value The value of an element
+     * @param array $attributes The attributes of an element
      */
     public function __construct($tagName, $value = null, array $attributes = [])
     {
@@ -57,9 +57,9 @@ class Element extends Node
     /**
      * Creates a new element.
      *
-     * @param DOMNode|string $name The tag name of the element
-     * @param string|null $value The value of the element
-     * @param array  $attributes The attributes of the element
+     * @param DOMNode|string $name The tag name of an element
+     * @param string|null $value The value of an element
+     * @param array $attributes The attributes of an element
      *
      * @return Element
      */
@@ -170,7 +170,7 @@ class Element extends Node
     /**
      * Determine if an attribute exists on the element.
      *
-     * @param string $name The attribute name
+     * @param string $name The name of an attribute
      *
      * @return bool
      */
@@ -182,8 +182,8 @@ class Element extends Node
     /**
      * Set an attribute on the element.
      *
-     * @param string $name The attribute name
-     * @param string $value The attribute value
+     * @param string $name The name of an attribute
+     * @param string $value The value of an attribute
      *
      * @return Element
      */
@@ -205,10 +205,10 @@ class Element extends Node
     /**
      * Access to the element's attributes.
      *
-     * @param string $name The attribute name
-     * @param string|null $default The value returned if the attribute does not exist
+     * @param string $name The name of an attribute
+     * @param string|null $default The value returned if the attribute doesn't exist
      *
-     * @return string|null The value of the attribute or null if attribute does not exist
+     * @return string|null The value of an attribute or null if attribute doesn't exist
      */
     public function getAttribute($name, $default = null)
     {
@@ -222,7 +222,7 @@ class Element extends Node
     /**
      * Unset an attribute on the element.
      *
-     * @param string $name The attribute name
+     * @param string $name The name of an attribute
      *
      * @return Element
      */
@@ -260,8 +260,8 @@ class Element extends Node
     /**
      * Alias for getAttribute and setAttribute methods.
      *
-     * @param string $name The attribute name
-     * @param string|null $value The attribute value or null if the attribute does not exist
+     * @param string $name The name of an attribute
+     * @param string|null $value The value that will be returned an attribute doesn't exist
      *
      * @return string|null|Element
      */
@@ -351,8 +351,8 @@ class Element extends Node
     /**
      * Dynamically set an attribute on the element.
      *
-     * @param string $name The attribute name
-     * @param mixed  $value The attribute value
+     * @param string $name The name of an attribute
+     * @param string $value The value of an attribute
      *
      * @return Element
      */
@@ -364,7 +364,7 @@ class Element extends Node
     /**
      * Dynamically access the element's attributes.
      *
-     * @param string $name The attribute name
+     * @param string $name The name of an attribute
      *
      * @return string|null
      */
@@ -392,7 +392,7 @@ class Element extends Node
     /**
      * Unset an attribute on the model.
      *
-     * @param string $name The attribute name
+     * @param string $name The name of an attribute
      */
     public function __unset($name)
     {

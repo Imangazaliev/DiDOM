@@ -166,26 +166,26 @@ class Query
 
     /**
      * @param string $name
-     * @param array  $args
+     * @param array $parameters
      *
      * @return string
      *
-     * @throws InvalidSelectorException if the passed property is unknown
+     * @throws InvalidSelectorException if the specified property is unknown
      */
-    protected static function convertProperty($name, array $args = [])
+    protected static function convertProperty($name, array $parameters = [])
     {
         if ($name === 'text') {
             return 'text()';
         }
 
         if ($name === 'attr') {
-            if (count($args) === 0) {
+            if (count($parameters) === 0) {
                 return '@*';
             }
 
             $attributes = [];
 
-            foreach ($args as $attribute) {
+            foreach ($parameters as $attribute) {
                 $attributes[] = sprintf('name() = "%s"', $attribute);
             }
 
@@ -204,7 +204,7 @@ class Query
      *
      * @return string
      *
-     * @throws InvalidSelectorException if passed an unknown pseudo-class
+     * @throws InvalidSelectorException if the specified pseudo-class is unknown
      */
     protected static function convertPseudo($pseudo, &$tagName, array $parameters = [])
     {
@@ -323,8 +323,8 @@ class Query
     }
 
     /**
-     * @param string $name  The attribute name
-     * @param string $value The attribute value
+     * @param string $name The name of an attribute
+     * @param string $value The value of an attribute
      *
      * @return string
      */
@@ -387,8 +387,7 @@ class Query
      *
      * @return string
      *
-     * @throws InvalidSelectorException if passed nth-child is empty
-     * @throws InvalidSelectorException if passed an unknown nth-child expression
+     * @throws InvalidSelectorException if the given nth-child expression is empty or invalid
      */
     protected static function convertNthExpression($expression)
     {
@@ -423,8 +422,8 @@ class Query
 
     /**
      * @param string $string
-     * @param bool   $caseSensitive
-     * @param bool   $fullMatch
+     * @param bool $caseSensitive
+     * @param bool $fullMatch
      *
      * @return string
      */
