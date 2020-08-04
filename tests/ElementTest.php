@@ -115,7 +115,7 @@ class ElementTest extends TestCase
 
     /**
      * @expectedException LogicException
-     * @expectedExceptionMessage Can not prepend child to element without owner document
+     * @expectedExceptionMessage Can not prepend a child to element without the owner document
      */
     public function testPrependChildWithoutParentNode()
     {
@@ -225,7 +225,7 @@ class ElementTest extends TestCase
 
     /**
      * @expectedException LogicException
-     * @expectedExceptionMessage Can not append child to element without owner document
+     * @expectedExceptionMessage Can not append a child to element without the owner document
      */
     public function testAppendChildWithoutParentNode()
     {
