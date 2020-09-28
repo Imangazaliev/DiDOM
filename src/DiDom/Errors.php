@@ -20,7 +20,10 @@ class Errors
     public static function disable()
     {
         self::$internalErrors = libxml_use_internal_errors(true);
-        self::$disableEntities = libxml_disable_entity_loader(true);
+
+        if (\LIBXML_VERSION < 20900) {
+            self::$disableEntities = libxml_disable_entity_loader(true);
+        }
     }
 
     /**
@@ -35,6 +38,9 @@ class Errors
         }
 
         libxml_use_internal_errors(self::$internalErrors);
-        libxml_disable_entity_loader(self::$disableEntities);
+
+        if (\LIBXML_VERSION < 20900) {
+            libxml_disable_entity_loader(self::$disableEntities);
+        }
     }
 }
