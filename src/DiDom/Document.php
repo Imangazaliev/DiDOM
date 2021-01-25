@@ -41,6 +41,13 @@ class Document
     protected $encoding;
 
     /**
+     * @var array
+     */
+    protected $namespaces = [
+        'php' => 'http://php.net/xpath'
+    ];
+
+    /**
      * @param string|null $string An HTML or XML string or a file path
      * @param bool $isFile Indicates that the first parameter is a path to a file
      * @param string $encoding The document encoding
@@ -552,10 +559,34 @@ class Document
     {
         $xpath = new DOMXPath($this->document);
 
-        $xpath->registerNamespace('php', 'http://php.net/xpath');
+        foreach ($this->namespaces as $prefix => $namespace) {
+            $xpath->registerNamespace($prefix, $namespace);
+        }
+
         $xpath->registerPhpFunctions();
 
         return $xpath;
+    }
+
+    /**
+     * Add namespace
+     *
+     * @param string $prefix
+     * @param string $namespace
+     *
+     * @return void
+     */
+    public function addNamespace($prefix, $namespace)
+    {
+        if ( ! is_string($prefix)) {
+            throw new InvalidArgumentException(sprintf('%s expects parameter 2 to be string, %s given', __METHOD__, (is_object($prefix) ? get_class($prefix) : gettype($prefix))));
+        }
+
+        if ( ! is_string($namespace)) {
+            throw new InvalidArgumentException(sprintf('%s expects parameter 2 to be string, %s given', __METHOD__, (is_object($namespace) ? get_class($namespace) : gettype($namespace))));
+        }
+
+        $this->namespaces[$prefix] = $namespace;
     }
 
     /**
