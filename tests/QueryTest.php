@@ -9,29 +9,29 @@ use RuntimeException;
 class QueryTest extends TestCaseDiDom
 {
     /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage DiDom\Query::compile expects parameter 1 to be string, NULL given
      */
     public function testCompileWithNonStringExpression()
     {
+        $this->expectException(\InvalidArgumentException::class, 'DiDom\\Query::compile expects parameter 1 to be string, NULL given');
+
         Query::compile(null);
     }
 
     /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage DiDom\Query::compile expects parameter 2 to be string, NULL given
      */
     public function testCompileWithNonStringExpressionType()
     {
+        $this->expectException(\InvalidArgumentException::class, 'DiDom\\Query::compile expects parameter 2 to be string, NULL given');
+
         Query::compile('h1', null);
     }
 
     /**
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Unknown expression type "foo"
      */
     public function testCompileWithUnknownExpressionType()
     {
+        $this->expectException(\RuntimeException::class, 'Unknown expression type "foo"');
+
         Query::compile('h1', 'foo');
     }
 
@@ -66,55 +66,56 @@ class QueryTest extends TestCaseDiDom
     }
 
     /**
-     * @expectedException InvalidArgumentException
      */
     public function testBuildXpathWithEmptyArray()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         Query::buildXpath([]);
     }
 
     /**
-     * @expectedException \DiDom\Exceptions\InvalidSelectorException
-     * @expectedExceptionMessage The expression must not be empty
      */
     public function testCompileWithEmptyXpathExpression()
     {
+        $this->expectException(\DiDom\Exceptions\InvalidSelectorException::class, 'The expression must not be empty');
+
         Query::compile('', Query::TYPE_XPATH);
     }
 
     /**
-     * @expectedException \DiDom\Exceptions\InvalidSelectorException
-     * @expectedExceptionMessage The expression must not be empty
      */
     public function testCompileWithEmptyCssExpression()
     {
+        $this->expectException(\DiDom\Exceptions\InvalidSelectorException::class, 'The expression must not be empty');
+
         Query::compile('', Query::TYPE_CSS);
     }
 
     /**
-     * @expectedException \DiDom\Exceptions\InvalidSelectorException
-     * @expectedExceptionMessage The selector must not be empty
      */
     public function testGetSegmentsWithEmptySelector()
     {
+        $this->expectException(\DiDom\Exceptions\InvalidSelectorException::class, 'The selector must not be empty');
+
         Query::getSegments('');
     }
 
     /**
-     * @expectedException \DiDom\Exceptions\InvalidSelectorException
-     * @expectedExceptionMessage Invalid selector "input[=foo]": attribute name must not be empty
      */
     public function testEmptyAttributeName()
     {
+        $this->expectException(\DiDom\Exceptions\InvalidSelectorException::class, 'Invalid selector "input[=foo]": attribute name must not be empty');
+
         Query::compile('input[=foo]');
     }
 
     /**
-     * @expectedException \DiDom\Exceptions\InvalidSelectorException
-     * @expectedExceptionMessage Unknown pseudo-class "unknown-pseudo-class"
      */
     public function testUnknownPseudoClass()
     {
+        $this->expectException(\DiDom\Exceptions\InvalidSelectorException::class, 'Unknown pseudo-class "unknown-pseudo-class"');
+
         Query::compile('li:unknown-pseudo-class');
     }
 
@@ -140,56 +141,56 @@ class QueryTest extends TestCaseDiDom
     }
 
     /**
-     * @expectedException \DiDom\Exceptions\InvalidSelectorException
-     * @expectedExceptionMessage nth-child (or nth-last-child) expression must not be empty
      */
     public function testEmptyNthExpression()
     {
+        $this->expectException(\DiDom\Exceptions\InvalidSelectorException::class, 'nth-child (or nth-last-child) expression must not be empty');
+
         Query::compile('li:nth-child()');
     }
 
     /**
-     * @expectedException \DiDom\Exceptions\InvalidSelectorException
-     * @expectedExceptionMessage Invalid property "::"
      */
     public function testEmptyProperty()
     {
+        $this->expectException(\DiDom\Exceptions\InvalidSelectorException::class, 'Invalid property "::"');
+
         Query::compile('li::');
     }
 
     /**
-     * @expectedException \DiDom\Exceptions\InvalidSelectorException
-     * @expectedExceptionMessage Unknown property "foo"
      */
     public function testInvalidProperty()
     {
+        $this->expectException(\DiDom\Exceptions\InvalidSelectorException::class, 'Unknown property "foo"');
+
         Query::compile('li::foo');
     }
 
     /**
-     * @expectedException \DiDom\Exceptions\InvalidSelectorException
-     * @expectedExceptionMessage Invalid nth-child expression "foo"
      */
     public function testUnknownNthExpression()
     {
+        $this->expectException(\DiDom\Exceptions\InvalidSelectorException::class, 'Invalid nth-child expression "foo"');
+
         Query::compile('li:nth-child(foo)');
     }
 
     /**
-     * @expectedException \DiDom\Exceptions\InvalidSelectorException
-     * @expectedExceptionMessage Invalid selector "."
      */
     public function testGetSegmentsWithEmptyClassName()
     {
+        $this->expectException(\DiDom\Exceptions\InvalidSelectorException::class, 'Invalid selector "."');
+
         Query::getSegments('.');
     }
 
     /**
-     * @expectedException \DiDom\Exceptions\InvalidSelectorException
-     * @expectedExceptionMessage Invalid selector "."
      */
     public function testCompilehWithEmptyClassName()
     {
+        $this->expectException(\DiDom\Exceptions\InvalidSelectorException::class, 'Invalid selector "."');
+
         Query::compile('span.');
     }
 

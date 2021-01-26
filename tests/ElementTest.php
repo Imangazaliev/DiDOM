@@ -16,34 +16,38 @@ use RuntimeException;
 class ElementTest extends TestCaseDiDom
 {
     /**
-     * @expectedException InvalidArgumentException
      */
     public function testConstructorWithNullTagName()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         new Element(null);
     }
 
     /**
-     * @expectedException InvalidArgumentException
      */
     public function testConstructorWithInvalidTagNameType()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         new Element([]);
     }
 
     /**
-     * @expectedException InvalidArgumentException
      */
     public function testConstructorWithInvalidObject()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         new Element(new \StdClass());
     }
 
     /**
-     * @expectedException InvalidArgumentException
      */
     public function testConstructorWithInvalidValue()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         new Element('span', []);
     }
 
@@ -104,21 +108,22 @@ class ElementTest extends TestCaseDiDom
     }
 
     /**
-     * @expectedException InvalidArgumentException
      */
     public function testPrependChildWithInvalidArgument()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $element = new Element('span', 'hello');
 
         $element->prependChild('foo');
     }
 
     /**
-     * @expectedException LogicException
-     * @expectedExceptionMessage Can not prepend a child to element without the owner document
      */
     public function testPrependChildWithoutParentNode()
     {
+        $this->expectException(\LogicException::class, 'Can not prepend a child to element without the owner document');
+
         $element = new Element(new DOMElement('div'));
 
         $element->prependChild(new Element('div'));
@@ -214,21 +219,22 @@ class ElementTest extends TestCaseDiDom
     }
 
     /**
-     * @expectedException InvalidArgumentException
      */
     public function testAppendChildWithInvalidArgument()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $element = new Element('span', 'hello');
 
         $element->appendChild('foo');
     }
 
     /**
-     * @expectedException LogicException
-     * @expectedExceptionMessage Can not append a child to element without the owner document
      */
     public function testAppendChildWithoutParentNode()
     {
+        $this->expectException(\LogicException::class, 'Can not append a child to element without the owner document');
+
         $element = new Element(new DOMElement('div'));
 
         $element->appendChild(new Element('div'));
@@ -322,33 +328,33 @@ class ElementTest extends TestCaseDiDom
     }
 
     /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Argument 1 passed to DiDom\Node::insertBefore must be an instance of DiDom\Node or DOMNode, string given
      */
     public function testInsertBeforeWithInvalidNodeArgument()
     {
+        $this->expectException(\InvalidArgumentException::class, 'Argument 1 passed to DiDom\\Node::insertBefore must be an instance of DiDom\\Node or DOMNode, string given');
+
         $list = new Element('ul');
 
         $list->insertBefore('foo');
     }
 
     /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Argument 2 passed to DiDom\Node::insertBefore must be an instance of DiDom\Node or DOMNode, string given
      */
     public function testInsertBeforeWithInvalidReferenceNodeArgument()
     {
+        $this->expectException(\InvalidArgumentException::class, 'Argument 2 passed to DiDom\\Node::insertBefore must be an instance of DiDom\\Node or DOMNode, string given');
+
         $list = new Element('ul');
 
         $list->insertBefore(new Element('li', 'foo'), 'foo');
     }
 
     /**
-     * @expectedException LogicException
-     * @expectedExceptionMessage Can not insert a child to an element without the owner document
      */
     public function testInsertBeforeWithoutParentNode()
     {
+        $this->expectException(\LogicException::class, 'Can not insert a child to an element without the owner document');
+
         $list = new Element(new DOMElement('ul'));
 
         $list->insertBefore(new Element('li', 'foo'));
@@ -388,33 +394,33 @@ class ElementTest extends TestCaseDiDom
     }
 
     /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Argument 1 passed to DiDom\Node::insertBefore must be an instance of DiDom\Node or DOMNode, string given
      */
     public function testInsertAfterWithInvalidNodeArgument()
     {
+        $this->expectException(\InvalidArgumentException::class, 'Argument 1 passed to DiDom\\Node::insertBefore must be an instance of DiDom\\Node or DOMNode, string given');
+
         $list = new Element('ul');
 
         $list->insertAfter('foo');
     }
 
     /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Argument 2 passed to DiDom\Node::insertAfter must be an instance of DiDom\Node or DOMNode, string given
      */
     public function testInsertAfterWithInvalidReferenceNodeArgument()
     {
+        $this->expectException(\InvalidArgumentException::class, 'Argument 2 passed to DiDom\\Node::insertAfter must be an instance of DiDom\\Node or DOMNode, string given');
+
         $list = new Element('ul');
 
         $list->insertAfter(new Element('li', 'foo'), 'foo');
     }
 
     /**
-     * @expectedException LogicException
-     * @expectedExceptionMessage Can not insert a child to an element without the owner document
      */
     public function testInsertAfterWithoutParentNode()
     {
+        $this->expectException(\LogicException::class, 'Can not insert a child to an element without the owner document');
+
         $list = new Element(new DOMElement('ul'));
 
         $list->insertAfter(new Element('li', 'foo'));
@@ -454,11 +460,11 @@ class ElementTest extends TestCaseDiDom
     }
 
     /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Argument 1 passed to DiDom\Node::insertSiblingBefore must be an instance of DiDom\Node or DOMNode, string given
      */
     public function testInsertSiblingBeforeWithInvalidNodeArgument()
     {
+        $this->expectException(\InvalidArgumentException::class, 'Argument 1 passed to DiDom\\Node::insertSiblingBefore must be an instance of DiDom\\Node or DOMNode, string given');
+
         $list = new Element('ul');
 
         $item = $list->appendChild(new Element('li', 'foo'));
@@ -467,11 +473,11 @@ class ElementTest extends TestCaseDiDom
     }
 
     /**
-     * @expectedException LogicException
-     * @expectedExceptionMessage Can not insert a child to an element without the owner document
      */
     public function testInsertSiblingBeforeWithoutParentNode()
     {
+        $this->expectException(\LogicException::class, 'Can not insert a child to an element without the owner document');
+
         $item = new Element(new DOMElement('li', 'foo'));
 
         $item->insertSiblingBefore(new Element('li', 'bar'));
@@ -504,11 +510,11 @@ class ElementTest extends TestCaseDiDom
     }
 
     /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Argument 1 passed to DiDom\Node::appendChild must be an instance of DiDom\Node or DOMNode, string given
      */
     public function testInsertSiblingAfterWithInvalidNodeArgument()
     {
+        $this->expectException(\InvalidArgumentException::class, 'Argument 1 passed to DiDom\\Node::appendChild must be an instance of DiDom\\Node or DOMNode, string given');
+
         $list = new Element('ul');
 
         $item = $list->appendChild(new Element('li', 'foo'));
@@ -517,11 +523,11 @@ class ElementTest extends TestCaseDiDom
     }
 
     /**
-     * @expectedException LogicException
-     * @expectedExceptionMessage Can not insert a child to an element without the owner document
      */
     public function testInsertSiblingAfterWithoutParentNode()
     {
+        $this->expectException(\LogicException::class, 'Can not insert a child to an element without the owner document');
+
         $item = new Element(new DOMElement('li', 'foo'));
 
         $item->insertSiblingAfter(new Element('li', 'bar'));
@@ -587,10 +593,11 @@ class ElementTest extends TestCaseDiDom
     }
 
     /**
-     * @expectedException LogicException
      */
     public function testFindInDocumentWithoutOwnerDocument()
     {
+        $this->expectException(\LogicException::class);
+
         $element = new Element(new DOMElement('div'));
 
         $element->findInDocument('.foo');
@@ -621,10 +628,11 @@ class ElementTest extends TestCaseDiDom
     }
 
     /**
-     * @expectedException LogicException
      */
     public function testFirstInDocumentWithoutOwnerDocument()
     {
+        $this->expectException(\LogicException::class);
+
         $element = new Element(new DOMElement('div'));
 
         $element->firstInDocument('.foo');
@@ -734,20 +742,22 @@ class ElementTest extends TestCaseDiDom
     }
 
     /**
-     * @expectedException InvalidArgumentException
      */
     public function testMatchesWithInvalidSelectorType()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $element = new Element('p');
 
         $element->matches(null);
     }
 
     /**
-     * @expectedException RuntimeException
      */
     public function testMatchesStrictWithoutTagName()
     {
+        $this->expectException(\RuntimeException::class);
+
         $element = new Element('ul', null, ['id' => 'foo', 'class' => 'bar baz']);
 
         $element->matches('#foo.bar.baz', true);
@@ -817,10 +827,11 @@ class ElementTest extends TestCaseDiDom
     }
 
     /**
-     * @expectedException InvalidArgumentException
      */
     public function testSetAttributeWithInvalidValue()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $element = new Element('input');
         $element->setAttribute('value', []);
     }
@@ -943,22 +954,22 @@ class ElementTest extends TestCaseDiDom
     }
 
     /**
-     * @expectedException LogicException
-     * @expectedExceptionMessage Style attribute is available only for element nodes
      */
     public function testStyleWithTextNode()
     {
+        $this->expectException(\LogicException::class, 'Style attribute is available only for element nodes');
+
         $element = new Element(new DOMText('foo'));
 
         $element->style();
     }
 
     /**
-     * @expectedException LogicException
-     * @expectedExceptionMessage Style attribute is available only for element nodes
      */
     public function testStyleWithCommentNode()
     {
+        $this->expectException(\LogicException::class, 'Style attribute is available only for element nodes');
+
         $element = new Element(new DOMComment('foo'));
 
         $element->style();
@@ -1176,10 +1187,11 @@ Tiếng Việt <br>
     }
 
     /**
-     * @expectedException InvalidArgumentException
      */
     public function testIsWithInvalidArgument()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $element = new Element('span', 'hello');
         $element->is(null);
     }
@@ -1323,10 +1335,11 @@ Tiếng Việt <br>
     }
 
     /**
-     * @expectedException InvalidArgumentException
      */
     public function testPreviousSiblingWithInvalidTypeOfNodeTypeArgument()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $html = '<p>Foo <span>Bar</span><!--qwe--> Baz <span>Qux</span></p>';
 
         $document = new Document($html, false);
@@ -1337,10 +1350,11 @@ Tiếng Việt <br>
     }
 
     /**
-     * @expectedException RuntimeException
      */
     public function testPreviousSiblingWithInvalidNodeType()
     {
+        $this->expectException(\RuntimeException::class);
+
         $html = '<p>Foo <span>Bar</span><!--qwe--> Baz <span>Qux</span></p>';
 
         $document = new Document($html, false);
@@ -1353,12 +1367,13 @@ Tiếng Việt <br>
     /**
      * @dataProvider previousSiblingWithSelectorAndNotDomElementNodeTypeDataProvider
      *
-     * @expectedException LogicException
      *
      * @param string $nodeType
      */
     public function testPreviousSiblingWithSelectorAndNotDomElement($nodeType)
     {
+        $this->expectException(\LogicException::class);
+
         $html =
             '<ul>'.
                 '<li><a href="https://amazon.com">Amazon</a></li>'.
@@ -1487,10 +1502,11 @@ Tiếng Việt <br>
     }
 
     /**
-     * @expectedException InvalidArgumentException
      */
     public function testPreviousSiblingsWithInvalidTypeOfNodeTypeArgument()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $html = '<p>Foo <span>Bar</span><!--qwe--> Baz <span>Qux</span></p>';
 
         $document = new Document($html, false);
@@ -1501,10 +1517,11 @@ Tiếng Việt <br>
     }
 
     /**
-     * @expectedException RuntimeException
      */
     public function testPreviousSiblingsWithInvalidNodeType()
     {
+        $this->expectException(\RuntimeException::class);
+
         $html = '<p>Foo <span>Bar</span><!--qwe--> Baz <span>Qux</span></p>';
 
         $document = new Document($html, false);
@@ -1517,12 +1534,13 @@ Tiếng Việt <br>
     /**
      * @dataProvider previousSiblingsWithSelectorAndNotDomElementNodeTypeDataProvider
      *
-     * @expectedException LogicException
      *
      * @param string $nodeType
      */
     public function testPreviousSiblingsWithSelectorAndNotDomElement($nodeType)
     {
+        $this->expectException(\LogicException::class);
+
         $html =
             '<ul>'.
             '<li><a href="https://amazon.com">Amazon</a></li>'.
@@ -1642,10 +1660,11 @@ Tiếng Việt <br>
     }
 
     /**
-     * @expectedException InvalidArgumentException
      */
     public function testNextSiblingWithInvalidTypeOfNodeTypeArgument()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $html = '<p>Foo <span>Bar</span> Baz <!--qwe--><span>Qux</span></p>';
 
         $document = new Document($html, false);
@@ -1656,10 +1675,11 @@ Tiếng Việt <br>
     }
 
     /**
-     * @expectedException RuntimeException
      */
     public function testNextSiblingWithInvalidNodeType()
     {
+        $this->expectException(\RuntimeException::class);
+
         $html = '<p>Foo <span>Bar</span> Baz <!--qwe--><span>Qux</span></p>';
 
         $document = new Document($html, false);
@@ -1672,12 +1692,13 @@ Tiếng Việt <br>
     /**
      * @dataProvider nextSiblingWithSelectorAndNotDomElementNodeTypeDataProvider
      *
-     * @expectedException LogicException
      *
      * @param string $nodeType
      */
     public function testNextSiblingWithSelectorAndNotDomElement($nodeType)
     {
+        $this->expectException(\LogicException::class);
+
         $html =
             '<ul>'.
                 '<li><a href="https://amazon.com">Amazon</a></li>'.
@@ -1804,10 +1825,11 @@ Tiếng Việt <br>
     }
 
     /**
-     * @expectedException InvalidArgumentException
      */
     public function testNextSiblingsWithInvalidTypeOfNodeTypeArgument()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $html = '<p>Foo <span>Bar</span><!--qwe--> Baz <span>Qux</span></p>';
 
         $document = new Document($html, false);
@@ -1818,10 +1840,11 @@ Tiếng Việt <br>
     }
 
     /**
-     * @expectedException RuntimeException
      */
     public function testNextSiblingsWithInvalidNodeType()
     {
+        $this->expectException(\RuntimeException::class);
+
         $html = '<p>Foo <span>Bar</span><!--qwe--> Baz <span>Qux</span></p>';
 
         $document = new Document($html, false);
@@ -1834,12 +1857,13 @@ Tiếng Việt <br>
     /**
      * @dataProvider nextSiblingsWithSelectorAndNotDomElementNodeTypeDataProvider
      *
-     * @expectedException LogicException
      *
      * @param string $nodeType
      */
     public function testNextSiblingsWithSelectorAndNotDomElement($nodeType)
     {
+        $this->expectException(\LogicException::class);
+
         $html =
             '<ul>'.
                 '<li><a href="https://amazon.com">Amazon</a></li>'.
@@ -2033,10 +2057,11 @@ Tiếng Việt <br>
     }
 
     /**
-     * @expectedException LogicException
      */
     public function testRemoveWithoutParentNode()
     {
+        $this->expectException(\LogicException::class);
+
         $element = new Element('div', 'Foo');
 
         $element->remove();
@@ -2140,10 +2165,11 @@ Tiếng Việt <br>
     }
 
     /**
-     * @expectedException InvalidArgumentException
      */
     public function testReplaceWithInvalidArgument()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $html = '<ul><li>One</li><li>Two</li><li>Three</li></ul>';
 
         $document = new Document($html, false);
@@ -2152,10 +2178,11 @@ Tiếng Việt <br>
     }
 
     /**
-     * @expectedException LogicException
      */
     public function testReplaceElementWithoutParentNode()
     {
+        $this->expectException(\LogicException::class);
+
         $element = new Element('div', 'Foo');
 
         $element->replace(new Element('div', 'Bar'));

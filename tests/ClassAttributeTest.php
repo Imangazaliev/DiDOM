@@ -9,33 +9,33 @@ use InvalidArgumentException;
 class ClassAttributeTest extends TestCaseDiDom
 {
     /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage The element must contain DOMElement node
      */
     public function testConstructorWithTextNode()
     {
+        $this->expectException(\InvalidArgumentException::class, 'The element must contain DOMElement node');
+
         $element = new Element(new \DOMText('foo'));
 
         new ClassAttribute($element);
     }
 
     /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage The element must contain DOMElement node
      */
     public function testConstructorWithCommentNode()
     {
+        $this->expectException(\InvalidArgumentException::class, 'The element must contain DOMElement node');
+
         $element = new Element(new \DOMComment('foo'));
 
         new ClassAttribute($element);
     }
 
     /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage DiDom\ClassAttribute::add expects parameter 1 to be string, NULL given
      */
     public function testAddWithInvalidClassName()
     {
+        $this->expectException(\InvalidArgumentException::class, 'DiDom\\ClassAttribute::add expects parameter 1 to be string, NULL given');
+
         $element = new Element('div', null, [
             'class' => 'foo',
         ]);
@@ -112,11 +112,11 @@ class ClassAttributeTest extends TestCaseDiDom
     }
 
     /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Class name must be a string, NULL given
      */
     public function testAddMultipleWithInvalidClassName()
     {
+        $this->expectException(\InvalidArgumentException::class, 'Class name must be a string, NULL given');
+
         $element = new Element('div', null, [
             'class' => 'foo',
         ]);
@@ -227,11 +227,11 @@ class ClassAttributeTest extends TestCaseDiDom
     }
 
     /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage DiDom\ClassAttribute::remove expects parameter 1 to be string, NULL given
      */
     public function testRemoveWithInvalidClassName()
     {
+        $this->expectException(\InvalidArgumentException::class, 'DiDom\\ClassAttribute::remove expects parameter 1 to be string, NULL given');
+
         $element = new Element('div', null, [
             'class' => 'foo bar baz',
         ]);
@@ -270,11 +270,11 @@ class ClassAttributeTest extends TestCaseDiDom
     }
 
     /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Class name must be a string, NULL given
      */
     public function testRemoveMultipleWithInvalidClassName()
     {
+        $this->expectException(\InvalidArgumentException::class, 'Class name must be a string, NULL given');
+
         $element = new Element('div', null, [
             'class' => 'foo bar baz',
         ]);
@@ -313,11 +313,11 @@ class ClassAttributeTest extends TestCaseDiDom
     }
 
     /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Class name must be a string, NULL given
      */
     public function testRemoveAllWithInvalidClassName()
     {
+        $this->expectException(\InvalidArgumentException::class, 'Class name must be a string, NULL given');
+
         $element = new Element('div', null, [
             'class' => 'foo bar baz',
         ]);
