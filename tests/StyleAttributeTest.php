@@ -6,7 +6,7 @@ use DiDom\Element;
 use DiDom\StyleAttribute;
 use InvalidArgumentException;
 
-class StyleAttributeTest extends TestCase
+class StyleAttributeTest extends TestCaseDiDom
 {
     /**
      * @expectedException InvalidArgumentException

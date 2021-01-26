@@ -7,7 +7,7 @@ use DiDom\Query;
 use InvalidArgumentException;
 use RuntimeException;
 
-class DocumentTest extends TestCase
+class DocumentTest extends TestCaseDiDom
 {
     /**
      * @expectedException InvalidArgumentException

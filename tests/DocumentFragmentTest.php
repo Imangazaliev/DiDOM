@@ -7,7 +7,7 @@ use DiDom\DocumentFragment;
 use DOMElement;
 use InvalidArgumentException;
 
-class DocumentFragmentTest extends TestCase
+class DocumentFragmentTest extends TestCaseDiDom
 {
     /**
      * @expectedException InvalidArgumentException

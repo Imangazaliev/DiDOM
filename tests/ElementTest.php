@@ -13,7 +13,7 @@ use LogicException;
 use InvalidArgumentException;
 use RuntimeException;
 
-class ElementTest extends TestCase
+class ElementTest extends TestCaseDiDom
 {
     /**
      * @expectedException InvalidArgumentException
@@ -50,9 +50,9 @@ class ElementTest extends TestCase
     public function testConstructorWithInvalidAttributes()
     {
         if (PHP_VERSION_ID >= 70000) {
-            $this->setExpectedException('TypeError');
+            $this->expectException('TypeError');
         } else {
-            $this->setExpectedException('PHPUnit_Framework_Error');
+            $this->expectException('PHPUnit_Framework_Error');
         }
 
         new Element('span', 'Foo', null);

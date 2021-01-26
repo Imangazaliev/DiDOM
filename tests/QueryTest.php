@@ -6,7 +6,7 @@ use DiDom\Query;
 use InvalidArgumentException;
 use RuntimeException;
 
-class QueryTest extends TestCase
+class QueryTest extends TestCaseDiDom
 {
     /**
      * @expectedException InvalidArgumentException
@@ -125,7 +125,7 @@ class QueryTest extends TestCase
     {
         $message = sprintf('Parameter 2 of "contains" pseudo-class must be equal true or false, "%s" given', $caseSensitive);
 
-        $this->setExpectedException('DiDom\Exceptions\InvalidSelectorException', $message);
+        $this->expectException('DiDom\Exceptions\InvalidSelectorException', $message);
 
         Query::compile("a:contains('Log in', {$caseSensitive})");
     }
@@ -201,9 +201,9 @@ class QueryTest extends TestCase
     public function testSetCompiledInvalidArgumentType()
     {
         if (PHP_VERSION_ID >= 70000) {
-            $this->setExpectedException('TypeError');
+            $this->expectException('TypeError');
         } else {
-            $this->setExpectedException('PHPUnit_Framework_Error');
+            $this->expectException('PHPUnit_Framework_Error');
         }
 
         Query::setCompiled(null);

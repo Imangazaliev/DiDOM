@@ -6,7 +6,7 @@ use DiDom\Element;
 use DiDom\ClassAttribute;
 use InvalidArgumentException;
 
-class ClassAttributeTest extends TestCase
+class ClassAttributeTest extends TestCaseDiDom
 {
     /**
      * @expectedException InvalidArgumentException

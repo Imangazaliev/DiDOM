@@ -4,7 +4,7 @@ namespace DiDom\Tests;
 
 use DiDom\Document;
 
-class SelectorTest extends TestCase
+class SelectorTest extends TestCaseDiDom
 {
     public function testTag()
     {
