@@ -280,9 +280,9 @@ abstract class Node
     }
 
     /**
-     * Searches for an node in the DOM tree for a given XPath expression or a CSS selector.
+     * Searches for a node in the DOM tree for a given XPath expression or CSS selector.
      *
-     * @param string $expression XPath expression or a CSS selector
+     * @param string $expression XPath expression or CSS selector
      * @param string $type The type of the expression
      * @param bool $wrapElement Returns array of Element if true, otherwise array of DOMElement
      *
@@ -296,9 +296,9 @@ abstract class Node
     }
 
     /**
-     * Searches for an node in the owner document using current node as context.
+     * Searches for a node in the owner document using current node as context.
      *
-     * @param string $expression XPath expression or a CSS selector
+     * @param string $expression XPath expression or CSS selector
      * @param string $type The type of the expression
      * @param bool $wrapNode Returns array of Element if true, otherwise array of DOMElement
      *
@@ -319,9 +319,9 @@ abstract class Node
     }
 
     /**
-     * Searches for an node in the DOM tree and returns first element or null.
+     * Searches for a node in the DOM tree and returns first element or null.
      *
-     * @param string $expression XPath expression or a CSS selector
+     * @param string $expression XPath expression or CSS selector
      * @param string $type The type of the expression
      * @param bool $wrapNode Returns Element if true, otherwise DOMElement
      *
@@ -335,9 +335,9 @@ abstract class Node
     }
 
     /**
-     * Searches for an node in the owner document using current node as context and returns first element or null.
+     * Searches for a node in the owner document using current node as context and returns first element or null.
      *
-     * @param string $expression XPath expression or a CSS selector
+     * @param string $expression XPath expression or CSS selector
      * @param string $type The type of the expression
      * @param bool $wrapNode Returns Element if true, otherwise DOMElement
      *
@@ -357,7 +357,7 @@ abstract class Node
     }
 
     /**
-     * Searches for an node in the DOM tree for a given XPath expression.
+     * Searches for a node in the DOM tree for a given XPath expression.
      *
      * @param string $expression XPath expression
      * @param bool $wrapNode Returns array of Element if true, otherwise array of DOMElement
@@ -372,7 +372,7 @@ abstract class Node
     }
 
     /**
-     * Counts nodes for a given XPath expression or a CSS selector.
+     * Counts nodes for a given XPath expression or CSS selector.
      *
      * @param string $expression XPath expression or CSS selector
      * @param string $type The type of the expression
@@ -1174,9 +1174,9 @@ abstract class Node
     }
 
     /**
-     * Searches for an node in the DOM tree for a given XPath expression or a CSS selector.
+     * Searches for a node in the DOM tree for a given XPath expression or CSS selector.
      *
-     * @param string $expression XPath expression or a CSS selector
+     * @param string $expression XPath expression or CSS selector
      * @param string $type The type of the expression
      * @param bool $wrapNode Returns array of Element if true, otherwise array of DOMElement
      *

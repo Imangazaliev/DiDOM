@@ -410,7 +410,7 @@ class Document
     }
 
     /**
-     * Searches for an node in the DOM tree for a given XPath expression or a CSS selector.
+     * Searches for a node in the DOM tree for a given XPath expression or CSS selector.
      *
      * @param string $expression XPath expression or a CSS selector
      * @param string $type The type of the expression
@@ -458,7 +458,7 @@ class Document
     }
 
     /**
-     * Searches for an node in the DOM tree and returns first element or null.
+     * Searches for a node in the DOM tree and returns first element or null.
      *
      * @param string $expression XPath expression or a CSS selector
      * @param string $type The type of the expression
@@ -528,7 +528,7 @@ class Document
     }
 
     /**
-     * Counts nodes for a given XPath expression or a CSS selector.
+     * Counts nodes for a given XPath expression or CSS selector.
      *
      * @param string $expression XPath expression or CSS selector
      * @param string $type The type of the expression
@@ -647,7 +647,7 @@ class Document
     }
 
     /**
-     * Returns the encoding of the document (XML or HTML).
+     * Returns the encoding of the document.
      *
      * @return string
      */
@@ -695,7 +695,7 @@ class Document
     }
 
     /**
-     * Searches for an node in the DOM tree for a given XPath expression or a CSS selector.
+     * Searches for a node in the DOM tree for a given XPath expression or CSS selector.
      *
      * @param string $expression XPath expression or a CSS selector
      * @param string $type The type of the expression
