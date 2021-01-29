@@ -569,14 +569,12 @@ class Document
     }
 
     /**
-     * Add namespace
+     * Register a namespace.
      *
      * @param string $prefix
      * @param string $namespace
-     *
-     * @return void
      */
-    public function addNamespace($prefix, $namespace)
+    public function registerNamespace($prefix, $namespace)
     {
         if ( ! is_string($prefix)) {
             throw new InvalidArgumentException(sprintf('%s expects parameter 2 to be string, %s given', __METHOD__, (is_object($prefix) ? get_class($prefix) : gettype($prefix))));
