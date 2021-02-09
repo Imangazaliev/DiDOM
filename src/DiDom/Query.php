@@ -466,11 +466,11 @@ class Query
         $classes = '(?P<classes>\.[\w|\-|\.]+)*';
         $attrs = '(?P<attrs>(?:\[.+?\])*)?';
         $name = '(?P<pseudo>[\w\-]+)';
-        $expr = '(?:\((?P<expr>[^\)]+)\))';
-        $pseudo = '(?::'.$name.$expr.'?)?';
+        $expr = '(?:\((?P<expr>.+)\))';
+        $pseudo = '(?::' . $name . $expr . '?)?';
         $rel = '\s*(?P<rel>>)?';
 
-        $regexp = '/'.$tag.$id.$classes.$attrs.$pseudo.$rel.'/is';
+        $regexp = '/' . $tag . $id . $classes . $attrs . $pseudo . $rel . '/is';
 
         if (preg_match($regexp, $selector, $segments)) {
             if ($segments[0] === '') {
