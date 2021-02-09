@@ -171,9 +171,9 @@ class StyleAttributeTest extends TestCase
                 '16px',
             ],
             [
-                'color: blue; font-size: 16px; border: 1px solid black;',
-                'font-size',
-                '16px',
+                'background-image: url(https://example.com/image.jpg); background-repeat: no-repeat',
+                'background-image',
+                'url(https://example.com/image.jpg)',
             ],
             [
                 'color: blue; font-size: 16px; border: 1px solid black;',

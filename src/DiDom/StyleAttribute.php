@@ -73,7 +73,7 @@ class StyleAttribute
         $properties = explode(';', $styleString);
 
         foreach ($properties as $property) {
-            list($name, $value) = explode(':', $property);
+            list($name, $value) = explode(':', $property, 2);
 
             $name = trim($name);
             $value = trim($value);
