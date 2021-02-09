@@ -291,8 +291,6 @@ class QueryTest extends TestCase
 
         $compiled = array_merge($compiled, [
             ['a[title="foo, bar::baz"]', '//a[@title="foo, bar::baz"]'],
-            // nested pseudo-class with expression
-            [':not(:contains(foo))', '//*[not(self::*[contains(text(), "foo")])]'],
         ]);
 
         return $compiled;
