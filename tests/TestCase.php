@@ -2,11 +2,11 @@
 
 namespace DiDom\Tests;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase as PHPUnitTestCase;
 use DOMDocument;
 use Exception;
 
-class TestCase extends PHPUnit_Framework_TestCase
+class TestCase extends PHPUnitTestCase
 {
     protected function loadFixture($filename)
     {
