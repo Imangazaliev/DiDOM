@@ -258,6 +258,7 @@ class QueryTest extends TestCase
             ['li:first-child', '//li[position() = 1]'],
             ['li:last-child', '//li[position() = last()]'],
             ['*:not(a[href*="example.com"])', '//*[not(self::a[contains(@href, "example.com")])]'],
+            ['*:not(a[href*="example.com"]):not(.foo)', '//*[(not(self::a[contains(@href, "example.com")])) and (not(self::*[contains(concat(" ", normalize-space(@class), " "), " foo ")]))]'],
             ['ul:empty', '//ul[count(descendant::*) = 0]'],
             ['ul:not-empty', '//ul[count(descendant::*) > 0]'],
             ['li:nth-child(odd)', '//*[(name()="li") and (position() mod 2 = 1 and position() >= 1)]'],
@@ -388,8 +389,8 @@ class QueryTest extends TestCase
             ['tag' => 'a', 'attributes' => ['href*' => 'example']],
             ['tag' => 'a', 'attributes' => ['href!' => 'http://foo.com/']],
             ['tag' => 'script', 'attributes' => ['!src' => null]],
-            ['tag' => 'li', 'pseudo' => 'first-child'],
-            ['tag' => '*', 'id' => 'id', 'classes' => ['foo'], 'attributes' => ['name' => 'value'], 'pseudo' => 'first-child', 'rel' => '>'],
+            ['tag' => 'li', 'pseudo' => [['type' => 'first-child', 'expression' => null]]],
+            ['tag' => '*', 'id' => 'id', 'classes' => ['foo'], 'attributes' => ['name' => 'value'], 'pseudo' => [['type' => 'first-child', 'expression' => null]], 'rel' => '>'],
         ];
 
         $parameters = [];
@@ -416,10 +417,10 @@ class QueryTest extends TestCase
             ['selector' => 'a[href=http://example.com/][title=Example Domain]', 'tag' => 'a', 'attributes' => ['href' => 'http://example.com/', 'title' => 'Example Domain']],
             ['selector' => 'a[href=http://example.com/][href=http://example.com/404]', 'tag' => 'a', 'attributes' => ['href' => 'http://example.com/404']],
             ['selector' => 'a[href^=https]', 'tag' => 'a', 'attributes' => ['href^' => 'https']],
-            ['selector' => 'li:first-child', 'tag' => 'li', 'pseudo' => 'first-child'],
+            ['selector' => 'li:first-child', 'tag' => 'li', 'pseudo' => [['type' => 'first-child', 'expression' => null]]],
             ['selector' => 'ul >', 'tag' => 'ul', 'rel' => '>'],
-            ['selector' => '#id.foo[name=value]:first-child >', 'id' => 'id', 'classes' => ['foo'], 'attributes' => ['name' => 'value'], 'pseudo' => 'first-child', 'rel' => '>'],
-            ['selector' => 'li.bar:nth-child(2n)', 'tag' => 'li', 'classes' => ['bar'], 'pseudo' => 'nth-child', 'pseudo-expression' => '2n'],
+            ['selector' => '#id.foo[name=value]:first-child >', 'id' => 'id', 'classes' => ['foo'], 'attributes' => ['name' => 'value'], 'pseudo' => [['type' => 'first-child', 'expression' => null]], 'rel' => '>'],
+            ['selector' => 'li.bar:nth-child(2n)', 'tag' => 'li', 'classes' => ['bar'], 'pseudo' => [['type' => 'nth-child', 'expression' => '2n']]],
         ];
 
         $parameters = [];

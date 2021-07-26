@@ -292,13 +292,15 @@ class Query
         }
 
         // if the pseudo class specified
-        if (isset($segments['pseudo'])) {
-            $expression = isset($segments['pseudo-expression']) ? trim($segments['pseudo-expression']) : '';
+        if (array_key_exists('pseudo', $segments)) {
+            foreach ($segments['pseudo'] as $pseudo) {
+                $expression = $pseudo['expression'] !== null ? $pseudo['expression'] : '';
 
-            $parameters = explode(',', $expression);
-            $parameters = array_map('trim', $parameters);
+                $parameters = explode(',', $expression);
+                $parameters = array_map('trim', $parameters);
 
-            $attributes[] = self::convertPseudo($segments['pseudo'], $tagName, $parameters);
+                $attributes[] = self::convertPseudo($pseudo['type'], $tagName, $parameters);
+            }
         }
 
         if (count($attributes) === 0 && ! isset($segments['tag'])) {
@@ -511,10 +513,15 @@ class Query
 
         // if the pseudo class specified
         if (isset($segments['pseudo']) && $segments['pseudo'] !== '') {
-            $result['pseudo'] = $segments['pseudo'];
+            preg_match_all('/:(?P<type>[\w\-]+)(?:\((?P<expr>[^\)]+)\))?/', $segments['pseudo'], $pseudoClasses);
 
-            if (isset($segments['pseudoExpr']) && $segments['pseudoExpr'] !== '') {
-                $result['pseudo-expression'] = $segments['pseudoExpr'];
+            $result['pseudo'] = [];
+
+            foreach ($pseudoClasses['type'] as $index => $pseudoType) {
+                $result['pseudo'][] = [
+                    'type' => $pseudoType,
+                    'expression' => $pseudoClasses['expr'][$index] !== '' ? $pseudoClasses['expr'][$index] : null,
+                ];
             }
         }
 
@@ -532,9 +539,9 @@ class Query
         $id = '(?:#(?P<id>[\w|\-]+))?';
         $classes = '(?P<classes>\.[\w|\-|\.]+)*';
         $attrs = '(?P<attrs>(?:\[.+?\])*)?';
-        $pseudoType = '(?P<pseudo>[\w\-]+)';
-        $pseudoExpr = '(?:\((?P<pseudoExpr>[^\)]+)\))';
-        $pseudo = '(?::' . $pseudoType . $pseudoExpr . '?)?';
+        $pseudoType = '[\w\-]+';
+        $pseudoExpr = '(?:\([^\)]+\))?';
+        $pseudo = '(?P<pseudo>(?::' . $pseudoType  . $pseudoExpr . ')+)?';
         $rel = '\s*(?P<rel>>)?';
 
         return '/' . $tag . $id . $classes . $attrs . $pseudo . $rel . '/is';
