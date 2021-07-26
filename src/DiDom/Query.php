@@ -293,7 +293,7 @@ class Query
 
         // if the pseudo class specified
         if (isset($segments['pseudo'])) {
-            $expression = isset($segments['expr']) ? trim($segments['expr']) : '';
+            $expression = isset($segments['pseudo-expression']) ? trim($segments['pseudo-expression']) : '';
 
             $parameters = explode(',', $expression);
             $parameters = array_map('trim', $parameters);
@@ -327,7 +327,7 @@ class Query
 
         if ($isSimpleSelector) {
             // if specified only the attribute name
-            $xpath = $value === null ? '@'.$name : sprintf('@%s="%s"', $name, $value);
+            $xpath = $value === null ? '@' . $name : sprintf('@%s="%s"', $name, $value);
 
             return $xpath;
         }
@@ -458,85 +458,86 @@ class Query
         $selector = trim($selector);
 
         if ($selector === '') {
-            throw new InvalidSelectorException('The selector must not be empty');
+            throw new InvalidSelectorException('The selector must not be empty.');
         }
 
+        $pregMatchResult = preg_match(self::getSelectorRegex(), $selector, $segments);
+
+        if ($pregMatchResult === false || $pregMatchResult === 0 || $segments[0] === '') {
+            throw new InvalidSelectorException(sprintf('Invalid selector "%s".', $selector));
+        }
+
+        $result = ['selector' => $segments[0]];
+
+        if (isset($segments['tag']) && $segments['tag'] !== '') {
+            $result['tag'] = $segments['tag'];
+        }
+
+        // if the id attribute specified
+        if (isset($segments['id']) && $segments['id'] !== '') {
+            $result['id'] = $segments['id'];
+        }
+
+        // if the attributes specified
+        if (isset($segments['attrs'])) {
+            $attributes = trim($segments['attrs'], '[]');
+            $attributes = explode('][', $attributes);
+
+            foreach ($attributes as $attribute) {
+                if ($attribute !== '') {
+                    list($name, $value) = array_pad(explode('=', $attribute, 2), 2, null);
+
+                    if ($name === '') {
+                        throw new InvalidSelectorException(sprintf('Invalid selector "%s": attribute name must not be empty', $selector));
+                    }
+
+                    // equal null if specified only the attribute name
+                    $result['attributes'][$name] = is_string($value) ? trim($value, '\'"') : null;
+                }
+            }
+        }
+
+        // if the class attribute specified
+        if (isset($segments['classes'])) {
+            $classes = trim($segments['classes'], '.');
+            $classes = explode('.', $classes);
+
+            foreach ($classes as $class) {
+                if ($class !== '') {
+                    $result['classes'][] = $class;
+                }
+            }
+        }
+
+        // if the pseudo class specified
+        if (isset($segments['pseudo']) && $segments['pseudo'] !== '') {
+            $result['pseudo'] = $segments['pseudo'];
+
+            if (isset($segments['pseudoExpr']) && $segments['pseudoExpr'] !== '') {
+                $result['pseudo-expression'] = $segments['pseudoExpr'];
+            }
+        }
+
+        // if it is a direct descendant
+        if (isset($segments['rel'])) {
+            $result['rel'] = $segments['rel'];
+        }
+
+        return $result;
+    }
+
+    private static function getSelectorRegex()
+    {
         $tag = '(?P<tag>[\*|\w|\-]+)?';
         $id = '(?:#(?P<id>[\w|\-]+))?';
         $classes = '(?P<classes>\.[\w|\-|\.]+)*';
         $attrs = '(?P<attrs>(?:\[.+?\])*)?';
-        $name = '(?P<pseudo>[\w\-]+)';
-        $expr = '(?:\((?P<expr>[^\)]+)\))';
-        $pseudo = '(?::'.$name.$expr.'?)?';
+        $pseudoType = '(?P<pseudo>[\w\-]+)';
+        $pseudoExpr = '(?:\((?P<pseudoExpr>[^\)]+)\))';
+        $pseudo = '(?::' . $pseudoType . $pseudoExpr . '?)?';
         $rel = '\s*(?P<rel>>)?';
 
-        $regexp = '/'.$tag.$id.$classes.$attrs.$pseudo.$rel.'/is';
-
-        if (preg_match($regexp, $selector, $segments)) {
-            if ($segments[0] === '') {
-                throw new InvalidSelectorException(sprintf('Invalid selector "%s"', $selector));
-            }
-
-            $result['selector'] = $segments[0];
-
-            if (isset($segments['tag']) && $segments['tag'] !== '') {
-                $result['tag'] = $segments['tag'];
-            }
-
-            // if the id attribute specified
-            if (isset($segments['id']) && $segments['id'] !== '') {
-                $result['id'] = $segments['id'];
-            }
-
-            // if the attributes specified
-            if (isset($segments['attrs'])) {
-                $attributes = trim($segments['attrs'], '[]');
-                $attributes = explode('][', $attributes);
-
-                foreach ($attributes as $attribute) {
-                    if ($attribute !== '') {
-                        list($name, $value) = array_pad(explode('=', $attribute, 2), 2, null);
-
-                        if ($name === '') {
-                            throw new InvalidSelectorException(sprintf('Invalid selector "%s": attribute name must not be empty', $selector));
-                        }
-
-                        // equal null if specified only the attribute name
-                        $result['attributes'][$name] = is_string($value) ? trim($value, '\'"') : null;
-                    }
-                }
-            }
-
-            // if the class attribute specified
-            if (isset($segments['classes'])) {
-                $classes = trim($segments['classes'], '.');
-                $classes = explode('.', $classes);
-
-                foreach ($classes as $class) {
-                    if ($class !== '') {
-                        $result['classes'][] = $class;
-                    }
-                }
-            }
-
-            // if the pseudo class specified
-            if (isset($segments['pseudo']) && $segments['pseudo'] !== '') {
-                $result['pseudo'] = $segments['pseudo'];
-
-                if (isset($segments['expr']) && $segments['expr'] !== '') {
-                    $result['expr'] = $segments['expr'];
-                }
-            }
-
-            // if it is a direct descendant
-            if (isset($segments['rel'])) {
-                $result['rel'] = $segments['rel'];
-            }
-
-            return $result;
-        }
-
-        throw new InvalidSelectorException(sprintf('Invalid selector "%s"', $selector));
+        return '/' . $tag . $id . $classes . $attrs . $pseudo . $rel . '/is';
     }
 
     /**

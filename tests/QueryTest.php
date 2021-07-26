@@ -93,7 +93,7 @@ class QueryTest extends TestCase
 
     /**
      * @expectedException \DiDom\Exceptions\InvalidSelectorException
-     * @expectedExceptionMessage The selector must not be empty
+     * @expectedExceptionMessage The selector must not be empty.
      */
     public function testGetSegmentsWithEmptySelector()
     {
@@ -177,7 +177,7 @@ class QueryTest extends TestCase
 
     /**
      * @expectedException \DiDom\Exceptions\InvalidSelectorException
-     * @expectedExceptionMessage Invalid selector "."
+     * @expectedExceptionMessage Invalid selector ".".
      */
     public function testGetSegmentsWithEmptyClassName()
     {
@@ -186,7 +186,7 @@ class QueryTest extends TestCase
 
     /**
      * @expectedException \DiDom\Exceptions\InvalidSelectorException
-     * @expectedExceptionMessage Invalid selector "."
+     * @expectedExceptionMessage Invalid selector ".".
      */
     public function testCompilehWithEmptyClassName()
     {
@@ -239,7 +239,8 @@ class QueryTest extends TestCase
             ['foo bar baz', '//foo//bar//baz'],
             ['foo > bar > baz', '//foo/bar/baz'],
             ['#foo', '//*[@id="foo"]'],
-            ['.bar', '//*[contains(concat(" ", normalize-space(@class), " "), " bar ")]'],
+            ['.foo', '//*[contains(concat(" ", normalize-space(@class), " "), " foo ")]'],
+            ['.foo.bar', '//*[(contains(concat(" ", normalize-space(@class), " "), " foo ")) and (contains(concat(" ", normalize-space(@class), " "), " bar "))]'],
             ['*[foo=bar]', '//*[@foo="bar"]'],
             ['*[foo="bar"]', '//*[@foo="bar"]'],
             ['*[foo=\'bar\']', '//*[@foo="bar"]'],
@@ -418,7 +419,7 @@ class QueryTest extends TestCase
             ['selector' => 'li:first-child', 'tag' => 'li', 'pseudo' => 'first-child'],
             ['selector' => 'ul >', 'tag' => 'ul', 'rel' => '>'],
             ['selector' => '#id.foo[name=value]:first-child >', 'id' => 'id', 'classes' => ['foo'], 'attributes' => ['name' => 'value'], 'pseudo' => 'first-child', 'rel' => '>'],
-            ['selector' => 'li.bar:nth-child(2n)', 'tag' => 'li', 'classes' => ['bar'], 'pseudo' => 'nth-child', 'expr' => '2n'],
+            ['selector' => 'li.bar:nth-child(2n)', 'tag' => 'li', 'classes' => ['bar'], 'pseudo' => 'nth-child', 'pseudo-expression' => '2n'],
         ];
 
         $parameters = [];
