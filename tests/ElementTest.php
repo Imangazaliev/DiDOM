@@ -1303,7 +1303,29 @@ Tiếng Việt <br>
 
         $expectedNode = $list->getNode()->childNodes->item(2);
 
-        $this->assertEquals($expectedNode, $item->previousSibling('li:has(a[href$=".com"])')->getNode());
+        $this->assertEquals($expectedNode, $item->previousSibling('li:has(a[href*="google"])')->getNode());
+    }
+
+    public function testPreviousSiblingWithSelectorElementMissed()
+    {
+        $html =
+            '<ul>'.
+                '<li><a href="https://amazon.com">Amazon</a></li>'.
+                '<li><a href="https://facebook.com">Facebook</a></li>'.
+                '<li><a href="https://google.com">Google</a></li>'.
+                '<li><a href="https://www.w3.org">W3C</a></li>'.
+                '<li><a href="https://wikipedia.org">Wikipedia</a></li>'.
+            '</ul>'
+        ;
+
+        $document = new Document($html, false);
+
+        $list = $document->first('ul');
+
+        $item = $list->getNode()->childNodes->item(4);
+        $item = new Element($item);
+
+        $this->assertNull($item->previousSibling('li:has(a[href*="acme"])'));
     }
 
     public function testPreviousSiblingWithNodeType()
@@ -1622,7 +1644,29 @@ Tiếng Việt <br>
 
         $expectedNode = $list->getNode()->childNodes->item(3);
 
-        $this->assertEquals($expectedNode, $item->nextSibling('li:has(a[href$=".org"])')->getNode());
+        $this->assertEquals($expectedNode, $item->nextSibling('li:has(a[href*="w3"])')->getNode());
+    }
+
+    public function testNextSiblingWithSelectorElementMissed()
+    {
+        $html =
+            '<ul>'.
+            '<li><a href="https://amazon.com">Amazon</a></li>'.
+            '<li><a href="https://facebook.com">Facebook</a></li>'.
+            '<li><a href="https://google.com">Google</a></li>'.
+            '<li><a href="https://www.w3.org">W3C</a></li>'.
+            '<li><a href="https://wikipedia.org">Wikipedia</a></li>'.
+            '</ul>'
+        ;
+
+        $document = new Document($html, false);
+
+        $list = $document->first('ul');
+
+        $item = $list->getNode()->childNodes->item(0);
+        $item = new Element($item);
+
+        $this->assertNull($item->nextSibling('li:has(a[href*="acme"])'));
     }
 
     public function testNextSiblingWithNodeType()

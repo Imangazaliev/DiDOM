@@ -690,18 +690,14 @@ abstract class Node
 
             $element = new Element($node);
 
-            if ($selector === null) {
-                return $element;
-            }
-
-            if ($element->matches($selector)) {
+            if ($selector === null || $element->matches($selector)) {
                 return $element;
             }
 
             $node = $node->previousSibling;
         }
 
-        return new Element($this->node->previousSibling);
+        return null;
     }
 
     /**
@@ -830,11 +826,7 @@ abstract class Node
 
             $element = new Element($node);
 
-            if ($selector === null) {
-                return $element;
-            }
-
-            if ($element->matches($selector)) {
+            if ($selector === null || $element->matches($selector)) {
                 return $element;
             }
 
