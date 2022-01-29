@@ -13,7 +13,18 @@ class Encoder
     public static function convertToHtmlEntities($string, $encoding)
     {
         if (function_exists('mb_convert_encoding')) {
-            return mb_convert_encoding($string, 'HTML-ENTITIES', $encoding);
+            /*
+            Since PHP 8.2, 'HTML-Entities' mbstring encoder is deprecated.
+            htmlentities() is similar to 'HTML-Entities' encoding, however,
+            it encodes <>'"& characters that we do not need to be encoded.
+            htmlspecialchars_decode() decodes these special characters,
+            which result in an HTML-Entities equivalent.
+            @see https://php.watch/versions/8.2/mbstring-qprint-base64-uuencode-html-entities-deprecated#html
+            */
+
+            $encoded = mb_convert_encoding($string, 'UTF-8', $encoding);
+            $encoded = htmlentities($encoded);
+            return htmlspecialchars_decode($encoded);
         }
 
         if ('UTF-8' !== $encoding) {
