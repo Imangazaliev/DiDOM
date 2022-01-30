@@ -594,7 +594,8 @@ class Document
      */
     public function html()
     {
-        return trim($this->document->saveHTML($this->document));
+        $html = trim($this->document->saveHTML($this->document));
+        return html_entity_decode($html, ENT_QUOTES, 'UTF-8');
     }
 
     /**
