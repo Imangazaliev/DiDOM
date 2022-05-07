@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DiDom;
 
 class Encoder
@@ -10,7 +12,7 @@ class Encoder
      *
      * @return string
      */
-    public static function convertToHtmlEntities($string, $encoding)
+    public static function convertToHtmlEntities(string $string, string $encoding): string
     {
         if (function_exists('mb_convert_encoding')) {
             return mb_convert_encoding($string, 'HTML-ENTITIES', $encoding);
@@ -28,7 +30,7 @@ class Encoder
      *
      * @return string
      */
-    private static function htmlEncodingCallback($matches)
+    private static function htmlEncodingCallback(array $matches): string
     {
         $characterIndex = 1;
         $entities = '';

@@ -1,48 +1,35 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DiDom\Tests;
 
 use DiDom\Element;
 use DiDom\ClassAttribute;
+use DOMComment;
+use DOMText;
 use InvalidArgumentException;
 
 class ClassAttributeTest extends TestCase
 {
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage The element must contain DOMElement node
-     */
     public function testConstructorWithTextNode()
     {
-        $element = new Element(new \DOMText('foo'));
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The element must contain DOMElement node.');
+
+        $element = new Element(new DOMText('foo'));
 
         new ClassAttribute($element);
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage The element must contain DOMElement node
-     */
     public function testConstructorWithCommentNode()
     {
-        $element = new Element(new \DOMComment('foo'));
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The element must contain DOMElement node.');
+
+        $element = new Element(new DOMComment('foo'));
 
         new ClassAttribute($element);
-    }
-
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage DiDom\ClassAttribute::add expects parameter 1 to be string, NULL given
-     */
-    public function testAddWithInvalidClassName()
-    {
-        $element = new Element('div', null, [
-            'class' => 'foo',
-        ]);
-
-        $classAttribute = new ClassAttribute($element);
-
-        $classAttribute->add(null);
     }
 
     public function testAdd()
@@ -111,12 +98,11 @@ class ClassAttributeTest extends TestCase
         $this->assertEquals('foo bar baz', $element->getAttribute('class'));
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Class name must be a string, NULL given
-     */
     public function testAddMultipleWithInvalidClassName()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Class name must be a string, NULL given.');
+
         $element = new Element('div', null, [
             'class' => 'foo',
         ]);
@@ -226,21 +212,6 @@ class ClassAttributeTest extends TestCase
         $this->assertFalse($classAttribute->contains('baz'));
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage DiDom\ClassAttribute::remove expects parameter 1 to be string, NULL given
-     */
-    public function testRemoveWithInvalidClassName()
-    {
-        $element = new Element('div', null, [
-            'class' => 'foo bar baz',
-        ]);
-
-        $classAttribute = new ClassAttribute($element);
-
-        $classAttribute->remove(null);
-    }
-
     public function testRemove()
     {
         $element = new Element('div', null, [
@@ -269,12 +240,11 @@ class ClassAttributeTest extends TestCase
         $this->assertEquals('foo bar', $element->getAttribute('class'));
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Class name must be a string, NULL given
-     */
     public function testRemoveMultipleWithInvalidClassName()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Class name must be a string, NULL given.');
+
         $element = new Element('div', null, [
             'class' => 'foo bar baz',
         ]);
@@ -312,12 +282,11 @@ class ClassAttributeTest extends TestCase
         $this->assertEquals('foo baz', $element->getAttribute('class'));
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Class name must be a string, NULL given
-     */
     public function testRemoveAllWithInvalidClassName()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Class name must be a string, NULL given.');
+
         $element = new Element('div', null, [
             'class' => 'foo bar baz',
         ]);

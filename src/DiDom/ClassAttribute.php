@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DiDom;
 
 use InvalidArgumentException;
@@ -31,7 +33,7 @@ class ClassAttribute
     public function __construct(Element $element)
     {
         if ( ! $element->isElementNode()) {
-            throw new InvalidArgumentException(sprintf('The element must contain DOMElement node'));
+            throw new InvalidArgumentException(sprintf('The element must contain DOMElement node.'));
         }
 
         $this->element = $element;
@@ -96,12 +98,8 @@ class ClassAttribute
      *
      * @throws InvalidArgumentException if class name is not a string
      */
-    public function add($className)
+    public function add(string $className): self
     {
-        if ( ! is_string($className)) {
-            throw new InvalidArgumentException(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, (is_object($className) ? get_class($className) : gettype($className))));
-        }
-
         $this->parseClassAttribute();
 
         if (in_array($className, $this->classes, true)) {
@@ -122,13 +120,13 @@ class ClassAttribute
      *
      * @throws InvalidArgumentException if class name is not a string
      */
-    public function addMultiple(array $classNames)
+    public function addMultiple(array $classNames): self
     {
         $this->parseClassAttribute();
 
         foreach ($classNames as $className) {
             if ( ! is_string($className)) {
-                throw new InvalidArgumentException(sprintf('Class name must be a string, %s given', (is_object($className) ? get_class($className) : gettype($className))));
+                throw new InvalidArgumentException(sprintf('Class name must be a string, %s given.', (is_object($className) ? get_class($className) : gettype($className))));
             }
 
             if (in_array($className, $this->classes, true)) {
@@ -146,7 +144,7 @@ class ClassAttribute
     /**
      * @return string[]
      */
-    public function getAll()
+    public function getAll(): array
     {
         $this->parseClassAttribute();
 
@@ -158,12 +156,8 @@ class ClassAttribute
      *
      * @return bool
      */
-    public function contains($className)
+    public function contains(string $className): bool
     {
-        if ( ! is_string($className)) {
-            throw new InvalidArgumentException(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, (is_object($className) ? get_class($className) : gettype($className))));
-        }
-
         $this->parseClassAttribute();
 
         return in_array($className, $this->classes, true);
@@ -176,12 +170,8 @@ class ClassAttribute
      *
      * @throws InvalidArgumentException if class name is not a string
      */
-    public function remove($className)
+    public function remove(string $className): self
     {
-        if ( ! is_string($className)) {
-            throw new InvalidArgumentException(sprintf('%s expects parameter 1 to be string, %s given', __METHOD__, (is_object($className) ? get_class($className) : gettype($className))));
-        }
-
         $this->parseClassAttribute();
 
         $classIndex = array_search($className, $this->classes);
@@ -204,13 +194,13 @@ class ClassAttribute
      *
      * @throws InvalidArgumentException if class name is not a string
      */
-    public function removeMultiple(array $classNames)
+    public function removeMultiple(array $classNames): self
     {
         $this->parseClassAttribute();
 
         foreach ($classNames as $className) {
             if ( ! is_string($className)) {
-                throw new InvalidArgumentException(sprintf('Class name must be a string, %s given', (is_object($className) ? get_class($className) : gettype($className))));
+                throw new InvalidArgumentException(sprintf('Class name must be a string, %s given.', (is_object($className) ? get_class($className) : gettype($className))));
             }
 
             $classIndex = array_search($className, $this->classes);
@@ -232,7 +222,7 @@ class ClassAttribute
      *
      * @return ClassAttribute
      */
-    public function removeAll(array $exclusions = [])
+    public function removeAll(array $exclusions = []): self
     {
         $this->parseClassAttribute();
 
@@ -240,7 +230,7 @@ class ClassAttribute
 
         foreach ($exclusions as $className) {
             if ( ! is_string($className)) {
-                throw new InvalidArgumentException(sprintf('Class name must be a string, %s given', (is_object($className) ? get_class($className) : gettype($className))));
+                throw new InvalidArgumentException(sprintf('Class name must be a string, %s given.', (is_object($className) ? get_class($className) : gettype($className))));
             }
 
             if ( ! in_array($className, $this->classes, true)) {
@@ -260,7 +250,7 @@ class ClassAttribute
     /**
      * @return Element
      */
-    public function getElement()
+    public function getElement(): Element
     {
         return $this->element;
     }

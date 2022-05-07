@@ -1,63 +1,35 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DiDom\Tests;
 
 use DiDom\Element;
 use DiDom\StyleAttribute;
+use DOMComment;
+use DOMText;
 use InvalidArgumentException;
 
 class StyleAttributeTest extends TestCase
 {
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage The element must contain DOMElement node
-     */
     public function testConstructorWithTextNode()
     {
-        $element = new Element(new \DOMText('foo'));
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The element must contain DOMElement node.');
+
+        $element = new Element(new DOMText('foo'));
 
         new StyleAttribute($element);
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage The element must contain DOMElement node
-     */
     public function testConstructorWithCommentNode()
     {
-        $element = new Element(new \DOMComment('foo'));
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The element must contain DOMElement node.');
+
+        $element = new Element(new DOMComment('foo'));
 
         new StyleAttribute($element);
-    }
-
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage DiDom\StyleAttribute::setProperty expects parameter 1 to be string, NULL given
-     */
-    public function testSetPropertyWithInvalidPropertyName()
-    {
-        $element = new Element('div', null, [
-            'style' => 'color: blue; border: 1px solid black',
-        ]);
-
-        $styleAttribute = new StyleAttribute($element);
-
-        $styleAttribute->setProperty(null, '16px');
-    }
-
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage DiDom\StyleAttribute::setProperty expects parameter 2 to be string, NULL given
-     */
-    public function testSetPropertyWithInvalidPropertyValue()
-    {
-        $element = new Element('div', null, [
-            'style' => 'color: blue; border: 1px solid black',
-        ]);
-
-        $styleAttribute = new StyleAttribute($element);
-
-        $styleAttribute->setProperty('font-size', null);
     }
 
     public function testSetProperty()
@@ -75,12 +47,11 @@ class StyleAttributeTest extends TestCase
         $this->assertEquals('color: blue; border: 1px solid black; font-size: 16px', $element->getAttribute('style'));
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Property name must be a string, integer given
-     */
     public function testSetMultiplePropertiesWithInvalidPropertyName()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Property name must be a string, integer given.');
+
         $element = new Element('div', null, [
             'style' => 'color: blue; border: 1px solid black',
         ]);
@@ -93,12 +64,11 @@ class StyleAttributeTest extends TestCase
         ]);
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Property value must be a string, NULL given
-     */
     public function testSetMultiplePropertiesWithInvalidPropertyValue()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Property value must be a string, NULL given.');
+
         $element = new Element('div', null, [
             'style' => 'color: blue; border: 1px solid black',
         ]);
@@ -130,21 +100,6 @@ class StyleAttributeTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage DiDom\StyleAttribute::getProperty expects parameter 1 to be string, NULL given
-     */
-    public function testGetPropertyWithInvalidPropertyName()
-    {
-        $element = new Element('div', null, [
-            'style' => 'color: blue; border: 1px solid black',
-        ]);
-
-        $styleAttribute = new StyleAttribute($element);
-
-        $styleAttribute->getProperty(null);
-    }
-
-    /**
      * @param string $styleString
      * @param string $propertyName
      * @param string $expectedResult
@@ -162,7 +117,7 @@ class StyleAttributeTest extends TestCase
         $this->assertEquals($expectedResult, $styleAttribute->getProperty($propertyName));
     }
 
-    public function getPropertyDataProvider()
+    public function getPropertyDataProvider(): array
     {
         return [
             [
@@ -195,12 +150,11 @@ class StyleAttributeTest extends TestCase
         $this->assertEquals('16px', $styleAttribute->getProperty('font-size', '16px'));
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Property name must be a string, NULL given
-     */
     public function testGetMultiplePropertiesWithInvalidPropertyName()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Property name must be a string, NULL given.');
+
         $element = new Element('div', null, [
             'style' => 'color: blue; border: 1px solid black',
         ]);
@@ -274,7 +228,7 @@ class StyleAttributeTest extends TestCase
         $this->assertEquals($expectedResult, $styleAttribute->getAllProperties());
     }
 
-    public function getAllPropertiesDataProvider()
+    public function getAllPropertiesDataProvider(): array
     {
         return [
             [
@@ -315,21 +269,6 @@ class StyleAttributeTest extends TestCase
         $this->assertEquals([], $styleAttribute->getAllProperties());
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage DiDom\StyleAttribute::hasProperty expects parameter 1 to be string, NULL given
-     */
-    public function testHasPropertyWithInvalidPropertyName()
-    {
-        $element = new Element('div', null, [
-            'style' => 'color: blue; border: 1px solid black',
-        ]);
-
-        $styleAttribute = new StyleAttribute($element);
-
-        $styleAttribute->hasProperty(null);
-    }
-
     public function testHasProperty()
     {
         $element = new Element('div', null, [
@@ -340,21 +279,6 @@ class StyleAttributeTest extends TestCase
 
         $this->assertTrue($styleAttribute->hasProperty('color'));
         $this->assertFalse($styleAttribute->hasProperty('width'));
-    }
-
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage DiDom\StyleAttribute::removeProperty expects parameter 1 to be string, NULL given
-     */
-    public function testRemovePropertyWithInvalidPropertyName()
-    {
-        $element = new Element('div', null, [
-            'style' => 'color: blue; border: 1px solid black',
-        ]);
-
-        $styleAttribute = new StyleAttribute($element);
-
-        $styleAttribute->removeProperty(null);
     }
 
     public function testRemoveProperty()
@@ -374,12 +298,11 @@ class StyleAttributeTest extends TestCase
         $this->assertEquals('color: blue; border: 1px solid black', $element->getAttribute('style'));
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Property name must be a string, NULL given
-     */
     public function testRemoveMultiplePropertiesWithInvalidPropertyName()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Property name must be a string, NULL given.');
+
         $element = new Element('div', null, [
             'style' => 'color: blue; border: 1px solid black',
         ]);
@@ -411,7 +334,7 @@ class StyleAttributeTest extends TestCase
         $this->assertEquals($expectedResult, $element->getAttribute('style'));
     }
 
-    public function removeMultiplePropertiesDataProvider()
+    public function removeMultiplePropertiesDataProvider(): array
     {
         return [
             [
@@ -438,12 +361,11 @@ class StyleAttributeTest extends TestCase
         ];
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Property name must be a string, NULL given
-     */
     public function testRemoveAllPropertiesWithInvalidPropertyName()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Property name must be a string, NULL given.');
+
         $element = new Element('div', null, [
             'style' => 'color: blue; border: 1px solid black',
         ]);
@@ -475,7 +397,7 @@ class StyleAttributeTest extends TestCase
         $this->assertEquals($expectedResult, $element->getAttribute('style'));
     }
 
-    public function removeAllPropertiesDataProvider()
+    public function removeAllPropertiesDataProvider(): array
     {
         return [
             [

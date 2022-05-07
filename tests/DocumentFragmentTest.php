@@ -1,22 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DiDom\Tests;
 
 use DiDom\Document;
-use DiDom\DocumentFragment;
-use DOMElement;
-use InvalidArgumentException;
 
 class DocumentFragmentTest extends TestCase
 {
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testConstructorWithInvalidNodeType()
-    {
-        new DocumentFragment(new DOMElement('span'));
-    }
-
     public function testAppendXml()
     {
         $document = new Document();

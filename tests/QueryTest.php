@@ -1,37 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DiDom\Tests;
 
+use DiDom\Exceptions\InvalidSelectorException;
 use DiDom\Query;
 use InvalidArgumentException;
 use RuntimeException;
 
 class QueryTest extends TestCase
 {
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage DiDom\Query::compile expects parameter 1 to be string, NULL given
-     */
-    public function testCompileWithNonStringExpression()
-    {
-        Query::compile(null);
-    }
-
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage DiDom\Query::compile expects parameter 2 to be string, NULL given
-     */
-    public function testCompileWithNonStringExpressionType()
-    {
-        Query::compile('h1', null);
-    }
-
-    /**
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Unknown expression type "foo"
-     */
     public function testCompileWithUnknownExpressionType()
     {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Unknown expression type "foo"');
+
         Query::compile('h1', 'foo');
     }
 
@@ -65,56 +49,50 @@ class QueryTest extends TestCase
         $this->assertEquals($xpath, Query::buildXpath($segments));
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     */
     public function testBuildXpathWithEmptyArray()
     {
+        $this->expectException(InvalidArgumentException::class);
+
         Query::buildXpath([]);
     }
 
-    /**
-     * @expectedException \DiDom\Exceptions\InvalidSelectorException
-     * @expectedExceptionMessage The expression must not be empty
-     */
     public function testCompileWithEmptyXpathExpression()
     {
+        $this->expectException(InvalidSelectorException::class);
+        $this->expectExceptionMessage('The expression must not be empty.');
+
         Query::compile('', Query::TYPE_XPATH);
     }
 
-    /**
-     * @expectedException \DiDom\Exceptions\InvalidSelectorException
-     * @expectedExceptionMessage The expression must not be empty
-     */
     public function testCompileWithEmptyCssExpression()
     {
+        $this->expectException(InvalidSelectorException::class);
+        $this->expectExceptionMessage('The expression must not be empty.');
+
         Query::compile('', Query::TYPE_CSS);
     }
 
-    /**
-     * @expectedException \DiDom\Exceptions\InvalidSelectorException
-     * @expectedExceptionMessage The selector must not be empty.
-     */
     public function testGetSegmentsWithEmptySelector()
     {
+        $this->expectException(InvalidSelectorException::class);
+        $this->expectExceptionMessage('The selector must not be empty.');
+
         Query::getSegments('');
     }
 
-    /**
-     * @expectedException \DiDom\Exceptions\InvalidSelectorException
-     * @expectedExceptionMessage Invalid selector "input[=foo]": attribute name must not be empty
-     */
     public function testEmptyAttributeName()
     {
+        $this->expectException(InvalidSelectorException::class);
+        $this->expectExceptionMessage('Invalid selector "input[=foo]": attribute name must not be empty.');
+
         Query::compile('input[=foo]');
     }
 
-    /**
-     * @expectedException \DiDom\Exceptions\InvalidSelectorException
-     * @expectedExceptionMessage Unknown pseudo-class "unknown-pseudo-class"
-     */
     public function testUnknownPseudoClass()
     {
+        $this->expectException(InvalidSelectorException::class);
+        $this->expectExceptionMessage('Unknown pseudo-class "unknown-pseudo-class".');
+
         Query::compile('li:unknown-pseudo-class');
     }
 
@@ -125,12 +103,12 @@ class QueryTest extends TestCase
     {
         $message = sprintf('Parameter 2 of "contains" pseudo-class must be equal true or false, "%s" given', $caseSensitive);
 
-        $this->setExpectedException('DiDom\Exceptions\InvalidSelectorException', $message);
+        $this->expectException(InvalidSelectorException::class, $message);
 
         Query::compile("a:contains('Log in', {$caseSensitive})");
     }
 
-    public function containsInvalidCaseSensitiveParameterDataProvider()
+    public function containsInvalidCaseSensitiveParameterDataProvider(): array
     {
         return [
             ['foo'],
@@ -139,74 +117,57 @@ class QueryTest extends TestCase
         ];
     }
 
-    /**
-     * @expectedException \DiDom\Exceptions\InvalidSelectorException
-     * @expectedExceptionMessage nth-child (or nth-last-child) expression must not be empty
-     */
     public function testEmptyNthExpression()
     {
+        $this->expectException(InvalidSelectorException::class);
+        $this->expectExceptionMessage('nth-child (or nth-last-child) expression must not be empty.');
+
         Query::compile('li:nth-child()');
     }
 
-    /**
-     * @expectedException \DiDom\Exceptions\InvalidSelectorException
-     * @expectedExceptionMessage Invalid property "::"
-     */
     public function testEmptyProperty()
     {
+        $this->expectException(InvalidSelectorException::class);
+        $this->expectExceptionMessage('Invalid property "::".');
+
         Query::compile('li::');
     }
 
-    /**
-     * @expectedException \DiDom\Exceptions\InvalidSelectorException
-     * @expectedExceptionMessage Unknown property "foo"
-     */
     public function testInvalidProperty()
     {
+        $this->expectException(InvalidSelectorException::class);
+        $this->expectExceptionMessage('Unknown property "foo".');
+
         Query::compile('li::foo');
     }
 
-    /**
-     * @expectedException \DiDom\Exceptions\InvalidSelectorException
-     * @expectedExceptionMessage Invalid nth-child expression "foo"
-     */
     public function testUnknownNthExpression()
     {
+        $this->expectException(InvalidSelectorException::class);
+        $this->expectExceptionMessage('Invalid nth-child expression "foo".');
+
         Query::compile('li:nth-child(foo)');
     }
 
-    /**
-     * @expectedException \DiDom\Exceptions\InvalidSelectorException
-     * @expectedExceptionMessage Invalid selector ".".
-     */
     public function testGetSegmentsWithEmptyClassName()
     {
+        $this->expectException(InvalidSelectorException::class);
+        $this->expectExceptionMessage('Invalid selector ".".');
+
         Query::getSegments('.');
     }
 
-    /**
-     * @expectedException \DiDom\Exceptions\InvalidSelectorException
-     * @expectedExceptionMessage Invalid selector ".".
-     */
-    public function testCompilehWithEmptyClassName()
+    public function testCompileWithEmptyClassName()
     {
+        $this->expectException(InvalidSelectorException::class);
+        $this->expectExceptionMessage('Invalid selector ".".');
+
         Query::compile('span.');
     }
 
     public function testCompileXpath()
     {
         $this->assertEquals('//div', Query::compile('//div', Query::TYPE_XPATH));
-    }
-
-    public function testSetCompiledInvalidArgumentType()
-    {
-        if (PHP_VERSION_ID >= 70000) {
-            $this->setExpectedException('TypeError');
-        } else {
-            $this->setExpectedException('PHPUnit_Framework_Error');
-        }
-
-        Query::setCompiled(null);
     }
 
     public function testSetCompiled()
@@ -298,7 +259,7 @@ class QueryTest extends TestCase
         return $compiled;
     }
 
-    private function getContainsPseudoClassTests()
+    private function getContainsPseudoClassTests(): array
     {
         $strToLowerFunction = function_exists('mb_strtolower') ? 'mb_strtolower' : 'strtolower';
 
@@ -342,7 +303,7 @@ class QueryTest extends TestCase
         return $containsXpath;
     }
 
-    private function getPropertiesTests()
+    private function getPropertiesTests(): array
     {
         return [
             ['a::text', '//a/text()'],
@@ -355,7 +316,7 @@ class QueryTest extends TestCase
         ];
     }
 
-    public function buildXpathTests()
+    public function buildXpathTests(): array
     {
         $xpath = [
             '//a',
@@ -402,7 +363,7 @@ class QueryTest extends TestCase
         return $parameters;
     }
 
-    public function getSegmentsTests()
+    public function getSegmentsTests(): array
     {
         $segments = [
             ['selector' => 'a', 'tag' => 'a'],

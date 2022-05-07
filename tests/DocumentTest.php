@@ -1,56 +1,30 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DiDom\Tests;
 
 use DiDom\Document;
 use DiDom\Query;
+use DOMDocument;
 use InvalidArgumentException;
 use RuntimeException;
 
 class DocumentTest extends TestCase
 {
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage DiDom\Document::load expects parameter 1 to be string, array given
-     */
-    public function testConstructWithInvalidArgument()
-    {
-        new Document(array('foo'));
-    }
-
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage DiDom\Document::__construct expects parameter 3 to be string, NULL given
-     */
-    public function testConstructWithInvalidEncoding()
-    {
-        new Document(null, false, null);
-    }
-
-    /**
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Could not load file path/to/file
-     */
     public function testConstructWithNotExistingFile()
     {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Could not load file path/to/file.');
+
         new Document('path/to/file', true);
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage DiDom\Document::load expects parameter 3 to be string, NULL given
-     */
-    public function testConstructorWithInvalidTypeOfDocumentTypeArgument()
-    {
-        new Document('foo', false, 'UTF-8', null);
-    }
-
-    /**
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Document type must be "xml" or "html", bar given
-     */
     public function testConstructorWithInvalidDocumentType()
     {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Document type must be "xml" or "html", bar given.');
+
         new Document('foo', false, 'UTF-8', 'bar');
     }
 
@@ -164,12 +138,11 @@ class DocumentTest extends TestCase
         $this->assertInstanceOf('DOMDocumentFragment', $documentFragment->getNode());
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Argument 1 passed to DiDom\Document::appendChild must be an instance of DiDom\Element or DOMNode, string given
-     */
     public function testAppendChildWithInvalidArgument()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Argument 1 passed to DiDom\Document::appendChild must be an instance of DiDom\Element or DOMNode, string given.');
+
         $html = $this->loadFixture('posts.html');
 
         $document = new Document($html);
@@ -220,59 +193,24 @@ class DocumentTest extends TestCase
         }
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage DiDom\Document::load expects parameter 1 to be string, NULL given
-     */
-    public function testLoadWithInvalidContentArgument()
-    {
-        $document = new Document();
-
-        $document->load(null);
-    }
-
-    /**
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Could not load file path/to/file
-     */
     public function testLoadWithNotExistingFile()
     {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Could not load file path/to/file.');
+
         $document = new Document();
 
         $document->load('path/to/file', true);
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage DiDom\Document::load expects parameter 3 to be string, NULL given
-     */
-    public function testLoadWithInvalidTypeOfDocumentTypeArgument()
-    {
-        $document = new Document();
-
-        $document->load('foo', false, null);
-    }
-
-    /**
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Document type must be "xml" or "html", bar given
-     */
     public function testLoadWithInvalidDocumentType()
     {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Document type must be "xml" or "html", bar given.');
+
         $document = new Document();
 
         $document->load('foo', false, 'bar');
-    }
-
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage DiDom\Document::load expects parameter 4 to be integer, string given
-     */
-    public function testLoadWithInvalidOptionsType()
-    {
-        $document = new Document();
-
-        $document->load('foo', false, 'html', 'bar');
     }
 
     public function testLoadHtmlDocument()
@@ -312,67 +250,21 @@ class DocumentTest extends TestCase
         $this->assertEquals('Foo — Bar — Baz', $document->first('foo')->text());
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage DiDom\Document::load expects parameter 1 to be string, NULL given
-     */
-    public function testLoadHtmlWithInvalidArgument()
-    {
-        $document = new Document();
-
-        $document->loadHtml(null);
-    }
-
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage DiDom\Document::load expects parameter 1 to be string, array given
-     */
-    public function testLoadHtmlFileWithInvalidArgument()
-    {
-        $document = new Document();
-
-        $document->loadHtmlFile(array('foo'));
-    }
-
-    /**
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Could not load file path/to/file
-     */
     public function testLoadHtmlFileWithNotExistingFile()
     {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Could not load file path/to/file.');
+
         $document = new Document();
 
         $document->loadHtmlFile('path/to/file');
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage DiDom\Document::load expects parameter 1 to be string, NULL given
-     */
-    public function testLoadXmlWithInvalidArgument()
-    {
-        $document = new Document();
-
-        $document->loadXml(null);
-    }
-
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage DiDom\Document::load expects parameter 1 to be string, array given
-     */
-    public function testLoadXmlFileWithInvalidArgument()
-    {
-        $document = new Document();
-
-        $document->loadXmlFile(array('foo'));
-    }
-
-    /**
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Could not load file path/to/file
-     */
     public function testLoadXmlFileWithNotExistingFile()
     {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Could not load file path/to/file.');
+
         $document = new Document();
 
         $document->loadXmlFile('path/to/file');
@@ -549,12 +441,12 @@ class DocumentTest extends TestCase
 
         $document = new Document($html, false);
 
-        $this->assertInternalType('int', $document->count('li'));
+        $this->assertIsInt($document->count('li'));
         $this->assertEquals(3, $document->count('li'));
 
         $document = new Document();
 
-        $this->assertInternalType('int', $document->count('li'));
+        $this->assertIsInt($document->count('li'));
         $this->assertEquals(0, $document->count('li'));
     }
 
@@ -635,11 +527,10 @@ Tiếng Việt <br>
         $this->assertEquals('foo', $document->text());
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     */
     public function testIsWithInvalidArgument()
     {
+        $this->expectException(InvalidArgumentException::class);
+
         $document = new Document();
         $document->is(null);
     }
@@ -717,7 +608,7 @@ Tiếng Việt <br>
 
     public function testGetDocument()
     {
-        $domDocument = new \DOMDocument();
+        $domDocument = new DOMDocument();
         $document = new Document($domDocument);
 
         $this->assertEquals($domDocument, $document->getDocument());
@@ -731,11 +622,10 @@ Tiếng Việt <br>
         $this->assertInstanceOf('DOMElement', $document->getElement());
     }
 
-    /**
-     * @expectedException RuntimeException
-     */
     public function testEmptyDocumentToElement()
     {
+        $this->expectException(RuntimeException::class);
+
         $document = new Document();
 
         $document->toElement();
