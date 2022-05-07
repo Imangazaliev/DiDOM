@@ -678,23 +678,4 @@ class Document
     {
         return $this->type === Document::TYPE_HTML ? $this->html() : $this->xml();
     }
-
-    /**
-     * Searches for a node in the DOM tree for a given XPath expression or CSS selector.
-     *
-     * @param string $expression XPath expression or a CSS selector
-     * @param string $type The type of the expression
-     * @param bool $wrapNode Returns array of Element if true, otherwise array of DOMElement
-     * @param DOMElement|null $contextNode The node in which the search will be performed
-     *
-     * @return Element[]|DOMElement[]
-     *
-     * @throws InvalidSelectorException
-     *
-     * @deprecated No longer recommended, use Document::find() instead.
-     */
-    public function __invoke(string $expression, string $type = Query::TYPE_CSS, bool $wrapNode = true, $contextNode = null): array
-    {
-        return $this->find($expression, $type, $wrapNode, $contextNode);
-    }
 }

@@ -654,20 +654,4 @@ Tiếng Việt <br>
 
         $this->assertEquals($document->xml(), $document->__toString());
     }
-
-    /**
-     * @dataProvider findTests
-     */
-    public function testInvoke($html, $selector, $type, $count)
-    {
-        $document = new Document($html, false);
-        $elements = $document($selector, $type);
-
-        $this->assertTrue(is_array($elements));
-        $this->assertEquals($count, count($elements));
-
-        foreach ($elements as $element) {
-            $this->assertInstanceOf('DiDom\Element', $element);
-        }
-    }
 }

@@ -1142,22 +1142,4 @@ abstract class Node
     {
         return $this->html();
     }
-
-    /**
-     * Searches for a node in the DOM tree for a given XPath expression or CSS selector.
-     *
-     * @param string $expression XPath expression or CSS selector
-     * @param string $type The type of the expression
-     * @param bool $wrapNode Returns array of Element if true, otherwise array of DOMElement
-     *
-     * @return Element[]|DOMElement[]
-     *
-     * @throws InvalidSelectorException
-     *
-     * @deprecated No longer recommended, use Element::find() instead.
-     */
-    public function __invoke(string $expression, string $type = Query::TYPE_CSS, bool $wrapNode = true): array
-    {
-        return $this->find($expression, $type, $wrapNode);
-    }
 }

@@ -2212,30 +2212,4 @@ Tiếng Việt <br>
 
         $this->assertEquals($element->html(), $element->__toString());
     }
-
-    /**
-     * @dataProvider findTests
-     *
-     * @param string $html
-     * @param string $selector
-     * @param string $type
-     * @param int $count
-     */
-    public function testInvoke($html, $selector, $type, $count)
-    {
-        $document = new DOMDocument();
-        $document->loadHTML($html);
-
-        $node = $document->getElementsByTagName('body')->item(0);
-        $element = new Element($node);
-
-        $elements = $element($selector, $type);
-
-        $this->assertTrue(is_array($elements));
-        $this->assertEquals($count, count($elements));
-
-        foreach ($elements as $element) {
-            $this->assertInstanceOf('DiDom\Element', $element);
-        }
-    }
 }
