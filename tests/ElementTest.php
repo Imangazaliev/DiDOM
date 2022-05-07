@@ -76,7 +76,7 @@ class ElementTest extends TestCase
     {
         $element = Element::create('span', 'Foo', ['class' => 'bar']);
 
-        $this->assertEquals('span', $element->tag);
+        $this->assertEquals('span', $element->getNode()->tagName);
         $this->assertEquals('Foo', $element->text());
         $this->assertEquals(['class' => 'bar'], $element->attributes());
     }
@@ -85,9 +85,16 @@ class ElementTest extends TestCase
     {
         $element = Element::createBySelector('li.item.active', 'Foo', ['data-id' => 1]);
 
-        $this->assertEquals('li', $element->tag);
+        $this->assertEquals('li', $element->getNode()->tagName);
         $this->assertEquals('Foo', $element->text());
         $this->assertEquals(['class' => 'item active', 'data-id' => 1], $element->attributes());
+    }
+
+    public function testTagName()
+    {
+        $element = new Element(new DOMElement('div'));
+
+        $this->assertEquals('div', $element->tagName());
     }
 
     public function testPrependChildWithInvalidArgument()
@@ -193,7 +200,7 @@ class ElementTest extends TestCase
         $expectedContent = ['Qux', 'Quux', 'Quuz', 'Foo', 'Bar', 'Baz'];
 
         foreach ($document->find('item') as $index => $childNode) {
-            $this->assertEquals('item', $childNode->tag);
+            $this->assertEquals('item', $childNode->getNode()->tagName);
             $this->assertEquals($expectedContent[$index], $childNode->text());
         }
     }
@@ -299,7 +306,7 @@ class ElementTest extends TestCase
         $expectedContent = ['Foo', 'Bar', 'Baz', 'Qux', 'Quux', 'Quuz'];
 
         foreach ($document->find('item') as $index => $childNode) {
-            $this->assertEquals('item', $childNode->tag);
+            $this->assertEquals('item', $childNode->getNode()->tagName);
             $this->assertEquals($expectedContent[$index], $childNode->text());
         }
     }
@@ -2075,7 +2082,7 @@ Tiếng Việt <br>
         $expectedContent = ['Foo', 'Qux', 'Quux', 'Quuz', 'Baz'];
 
         foreach ($document->find('item') as $index => $childNode) {
-            $this->assertEquals('item', $childNode->tag);
+            $this->assertEquals('item', $childNode->getNode()->tagName);
             $this->assertEquals($expectedContent[$index], $childNode->text());
         }
     }

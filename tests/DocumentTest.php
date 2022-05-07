@@ -78,19 +78,19 @@ class DocumentTest extends TestCase
 
         $element = $document->createElementBySelector('a.external-link[href=http://example.com]');
 
-        $this->assertEquals('a', $element->tag);
+        $this->assertEquals('a', $element->getNode()->tagName);
         $this->assertEquals('', $element->text());
         $this->assertEquals(['href' => 'http://example.com', 'class' => 'external-link'], $element->attributes());
 
         $element = $document->createElementBySelector('#block', 'Foo');
 
-        $this->assertEquals('div', $element->tag);
+        $this->assertEquals('div', $element->getNode()->tagName);
         $this->assertEquals('Foo', $element->text());
         $this->assertEquals(['id' => 'block'], $element->attributes());
 
         $element = $document->createElementBySelector('input', null, ['name' => 'name', 'placeholder' => 'Enter your name']);
 
-        $this->assertEquals('input', $element->tag);
+        $this->assertEquals('input', $element->getNode()->tagName);
         $this->assertEquals('', $element->text());
         $this->assertEquals(['name' => 'name', 'placeholder' => 'Enter your name'], $element->attributes());
     }

@@ -15,9 +15,6 @@ use InvalidArgumentException;
 use LogicException;
 use RuntimeException;
 
-/**
- * @property string $tag
- */
 class Element extends Node
 {
     /**
@@ -86,6 +83,11 @@ class Element extends Node
         return Document::create()->createElementBySelector($selector, $value, $attributes);
     }
 
+    public function tagName(): string
+    {
+        return $this->node->tagName;
+    }
+
     /**
      * Checks that the node matches selector.
      *
@@ -127,7 +129,7 @@ class Element extends Node
             throw new RuntimeException(sprintf('Tag name must be specified in %s', $selector));
         }
 
-        if ($segments['tag'] !== $this->tag && $segments['tag'] !== '*') {
+        if ($segments['tag'] !== $this->tagName() && $segments['tag'] !== '*') {
             return false;
         }
 
@@ -368,10 +370,6 @@ class Element extends Node
      */
     public function __get(string $name): ?string
     {
-        if ($name === 'tag') {
-            return $this->node->tagName;
-        }
-
         return $this->getAttribute($name);
     }
 
