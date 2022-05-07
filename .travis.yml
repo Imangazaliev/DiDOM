@@ -1,21 +1,28 @@
-language: php
+jobs:
+  include:
+    - language: php
+      dist: bionic
+      php: 7.2
 
-dist: trusty
+    - language: php
+      dist: bionic
+      php: 7.3
 
-php:
-  - 5.4
-  - 5.5
-  - 5.5.9
-  - 5.6
-  - 7.0
-  - 7.1
-  - 7.2
-  - 7.3
+    - language: php
+      dist: bionic
+      php: 7.4
+
+    - language: php
+      dist: focal
+      php: 8.0
+
+    - language: php
+      dist: focal
+      php: 8.1
 
 before_script:
   - composer self-update
   - composer install
-
 script:
   - ./vendor/bin/phpunit
 
