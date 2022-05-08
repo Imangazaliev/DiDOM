@@ -460,25 +460,43 @@ abstract class Node
      */
     public function setInnerHtml(string $html): self
     {
+        return $this->setContent($html, Document::TYPE_HTML);
+    }
+
+    /**
+     * Sets inner HTML.
+     *
+     * @param string $xml
+     *
+     * @return static
+     *
+     * @throws InvalidArgumentException if passed argument is not a string
+     * @throws InvalidSelectorException
+     */
+    public function setInnerXml(string $xml): self
+    {
+        return $this->setContent($xml, Document::TYPE_XML);
+    }
+
+    protected function setContent(string $content, string $type): self
+    {
         $this->removeChildren();
 
-        if ($html !== '') {
-            Errors::disable();
+        Errors::disable();
 
-            $html = "<htmlfragment>$html</htmlfragment>";
+        $encoding = $this->getDocument()->getEncoding() ?? 'UTF-8';
 
-            $document = new Document($html);
+        $document = new Document("<didom-fragment>$content</didom-fragment>", false, $encoding, $type);
 
-            $fragment = $document->first('htmlfragment')->getNode();
+        $fragment = $document->first('didom-fragment')->getNode();
 
-            foreach ($fragment->childNodes as $node) {
-                $newNode = $this->node->ownerDocument->importNode($node, true);
+        foreach ($fragment->childNodes as $node) {
+            $newNode = $this->node->ownerDocument->importNode($node, true);
 
-                $this->node->appendChild($newNode);
-            }
-
-            Errors::restore();
+            $this->node->appendChild($newNode);
         }
+
+        Errors::restore();
 
         return $this;
     }

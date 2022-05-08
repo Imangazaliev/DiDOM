@@ -7,6 +7,7 @@ namespace DiDom\Tests;
 use DiDom\Document;
 use DiDom\Element;
 use DiDom\Query;
+use DOMCdataSection;
 use DOMComment;
 use DOMDocument;
 use DOMElement;
@@ -1050,6 +1051,26 @@ Tiếng Việt <br>
         $document->first('#root')->setInnerHtml($innerHtml);
 
         $this->assertEquals($innerHtml, $document->first('#root')->innerHtml());
+    }
+
+    public function testSetInnerXml()
+    {
+        $element = new Element('div');
+
+        $element->setInnerXml(' Foo <span>Bar</span><!-- Baz --><![CDATA[
+            <root>Hello world!</root>
+        ]]>');
+
+        $children = $element->getNode()->childNodes;
+
+        $this->assertInstanceOf(DOMText::class, $children[0]);
+        $this->assertEquals(' Foo ', $children[0]->textContent);
+        $this->assertInstanceOf(DOMElement::class, $children[1]);
+        $this->assertEquals('Bar', $children[1]->textContent);
+        $this->assertInstanceOf(DOMComment::class, $children[2]);
+        $this->assertEquals(' Baz ', $children[2]->textContent);
+        $this->assertInstanceOf(DOMCdataSection::class, $children[3]);
+        $this->assertEquals('<root>Hello world!</root>', trim($children[3]->textContent));
     }
 
     public function testXml()

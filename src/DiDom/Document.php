@@ -634,9 +634,9 @@ class Document
     /**
      * Returns the encoding of the document.
      *
-     * @return string
+     * @return string|null
      */
-    public function getEncoding(): string
+    public function getEncoding(): ?string
     {
         return $this->encoding;
     }
