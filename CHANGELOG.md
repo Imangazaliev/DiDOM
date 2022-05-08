@@ -5,10 +5,10 @@
 - Minimum PHP version bumped to 7.2
 - Remove `__invoke` method from `Document`, `Element` and `DocumentFragment` that was deprecated early
 - Remove magic property `Element::$tag`. Use `tagName()` method instead
+- Rename `Element::getDocument()` to `ownerDocument()`
 
 ### What's new
 
-- Add `DocumentFragment::createFromString()` method
 - Add `Node::setInnerXml()` method (i. e. for `Element` and `DocumentFragment` too)
 
 ## 1.18
