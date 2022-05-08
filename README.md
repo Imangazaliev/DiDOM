@@ -5,9 +5,10 @@
 [![Latest Stable Version](https://poser.pugx.org/imangazaliev/didom/v/stable)](https://packagist.org/packages/imangazaliev/didom)
 [![License](https://poser.pugx.org/imangazaliev/didom/license)](https://packagist.org/packages/imangazaliev/didom)
 
-[README на русском](README-RU.md)
-
 DiDOM - simple and fast HTML parser.
+
+- [README на русском](README-RU.md)
+- [DiDOM 1.x documentation](https://github.com/Imangazaliev/DiDOM/blob/98d411741d598b0b74bb38e215d99c1cdb0d532d/README.md). To upgrade from 1.x please checkout the [changelog](CHANGELOG.md).
 
 ## Contents
 
@@ -18,6 +19,7 @@ DiDOM - simple and fast HTML parser.
 - [Verify if element exists](#verify-if-element-exists)
 - [Search in element](#search-in-element)
 - [Supported selectors](#supported-selectors)
+- [Changing content](#changing-content)
 - [Output](#output)
 - [Working with elements](#working-with-elements)
     - [Creating a new element](#creating-a-new-element)
@@ -256,6 +258,30 @@ $document->find('a.foo::text');
 $document->find('a.bar::attr(href|title)');
 ```
 
+## Changing content
+
+### Change inner HTML
+
+```php
+$element->setInnerHtml('<a href="#">Foo</a>');
+```
+
+### Change inner XML
+
+```php
+$element->setInnerXml(' Foo <span>Bar</span><!-- Baz --><![CDATA[
+    <root>Hello world!</root>
+]]>');
+```
+
+### Change value (as plain text)
+
+```php
+$element->setValue('Foo');
+// will be encoded like using htmlentities()
+$element->setValue('<a href="#">Foo</a>');
+```
+
 ## Output
 
 ### Getting HTML
@@ -360,7 +386,7 @@ $element = $document->createElement('span', 'Hello');
 ## Getting the name of an element
 
 ```php
-$element->tag;
+$element->tagName();
 ```
 
 ## Getting parent element
@@ -410,14 +436,14 @@ var_dump($div->lastChild()->text());
 var_dump($div->children());
 ```
 
-## Getting document
+## Getting owner document
 
 ```php
 $document = new Document($html);
 
 $element = $document->find('input[name=email]')[0];
 
-$document2 = $element->getDocument();
+$document2 = $element->ownerDocument();
 
 // bool(true)
 var_dump($document->is($document2));

@@ -5,9 +5,10 @@
 [![Latest Stable Version](https://poser.pugx.org/imangazaliev/didom/v/stable)](https://packagist.org/packages/imangazaliev/didom)
 [![License](https://poser.pugx.org/imangazaliev/didom/license)](https://packagist.org/packages/imangazaliev/didom)
 
-[English version](README.md)
-
 DiDOM - простая и быстрая библиотека для парсинга HTML.
+
+- [English version](README.md)
+- [Документация для версии 1.x](https://github.com/Imangazaliev/DiDOM/blob/98d411741d598b0b74bb38e215d99c1cdb0d532d/README-RU.md). Чтобы обновится с версии 1.x, пожалуйста просмотрите [историю изменений](CHANGELOG.md).
 
 ## Содержание
 
@@ -307,10 +308,20 @@ $element->find('> a');
 $element->setInnerHtml('<a href="#">Foo</a>');
 ```
 
-### Изменение значения
+### Изменение XML
+
+```php
+$element->setInnerXml(' Foo <span>Bar</span><!-- Baz --><![CDATA[
+    <root>Hello world!</root>
+]]>');
+```
+
+### Изменение значения (как простой текст)
 
 ```php
 $element->setValue('Foo');
+// будет закодирован в HTML-сущность как при вызове htmlentities()
+$element->setValue('<a href="#">Foo</a>');
 ```
 
 ## Вывод содержимого
@@ -471,7 +482,7 @@ $element = Element::createBySelector('div.block', 'Foo', [
 ## Получение названия элемента
 
 ```php
-$element->tag;
+$element->tagName();
 ```
 
 ## Получение родительского элемента
@@ -586,7 +597,7 @@ $document = new Document($html);
 
 $element = $document->first('input[name=email]');
 
-$document2 = $element->getDocument();
+$document2 = $element->ownerDocument();
 
 // bool(true)
 var_dump($document->is($document2));
