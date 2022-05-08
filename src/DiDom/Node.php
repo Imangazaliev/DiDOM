@@ -311,7 +311,7 @@ abstract class Node
      */
     public function findInDocument(string $expression, string $type = Query::TYPE_CSS, bool $wrapNode = true): array
     {
-        $ownerDocument = $this->getDocument();
+        $ownerDocument = $this->ownerDocument();
 
         if ($ownerDocument === null) {
             throw new LogicException('Can not search in context without the owner document.');
@@ -349,7 +349,7 @@ abstract class Node
      */
     public function firstInDocument(string $expression, string $type = Query::TYPE_CSS, bool $wrapNode = true)
     {
-        $ownerDocument = $this->getDocument();
+        $ownerDocument = $this->ownerDocument();
 
         if ($ownerDocument === null) {
             throw new LogicException('Can not search in context without the owner document.');
@@ -484,7 +484,7 @@ abstract class Node
 
         Errors::disable();
 
-        $encoding = $this->getDocument()->getEncoding() ?? 'UTF-8';
+        $encoding = $this->ownerDocument()->getEncoding() ?? 'UTF-8';
 
         $document = new Document("<didom-fragment>$content</didom-fragment>", false, $encoding, $type);
 
@@ -1060,7 +1060,7 @@ abstract class Node
             $newNode = $newNode->cloneNode(true);
         }
 
-        if ($newNode->ownerDocument === null || ! $this->getDocument()->is($newNode->ownerDocument)) {
+        if ($newNode->ownerDocument === null || ! $this->ownerDocument()->is($newNode->ownerDocument)) {
             $newNode = $this->node->ownerDocument->importNode($newNode, true);
         }
 
@@ -1126,7 +1126,7 @@ abstract class Node
      *
      * @return Document|null
      */
-    public function getDocument(): ?Document
+    public function ownerDocument(): ?Document
     {
         if ($this->node->ownerDocument === null) {
             return null;

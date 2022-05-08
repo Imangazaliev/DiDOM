@@ -1193,7 +1193,7 @@ Tiếng Việt <br>
         $document = new Document($html, false);
         $element = $document->createElement('span', 'value');
 
-        $this->assertEquals($document->getDocument(), $element->getDocument()->getDocument());
+        $this->assertEquals($document->getDocument(), $element->ownerDocument()->getDocument());
     }
 
     public function testClosest()
@@ -2188,7 +2188,7 @@ Tiếng Việt <br>
         $document = new Document($html, false);
         $element = $document->createElement('span', 'value');
 
-        $this->assertEquals($document->getDocument(), $element->getDocument()->getDocument());
+        $this->assertEquals($document->getDocument(), $element->ownerDocument()->getDocument());
     }
 
     public function testToDocument()
