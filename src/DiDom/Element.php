@@ -236,18 +236,18 @@ class Element extends Node
     /**
      * Unset all attributes of the element.
      *
-     * @param string[] $exclusions
+     * @param string[] $preserved
      *
      * @return Element
      */
-    public function removeAllAttributes(array $exclusions = []): self
+    public function removeAllAttributes(array $preserved = []): self
     {
         if ( ! $this->node instanceof DOMElement) {
             return $this;
         }
 
         foreach ($this->attributes() as $name => $value) {
-            if (in_array($name, $exclusions, true)) {
+            if (in_array($name, $preserved, true)) {
                 continue;
             }
 

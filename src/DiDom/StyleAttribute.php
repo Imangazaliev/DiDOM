@@ -265,17 +265,17 @@ class StyleAttribute
     }
 
     /**
-     * @param string[] $exclusions
+     * @param string[] $preserved
      *
      * @return StyleAttribute
      */
-    public function removeAllProperties(array $exclusions = []): self
+    public function removeAllProperties(array $preserved = []): self
     {
         $this->parseStyleAttribute();
 
         $preservedProperties = [];
 
-        foreach ($exclusions as $propertyName) {
+        foreach ($preserved as $propertyName) {
             if ( ! is_string($propertyName)) {
                 throw new InvalidArgumentException(sprintf('Property name must be a string, %s given.', (is_object($propertyName) ? get_class($propertyName) : gettype($propertyName))));
             }

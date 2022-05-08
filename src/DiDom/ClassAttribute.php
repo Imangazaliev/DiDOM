@@ -218,17 +218,17 @@ class ClassAttribute
     }
 
     /**
-     * @param string[] $exclusions
+     * @param string[] $preserved
      *
      * @return ClassAttribute
      */
-    public function removeAll(array $exclusions = []): self
+    public function removeAll(array $preserved = []): self
     {
         $this->parseClassAttribute();
 
         $preservedClasses = [];
 
-        foreach ($exclusions as $className) {
+        foreach ($preserved as $className) {
             if ( ! is_string($className)) {
                 throw new InvalidArgumentException(sprintf('Class name must be a string, %s given.', (is_object($className) ? get_class($className) : gettype($className))));
             }
