@@ -1142,13 +1142,32 @@ Tiếng Việt <br>
     {
         $element = new Element('div');
 
-        $element->setInnerHtml(' Foo <span>Bar</span><!-- Baz -->');
+        $element->setInnerHtml(' Foo <span>Bar</span><!-- Baz --><![CDATA[
+            <root>Hello world!</root>
+        ]]>');
 
         $children = $element->children();
 
         $this->assertFalse($children[0]->isCommentNode());
         $this->assertFalse($children[1]->isCommentNode());
         $this->assertTrue($children[2]->isCommentNode());
+        $this->assertFalse($children[3]->isCommentNode());
+    }
+
+    public function testIsCdataSectionNode()
+    {
+        $element = new Element('div');
+
+        $element->setInnerXml(' Foo <span>Bar</span><!-- Baz --><![CDATA[
+            <root>Hello world!</root>
+        ]]>');
+
+        $children = $element->children();
+
+        $this->assertFalse($children[0]->isCdataSectionNode());
+        $this->assertFalse($children[1]->isCdataSectionNode());
+        $this->assertFalse($children[2]->isCdataSectionNode());
+        $this->assertTrue($children[3]->isCdataSectionNode());
     }
 
     public function testIs()
