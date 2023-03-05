@@ -14,7 +14,8 @@ class Encoder
      */
     public static function convertToHtmlEntities(string $string, string $encoding): string
     {
-        if (function_exists('mb_convert_encoding')) {
+        // handling HTML entities via mbstring is deprecated in PHP 8.2
+        if (function_exists('mb_convert_encoding') && PHP_VERSION_ID < 80200) {
             return mb_convert_encoding($string, 'HTML-ENTITIES', $encoding);
         }
 
