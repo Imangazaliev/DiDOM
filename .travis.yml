@@ -20,6 +20,10 @@ jobs:
       dist: focal
       php: 8.1
 
+    - language: php
+      dist: focal
+      php: 8.2
+
 before_script:
   - composer self-update
   - composer install
