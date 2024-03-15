@@ -251,7 +251,7 @@ class Document
      * @throws InvalidArgumentException if parameter 4 is not an integer or null
      * @throws RuntimeException if the document type is invalid (not Document::TYPE_HTML or Document::TYPE_XML)
      */
-    public function load(string $string, bool $isFile = false, string $type = Document::TYPE_HTML, int $options = null): void
+    public function load(string $string, bool $isFile = false, string $type = Document::TYPE_HTML, ?int $options = null): void
     {
         if ( ! in_array(strtolower($type), [Document::TYPE_HTML, Document::TYPE_XML], true)) {
             throw new RuntimeException(sprintf('Document type must be "xml" or "html", %s given.', $type));
